@@ -325,12 +325,17 @@
 <script>
 /* ======================================================================
    ALPHA_DATA — the only block to edit for a daily update.
-   Each new trading day:
-   1) Append new trade(s) to trades[] (reason needs zh/en/es/fr)
-   2) Update currentPrice / avgCost / shares on each holdings[] entry
+   Runs every day (crypto trades 24/7; equities only trade on NYSE trading
+   days — see holidays.json). Each new day:
+   1) Append new trade(s) to trades[] (reason needs zh/en/es/fr). Stock/ETF
+      buy/sell entries are only valid on NYSE trading days; crypto buy/sell
+      is valid any day.
+   2) Update currentPrice / avgCost / shares on each holdings[] entry.
+      Crypto currentPrice updates every day; stock/ETF currentPrice only
+      updates on NYSE trading days (frozen at last close otherwise).
    3) Update cash
    4) Append a snapshot to snapshots[] (label needs zh/en/es/fr) — once per
-      trading day, at the close check only
+      calendar day, at the close check only
    5) Update meta.lastUpdated / meta.dayCount
    Free-text fields use {zh:"...", en:"...", es:"...", fr:"..."}.
    Proper nouns (tickers, company names) stay plain strings — identical
@@ -539,7 +544,7 @@ const I18N = {
     dayN: (n) => `Day ${n}`,
     tradesTotal: (n) => `${n} trades total`,
     secNav: 'Net Asset Value',
-    chartNote: (n) => `${n} data point${n===1?'':'s'} · logged after each trading day's close`,
+    chartNote: (n) => `${n} data point${n===1?'':'s'} · logged after each day's close`,
     baselineNote: 'Dashed line marks the $1,000.00 starting-capital baseline',
     secHoldings: 'Current Holdings',
     holdingsNote: (t) => `Priced as of ${t}`,
@@ -551,7 +556,7 @@ const I18N = {
     cashAfterLabel:'Cash after trade',
     holdLabel:'Portfolio Review', navAtCheckLabel:'NAV at check',
     reasonLabel:'Rationale',
-    cursorLine:'Awaiting next trading day entry…',
+    cursorLine:'Awaiting next entry…',
     secPrinciples:'Strategy Framework', principlesNote:'Principles guiding every decision',
     footerInception:'Inception Date', footerLastUpdated:'Last Updated', footerInitialCapital:'Initial Capital',
     disclaimerIntro:'This page is',
@@ -590,7 +595,7 @@ const I18N = {
     dayN: (n) => `第 ${n} 天`,
     tradesTotal: (n) => `累计 ${n} 笔交易`,
     secNav: '账户净值曲线',
-    chartNote: (n) => `${n} 个数据点 · 每个交易日收盘后记录`,
+    chartNote: (n) => `${n} 个数据点 · 每天收盘后记录`,
     baselineNote: '虚线为初始本金 $1,000.00 基准线',
     secHoldings: '当前持仓',
     holdingsNote: (t) => `按现价 ${t} 计算`,
@@ -602,7 +607,7 @@ const I18N = {
     cashAfterLabel:'成交后现金',
     holdLabel:'组合复核', navAtCheckLabel:'检查时净值',
     reasonLabel:'交易逻辑',
-    cursorLine:'等待下一交易日录入…',
+    cursorLine:'等待下一次记录…',
     secPrinciples:'策略框架', principlesNote:'贯穿整场模拟的决策原则',
     footerInception:'建仓日期', footerLastUpdated:'最后更新', footerInitialCapital:'初始本金',
     disclaimerIntro:'本页面为',
@@ -641,7 +646,7 @@ const I18N = {
     dayN: (n) => `Día ${n}`,
     tradesTotal: (n) => `${n} operaciones en total`,
     secNav: "Curva de valor neto",
-    chartNote: (n) => `${n} ${n===1?'punto':'puntos'} de datos · registrado al cierre de cada jornada`,
+    chartNote: (n) => `${n} ${n===1?'punto':'puntos'} de datos · registrado al cierre de cada día`,
     baselineNote: "La línea discontinua marca el capital inicial de $1,000.00",
     secHoldings: "Posiciones actuales",
     holdingsNote: (t) => `Precios al ${t}`,
@@ -653,7 +658,7 @@ const I18N = {
     cashAfterLabel:"Efectivo tras la operación",
     holdLabel:"Revisión de cartera", navAtCheckLabel:"VL en la revisión",
     reasonLabel:"Razonamiento",
-    cursorLine:"Esperando el registro del próximo día de operaciones…",
+    cursorLine:"Esperando el próximo registro…",
     secPrinciples:"Marco estratégico", principlesNote:"Principios que guían cada decisión",
     footerInception:"Fecha de apertura", footerLastUpdated:"Última actualización", footerInitialCapital:"Capital inicial",
     disclaimerIntro:"Esta página es",
@@ -692,7 +697,7 @@ const I18N = {
     dayN: (n) => `Jour ${n}`,
     tradesTotal: (n) => `${n} transactions au total`,
     secNav: "Courbe de valeur liquidative",
-    chartNote: (n) => `${n} point${n===1?'':'s'} de données · enregistré à la clôture de chaque séance`,
+    chartNote: (n) => `${n} point${n===1?'':'s'} de données · enregistré à la clôture de chaque jour`,
     baselineNote: "La ligne pointillée marque le capital initial de 1 000,00 $",
     secHoldings: "Positions actuelles",
     holdingsNote: (t) => `Prix au ${t}`,
@@ -704,7 +709,7 @@ const I18N = {
     cashAfterLabel:"Liquidités après la transaction",
     holdLabel:"Revue du portefeuille", navAtCheckLabel:"VL à la revue",
     reasonLabel:"Raisonnement",
-    cursorLine:"En attente de la prochaine journée de trading…",
+    cursorLine:"En attente de la prochaine entrée…",
     secPrinciples:"Cadre stratégique", principlesNote:"Principes guidant chaque décision",
     footerInception:"Date d'ouverture", footerLastUpdated:"Dernière mise à jour", footerInitialCapital:"Capital initial",
     disclaimerIntro:"Cette page est",

@@ -2,7 +2,7 @@
   "market": "NYSE / NASDAQ",
   "timezone": "America/New_York",
   "regularHours": { "open": "09:30", "close": "16:00" },
-  "note": "Covers 2026 only — verified against the official NYSE/ICE holiday announcement. When today's date falls outside the years covered here, verify via a web search for the official NYSE holiday calendar before assuming the market is open; do not guess.",
+  "note": "Governs EQUITIES (stocks/ETFs) trading status only. The 1KAlpha check-in itself runs every day, including weekends/holidays, because crypto holdings trade 24/7 — use this file only to decide whether stock/ETF trades and currentPrice updates are allowed this run (fullClosures/weekends = no equities action; crypto is unaffected). Covers 2026 only — verified against the official NYSE/ICE holiday announcement. When today's date falls outside the years covered here, verify via a web search for the official NYSE holiday calendar before assuming equities markets are open; do not guess.",
   "source": "https://ir.theice.com/press/news-details/2023/NYSE-Group-Announces-2024-2025-and-2026-Holiday-and-Early-Closings-Calendar/default.aspx",
   "fullClosures": [
     { "date": "2026-01-01", "name": "New Year's Day" },
