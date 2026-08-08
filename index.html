@@ -186,6 +186,7 @@
   }
   .log-entry.buy{border-left:3px solid var(--green);}
   .log-entry.sell{border-left:3px solid var(--red);}
+  .log-entry.hold{border-left:3px solid var(--text-faint);}
   .log-top{display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:10px;}
   .log-id{font-family:var(--mono); font-size:11px; color:var(--text-faint); letter-spacing:.06em;}
   .log-date{font-family:var(--mono); font-size:11px; color:var(--text-dim);}
@@ -195,6 +196,7 @@
   }
   .badge.buy{background:rgba(52,211,153,0.12); color:var(--green); border:1px solid var(--green-dim);}
   .badge.sell{background:rgba(248,113,113,0.12); color:var(--red); border:1px solid var(--red-dim);}
+  .badge.hold{background:rgba(139,160,162,0.12); color:var(--text-dim); border:1px solid var(--border);}
   .log-main{
     display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px;
     margin-bottom:12px;
@@ -327,11 +329,20 @@
    1) Append new trade(s) to trades[] (reason needs zh/en/es/fr)
    2) Update currentPrice / avgCost / shares on each holdings[] entry
    3) Update cash
-   4) Append a snapshot to snapshots[] (label needs zh/en/es/fr)
+   4) Append a snapshot to snapshots[] (label needs zh/en/es/fr) — once per
+      trading day, at the close check only
    5) Update meta.lastUpdated / meta.dayCount
    Free-text fields use {zh:"...", en:"...", es:"...", fr:"..."}.
    Proper nouns (tickers, company names) stay plain strings — identical
    across languages.
+
+   No-action check-ins: when a scheduled review concludes no trade is
+   warranted, append a trades[] entry with action:"hold" instead of
+   "buy"/"sell". Shape:
+     { date, time:{zh,en,es,fr}, action:"hold",
+       navAtCheck: <total portfolio value at the moment of the check>,
+       reason:{zh,en,es,fr} }
+   (no symbol/name/shares/price/amount/cashAfter — those are buy/sell-only)
    ====================================================================== */
 const ALPHA_DATA = {
   meta: {
@@ -535,9 +546,10 @@ const I18N = {
     thAsset:'Asset', thType:'Type', thQty:'Qty', thAvgCost:'Avg Cost', thPrice:'Price', thMktValue:'Market Value', thPnl:'Unrealized P&L', thWeight:'Weight',
     cashRowLabel:'Cash', cashRowSub:'USD Cash',
     secWatch:'Watchlist · Not Yet Positioned', watchNote:'Researched but not yet entered',
-    secTradeLog:'Trade Log', tradeNote:(n)=>`${n} trade${n===1?'':'s'} total, newest first`,
-    badgeBuy:'BUY', badgeSell:'SELL',
+    secTradeLog:'Trade Log', tradeNote:(n)=>`${n} entr${n===1?'y':'ies'} total, newest first`,
+    badgeBuy:'BUY', badgeSell:'SELL', badgeHold:'NO ACTION',
     cashAfterLabel:'Cash after trade',
+    holdLabel:'Portfolio Review', navAtCheckLabel:'NAV at check',
     reasonLabel:'Rationale',
     cursorLine:'Awaiting next trading day entry…',
     secPrinciples:'Strategy Framework', principlesNote:'Principles guiding every decision',
@@ -585,9 +597,10 @@ const I18N = {
     thAsset:'资产', thType:'类型', thQty:'持仓量', thAvgCost:'成本价', thPrice:'现价', thMktValue:'市值', thPnl:'浮动盈亏', thWeight:'仓位',
     cashRowLabel:'现金', cashRowSub:'USD Cash',
     secWatch:'观察名单 · 暂不建仓', watchNote:'已研究但当前未入场的标的',
-    secTradeLog:'交易日志', tradeNote:(n)=>`共 ${n} 笔，按时间倒序`,
-    badgeBuy:'买入 BUY', badgeSell:'卖出 SELL',
+    secTradeLog:'交易日志', tradeNote:(n)=>`共 ${n} 条，按时间倒序`,
+    badgeBuy:'买入 BUY', badgeSell:'卖出 SELL', badgeHold:'无操作',
     cashAfterLabel:'成交后现金',
+    holdLabel:'组合复核', navAtCheckLabel:'检查时净值',
     reasonLabel:'交易逻辑',
     cursorLine:'等待下一交易日录入…',
     secPrinciples:'策略框架', principlesNote:'贯穿整场模拟的决策原则',
@@ -635,9 +648,10 @@ const I18N = {
     thAsset:"Activo", thType:"Tipo", thQty:"Cantidad", thAvgCost:"Costo prom.", thPrice:"Precio", thMktValue:"Valor de mercado", thPnl:"Ganancia/Pérdida", thWeight:"Peso",
     cashRowLabel:"Efectivo", cashRowSub:"Efectivo USD",
     secWatch:"Lista de seguimiento · Sin posición aún", watchNote:"Investigados pero sin entrar todavía",
-    secTradeLog:"Registro de operaciones", tradeNote:(n)=>`${n} ${n===1?'operación':'operaciones'} en total, más recientes primero`,
-    badgeBuy:"COMPRA", badgeSell:"VENTA",
+    secTradeLog:"Registro de operaciones", tradeNote:(n)=>`${n} ${n===1?'entrada':'entradas'} en total, más recientes primero`,
+    badgeBuy:"COMPRA", badgeSell:"VENTA", badgeHold:"SIN ACCIÓN",
     cashAfterLabel:"Efectivo tras la operación",
+    holdLabel:"Revisión de cartera", navAtCheckLabel:"VL en la revisión",
     reasonLabel:"Razonamiento",
     cursorLine:"Esperando el registro del próximo día de operaciones…",
     secPrinciples:"Marco estratégico", principlesNote:"Principios que guían cada decisión",
@@ -685,9 +699,10 @@ const I18N = {
     thAsset:"Actif", thType:"Type", thQty:"Quantité", thAvgCost:"Coût moyen", thPrice:"Prix", thMktValue:"Valeur de marché", thPnl:"Plus/moins-value latente", thWeight:"Poids",
     cashRowLabel:"Liquidités", cashRowSub:"Liquidités USD",
     secWatch:"Liste de surveillance · Pas encore de position", watchNote:"Étudiés mais pas encore investis",
-    secTradeLog:"Journal des transactions", tradeNote:(n)=>`${n} transaction${n===1?'':'s'} au total, les plus récentes en premier`,
-    badgeBuy:"ACHAT", badgeSell:"VENTE",
+    secTradeLog:"Journal des transactions", tradeNote:(n)=>`${n} entrée${n===1?'':'s'} au total, les plus récentes en premier`,
+    badgeBuy:"ACHAT", badgeSell:"VENTE", badgeHold:"AUCUNE ACTION",
     cashAfterLabel:"Liquidités après la transaction",
+    holdLabel:"Revue du portefeuille", navAtCheckLabel:"VL à la revue",
     reasonLabel:"Raisonnement",
     cursorLine:"En attente de la prochaine journée de trading…",
     secPrinciples:"Cadre stratégique", principlesNote:"Principes guidant chaque décision",
@@ -898,13 +913,13 @@ function renderTradeLog(){
   document.getElementById('tradeLog').innerHTML = trades.map((tr, i)=>{
     const idx = ALPHA_DATA.trades.length - i;
     const id = 'LOG-' + String(idx).padStart(3,'0');
-    return `
-      <div class="log-entry ${tr.action}">
-        <div class="log-top">
-          <span class="log-id">${id}</span>
-          <span class="log-date">${tr.date} · ${L(tr.time)}</span>
-          <span class="badge ${tr.action}">${tr.action==='buy'?t.badgeBuy:t.badgeSell}</span>
+    const badgeLabel = tr.action==='buy' ? t.badgeBuy : tr.action==='sell' ? t.badgeSell : t.badgeHold;
+    const mainBlock = tr.action==='hold' ? `
+        <div class="log-main">
+          <div class="who"><b>${t.holdLabel}</b></div>
+          <div class="calc">${t.navAtCheckLabel}<br><b>${fmtUSD(tr.navAtCheck)}</b></div>
         </div>
+      ` : `
         <div class="log-main">
           <div class="who"><b>${tr.symbol}</b><span>${tr.name}</span></div>
           <div class="calc">
@@ -912,6 +927,15 @@ function renderTradeLog(){
             ${t.cashAfterLabel} ${fmtUSD(tr.cashAfter)}
           </div>
         </div>
+      `;
+    return `
+      <div class="log-entry ${tr.action}">
+        <div class="log-top">
+          <span class="log-id">${id}</span>
+          <span class="log-date">${tr.date} · ${L(tr.time)}</span>
+          <span class="badge ${tr.action}">${badgeLabel}</span>
+        </div>
+        ${mainBlock}
         <div class="log-reason"><div class="reason-label">${t.reasonLabel}</div>${L(tr.reason)}</div>
       </div>
     `;
