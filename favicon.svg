@@ -8,6 +8,6 @@
   <rect x="1.5" y="1.5" width="61" height="61" rx="13" fill="#0a0e0f"/>
   <rect x="1.5" y="1.5" width="61" height="61" rx="13" fill="url(#glow)"/>
   <rect x="1.5" y="1.5" width="61" height="61" rx="13" fill="none" stroke="#213032" stroke-width="2"/>
-  <text x="32" y="46" font-family="'IBM Plex Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace" font-weight="700" font-size="38" fill="#ffb400" text-anchor="middle">&#945;</text>
-  <rect x="20" y="51" width="24" height="2.6" rx="1.3" fill="#5eead4" opacity="0.9"/>
+  <text x="32" y="49" font-family="'IBM Plex Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace" font-weight="700" font-size="52" fill="#ffb400" text-anchor="middle">&#945;</text>
+  <rect x="17" y="54.5" width="30" height="3" rx="1.5" fill="#5eead4" opacity="0.9"/>
 </svg>
