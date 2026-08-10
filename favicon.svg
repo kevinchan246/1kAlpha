@@ -8,6 +8,6 @@
   <rect x="1.5" y="1.5" width="61" height="61" rx="13" fill="#0a0e0f"/>
   <rect x="1.5" y="1.5" width="61" height="61" rx="13" fill="url(#glow)"/>
   <rect x="1.5" y="1.5" width="61" height="61" rx="13" fill="none" stroke="#213032" stroke-width="2"/>
-  <text x="32" y="49" font-family="'IBM Plex Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace" font-weight="700" font-size="52" fill="#ffb400" text-anchor="middle">&#945;</text>
+  <path d="M258 10Q165 10 110-59.500Q55-129 55-267Q55-402 110-474Q165-546 265-546Q318-546 354.500-525.500Q391-505 417-464L423-464Q428-481 436-501Q444-521 455-536L524-536Q517-514 511-478Q505-442 502-402Q499-362 499-326L499-118Q499-87 511-74.500Q523-62 540-62Q548-62 557-64Q566-66 570-67L570-3Q563 1 547 5.500Q531 10 511 10Q480 10 455-7Q430-24 419-72L412-72Q399-52 379-33Q359-14 329.500-2Q300 10 258 10M278-63Q324-63 353.500-85Q383-107 397.500-151.500Q412-196 412-261L412-267Q412-362 381.500-417Q351-472 277-472Q208-472 177-421Q146-370 146-269Q146-159 180-111Q214-63 278-63" fill="#ffb400" stroke="#ffb400" stroke-width="18" stroke-linejoin="round" transform="translate(9.518,47.281) scale(0.07194)"/>
   <rect x="17" y="54.5" width="30" height="3" rx="1.5" fill="#5eead4" opacity="0.9"/>
 </svg>
