@@ -748,7 +748,8 @@ const I18N = {
     tagNoLeverage: 'No Leverage',
     tagCashAccount: 'Cash Account',
     tagHoldings: (n) => `${n} Holdings`,
-    tagTrades: (n) => `${n} Trades`,
+    tagTrades: (n) => `${n} Trade${n===1?'':'s'}`,
+    tagCheckins: (n) => `${n} Check-in${n===1?'':'s'}`,
     statTotalValue: 'Total Value',
     statTotalValueSub: 'Cash + Holdings Value',
     statTotalReturn: 'Total Return',
@@ -757,7 +758,7 @@ const I18N = {
     statDays: 'Days Active',
     pctOfPortfolio: (p) => `${p}% of portfolio`,
     dayN: (n) => `Day ${n}`,
-    tradesTotal: (n) => `${n} trades total`,
+    tradesTotal: (checkins, trades) => `${checkins} check-in${checkins===1?'':'s'} · ${trades} trade${trades===1?'':'s'}`,
     secNav: 'Net Asset Value',
     chartNote: (n) => `${n} data point${n===1?'':'s'} · logged after each day's close`,
     baselineNote: 'Dashed line marks the $1,000.00 starting-capital baseline',
@@ -800,6 +801,7 @@ const I18N = {
     tagCashAccount: '现金账户',
     tagHoldings: (n) => `${n} 项持仓`,
     tagTrades: (n) => `${n} 笔交易`,
+    tagCheckins: (n) => `${n} 次检查`,
     statTotalValue: '账户总值',
     statTotalValueSub: '现金 + 持仓市值',
     statTotalReturn: '累计收益',
@@ -808,7 +810,7 @@ const I18N = {
     statDays: '运行天数',
     pctOfPortfolio: (p) => `占比 ${p}%`,
     dayN: (n) => `第 ${n} 天`,
-    tradesTotal: (n) => `累计 ${n} 笔交易`,
+    tradesTotal: (checkins, trades) => `累计 ${checkins} 次检查 · ${trades} 笔交易`,
     secNav: '账户净值曲线',
     chartNote: (n) => `${n} 个数据点 · 每天收盘后记录`,
     baselineNote: '虚线为初始本金 $1,000.00 基准线',
@@ -850,7 +852,8 @@ const I18N = {
     tagNoLeverage: "Sin apalancamiento",
     tagCashAccount: "Cuenta al contado",
     tagHoldings: (n) => `${n} posiciones`,
-    tagTrades: (n) => `${n} operaciones`,
+    tagTrades: (n) => `${n} operaci${n===1?'ón':'ones'}`,
+    tagCheckins: (n) => `${n} revisi${n===1?'ón':'ones'}`,
     statTotalValue: "Valor total",
     statTotalValueSub: "Efectivo + valor de posiciones",
     statTotalReturn: "Rendimiento acumulado",
@@ -859,7 +862,7 @@ const I18N = {
     statDays: "Días activo",
     pctOfPortfolio: (p) => `${p}% de la cartera`,
     dayN: (n) => `Día ${n}`,
-    tradesTotal: (n) => `${n} operaciones en total`,
+    tradesTotal: (checkins, trades) => `${checkins} revisi${checkins===1?'ón':'ones'} · ${trades} operaci${trades===1?'ón':'ones'}`,
     secNav: "Curva de valor neto",
     chartNote: (n) => `${n} ${n===1?'punto':'puntos'} de datos · registrado al cierre de cada día`,
     baselineNote: "La línea discontinua marca el capital inicial de $1,000.00",
@@ -901,7 +904,8 @@ const I18N = {
     tagNoLeverage: "Sans effet de levier",
     tagCashAccount: "Compte au comptant",
     tagHoldings: (n) => `${n} positions`,
-    tagTrades: (n) => `${n} transactions`,
+    tagTrades: (n) => `${n} transaction${n===1?'':'s'}`,
+    tagCheckins: (n) => `${n} vérification${n===1?'':'s'}`,
     statTotalValue: "Valeur totale",
     statTotalValueSub: "Liquidités + valeur des positions",
     statTotalReturn: "Rendement cumulé",
@@ -910,7 +914,7 @@ const I18N = {
     statDays: "Jours d'activité",
     pctOfPortfolio: (p) => `${p}% du portefeuille`,
     dayN: (n) => `Jour ${n}`,
-    tradesTotal: (n) => `${n} transactions au total`,
+    tradesTotal: (checkins, trades) => `${checkins} vérification${checkins===1?'':'s'} · ${trades} transaction${trades===1?'':'s'}`,
     secNav: "Courbe de valeur liquidative",
     chartNote: (n) => `${n} point${n===1?'':'s'} de données · enregistré à la clôture de chaque jour`,
     baselineNote: "La ligne pointillée marque le capital initial de 1 000,00 $",
@@ -1002,6 +1006,10 @@ function renderStatusbar(){
   `;
 }
 
+function countTrades(){
+  return ALPHA_DATA.trades.filter(tr => tr.action==='buy' || tr.action==='sell').length;
+}
+
 function renderHero(totals){
   const t = I18N[currentLang];
   const {totalValue, totalPnl, totalPnlPct} = totals;
@@ -1016,7 +1024,8 @@ function renderHero(totals){
     <span class="tag warn">${t.tagNoLeverage}</span>
     <span class="tag">${t.tagCashAccount}</span>
     <span class="tag">${t.tagHoldings(ALPHA_DATA.holdings.length)}</span>
-    <span class="tag">${t.tagTrades(ALPHA_DATA.trades.length)}</span>
+    <span class="tag">${t.tagCheckins(ALPHA_DATA.trades.length)}</span>
+    <span class="tag">${t.tagTrades(countTrades())}</span>
   `;
 }
 
@@ -1029,7 +1038,7 @@ function renderStats(totals){
     {label:t.statTotalReturn, value:`<span class="${cls}">${fmtPct(totalPnlPct)}</span>`, sub:`<span class="${cls}">${totalPnl>=0?'+':''}${fmtUSD(totalPnl)}</span>`},
     {label:t.statCash, value:fmtUSD(ALPHA_DATA.cash), sub:t.pctOfPortfolio((ALPHA_DATA.cash/totalValue*100).toFixed(1))},
     {label:t.statInvested, value:fmtUSD(holdingsValue), sub:t.pctOfPortfolio((holdingsValue/totalValue*100).toFixed(1))},
-    {label:t.statDays, value:t.dayN(ALPHA_DATA.meta.dayCount), sub:t.tradesTotal(ALPHA_DATA.trades.length)}
+    {label:t.statDays, value:t.dayN(ALPHA_DATA.meta.dayCount), sub:t.tradesTotal(ALPHA_DATA.trades.length, countTrades())}
   ];
   document.getElementById('statsGrid').innerHTML = stats.map(s=>`
     <div class="stat-card">
