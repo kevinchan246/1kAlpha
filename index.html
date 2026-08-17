@@ -245,6 +245,23 @@
     font-family:var(--mono); font-size:10px; letter-spacing:.1em;
     color:var(--teal); text-transform:uppercase; margin-bottom:6px;
   }
+  .log-reason-text{
+    display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden;
+  }
+  .log-reason-text.expanded{display:block; -webkit-line-clamp:unset; overflow:visible;}
+  .reason-toggle{
+    display:inline-block; margin-top:8px; font-family:var(--mono); font-size:11px;
+    letter-spacing:.04em; text-transform:uppercase; color:var(--teal);
+    background:none; border:none; padding:0; cursor:pointer;
+  }
+  .reason-toggle:hover{color:var(--amber);}
+  .log-more-row{text-align:center; margin:6px 0 20px;}
+  .log-more-btn{
+    font-family:var(--mono); font-size:12px; font-weight:600; letter-spacing:.04em;
+    background:transparent; color:var(--text-dim); border:1px solid var(--border);
+    padding:10px 22px; border-radius:3px; cursor:pointer;
+  }
+  .log-more-btn:hover{color:var(--amber); border-color:var(--amber-dim);}
   .cursor-line{
     font-family:var(--mono); font-size:12px; color:var(--text-faint); padding:6px 2px; display:flex; align-items:center; gap:8px;
   }
@@ -338,6 +355,7 @@
     <span class="note" id="tradeNote"></span>
   </section>
   <div id="tradeLog"></div>
+  <div class="log-more-row" id="logMoreRow"></div>
   <div class="cursor-line"><span class="cursor-blink"></span><span id="cursorText"></span></div>
 
   <section class="sec-head">
@@ -867,6 +885,8 @@ const I18N = {
     cashAfterLabel:'Cash after trade',
     holdLabel:'Portfolio Review', navAtCheckLabel:'NAV at check',
     reasonLabel:'Rationale',
+    reasonExpand:'Show more', reasonCollapse:'Show less',
+    logShowMore:(n)=>`Show ${n} more`, logShowLess:'Show fewer',
     cursorLine:'Awaiting next entry…',
     secPrinciples:'Strategy Framework', principlesNote:'Principles guiding every decision',
     subscribeTitle:'Weekly Recap by Email', subscribeNote:'What the AI decided this week, and why — no spam, unsubscribe anytime.',
@@ -921,6 +941,8 @@ const I18N = {
     cashAfterLabel:'成交后现金',
     holdLabel:'组合复核', navAtCheckLabel:'检查时净值',
     reasonLabel:'交易逻辑',
+    reasonExpand:'展开', reasonCollapse:'收起',
+    logShowMore:(n)=>`显示更多（还有 ${n} 条）`, logShowLess:'收起列表',
     cursorLine:'等待下一次记录…',
     secPrinciples:'策略框架', principlesNote:'贯穿整场模拟的决策原则',
     subscribeTitle:'邮件订阅 · 每周复盘', subscribeNote:'这周 AI 做了什么、为什么——不发垃圾邮件,随时可退订。',
@@ -975,6 +997,8 @@ const I18N = {
     cashAfterLabel:"Efectivo tras la operación",
     holdLabel:"Revisión de cartera", navAtCheckLabel:"VL en la revisión",
     reasonLabel:"Razonamiento",
+    reasonExpand:'Ver más', reasonCollapse:'Ver menos',
+    logShowMore:(n)=>`Ver ${n} más`, logShowLess:'Ver menos',
     cursorLine:"Esperando el próximo registro…",
     secPrinciples:"Marco estratégico", principlesNote:"Principios que guían cada decisión",
     subscribeTitle:"Resumen semanal por correo", subscribeNote:"Qué decidió la IA esta semana y por qué — sin spam, cancela cuando quieras.",
@@ -1029,6 +1053,8 @@ const I18N = {
     cashAfterLabel:"Liquidités après la transaction",
     holdLabel:"Revue du portefeuille", navAtCheckLabel:"VL à la revue",
     reasonLabel:"Raisonnement",
+    reasonExpand:'Afficher plus', reasonCollapse:'Afficher moins',
+    logShowMore:(n)=>`Afficher ${n} de plus`, logShowLess:'Afficher moins',
     cursorLine:"En attente de la prochaine entrée…",
     secPrinciples:"Cadre stratégique", principlesNote:"Principes guidant chaque décision",
     subscribeTitle:"Récap hebdomadaire par e-mail", subscribeNote:"Ce que l'IA a décidé cette semaine, et pourquoi — pas de spam, désabonnement à tout moment.",
@@ -1092,6 +1118,8 @@ function computeTotals(){
 
 let navChartInstance = null;
 let allocChartInstance = null;
+let logExpanded = false;
+const LOG_PAGE_SIZE = 6;
 
 function renderLangSwitch(){
   document.getElementById('langSwitch').innerHTML = LANGS.map(l => `
@@ -1241,7 +1269,8 @@ function renderWatchlist(){
 function renderTradeLog(){
   const t = I18N[currentLang];
   document.getElementById('tradeNote').textContent = t.tradeNote(ALPHA_DATA.trades.length);
-  const trades = [...ALPHA_DATA.trades].reverse();
+  const allTrades = [...ALPHA_DATA.trades].reverse();
+  const trades = logExpanded ? allTrades : allTrades.slice(0, LOG_PAGE_SIZE);
   document.getElementById('tradeLog').innerHTML = trades.map((tr, i)=>{
     const idx = ALPHA_DATA.trades.length - i;
     const id = 'LOG-' + String(idx).padStart(3,'0');
@@ -1268,10 +1297,29 @@ function renderTradeLog(){
           <span class="badge ${tr.action}">${badgeLabel}</span>
         </div>
         ${mainBlock}
-        <div class="log-reason"><div class="reason-label">${t.reasonLabel}</div>${L(tr.reason)}</div>
+        <div class="log-reason">
+          <div class="reason-label">${t.reasonLabel}</div>
+          <div class="log-reason-text" id="reason-${id}">${L(tr.reason)}</div>
+          <button type="button" class="reason-toggle" data-target="reason-${id}">${t.reasonExpand}</button>
+        </div>
       </div>
     `;
   }).join('');
+
+  document.querySelectorAll('.log-reason-text').forEach(el => {
+    const toggle = el.nextElementSibling;
+    if (el.scrollHeight <= el.clientHeight + 1) toggle.style.display = 'none';
+  });
+
+  const hiddenCount = allTrades.length - trades.length;
+  const moreRow = document.getElementById('logMoreRow');
+  if (allTrades.length <= LOG_PAGE_SIZE) {
+    moreRow.innerHTML = '';
+  } else if (logExpanded) {
+    moreRow.innerHTML = `<button type="button" class="log-more-btn" id="logMoreBtn">${t.logShowLess}</button>`;
+  } else {
+    moreRow.innerHTML = `<button type="button" class="log-more-btn" id="logMoreBtn">${t.logShowMore(hiddenCount)}</button>`;
+  }
 }
 
 function renderNavChart(){
@@ -1385,6 +1433,22 @@ document.getElementById('langSwitch').addEventListener('click', (e) => {
   if (!btn) return;
   currentLang = btn.dataset.lang;
   renderAll();
+});
+
+document.getElementById('tradeLog').addEventListener('click', (e) => {
+  const btn = e.target.closest('.reason-toggle');
+  if (!btn) return;
+  const t = I18N[currentLang];
+  const textEl = document.getElementById(btn.dataset.target);
+  const expanded = textEl.classList.toggle('expanded');
+  btn.textContent = expanded ? t.reasonCollapse : t.reasonExpand;
+});
+
+document.getElementById('logMoreRow').addEventListener('click', (e) => {
+  const btn = e.target.closest('#logMoreBtn');
+  if (!btn) return;
+  logExpanded = !logExpanded;
+  renderTradeLog();
 });
 
 renderAll();
