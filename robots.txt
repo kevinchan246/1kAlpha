@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://1kalpha.com/sitemap.xml
