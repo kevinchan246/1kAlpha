@@ -887,7 +887,8 @@ const I18N = {
     reasonLabel:'Rationale',
     reasonExpand:'Show more', reasonCollapse:'Show less',
     logShowMore:(n)=>`Show ${n} more`, logShowLess:'Show fewer',
-    cursorLine:'Awaiting next entry…',
+    cursorLine:(time, day)=>`Next check ~${time} ET ${day}`,
+    todayLabel:'today', tomorrowLabel:'tomorrow',
     secPrinciples:'Strategy Framework', principlesNote:'Principles guiding every decision',
     subscribeTitle:'Weekly Recap by Email', subscribeNote:'What the AI decided this week, and why — no spam, unsubscribe anytime.',
     subscribeLabel:'Enter your email', subscribeSubmit:'Subscribe', subscribePowered:'Powered by Buttondown.',
@@ -943,7 +944,8 @@ const I18N = {
     reasonLabel:'交易逻辑',
     reasonExpand:'展开', reasonCollapse:'收起',
     logShowMore:(n)=>`显示更多（还有 ${n} 条）`, logShowLess:'收起列表',
-    cursorLine:'等待下一次记录…',
+    cursorLine:(time, day)=>`下一次检查预计 ${day} ${time} ET`,
+    todayLabel:'今天', tomorrowLabel:'明天',
     secPrinciples:'策略框架', principlesNote:'贯穿整场模拟的决策原则',
     subscribeTitle:'邮件订阅 · 每周复盘', subscribeNote:'这周 AI 做了什么、为什么——不发垃圾邮件,随时可退订。',
     subscribeLabel:'输入你的邮箱', subscribeSubmit:'订阅', subscribePowered:'Powered by Buttondown.',
@@ -999,7 +1001,8 @@ const I18N = {
     reasonLabel:"Razonamiento",
     reasonExpand:'Ver más', reasonCollapse:'Ver menos',
     logShowMore:(n)=>`Ver ${n} más`, logShowLess:'Ver menos',
-    cursorLine:"Esperando el próximo registro…",
+    cursorLine:(time, day)=>`Próxima revisión ~${time} ET ${day}`,
+    todayLabel:'hoy', tomorrowLabel:'mañana',
     secPrinciples:"Marco estratégico", principlesNote:"Principios que guían cada decisión",
     subscribeTitle:"Resumen semanal por correo", subscribeNote:"Qué decidió la IA esta semana y por qué — sin spam, cancela cuando quieras.",
     subscribeLabel:"Ingresa tu correo", subscribeSubmit:"Suscribirme", subscribePowered:"Con tecnología de Buttondown.",
@@ -1055,7 +1058,8 @@ const I18N = {
     reasonLabel:"Raisonnement",
     reasonExpand:'Afficher plus', reasonCollapse:'Afficher moins',
     logShowMore:(n)=>`Afficher ${n} de plus`, logShowLess:'Afficher moins',
-    cursorLine:"En attente de la prochaine entrée…",
+    cursorLine:(time, day)=>`Prochaine vérification ~${time} ET ${day}`,
+    todayLabel:"aujourd'hui", tomorrowLabel:'demain',
     secPrinciples:"Cadre stratégique", principlesNote:"Principes guidant chaque décision",
     subscribeTitle:"Récap hebdomadaire par e-mail", subscribeNote:"Ce que l'IA a décidé cette semaine, et pourquoi — pas de spam, désabonnement à tout moment.",
     subscribeLabel:"Entrez votre e-mail", subscribeSubmit:"S'abonner", subscribePowered:"Propulsé par Buttondown.",
@@ -1089,6 +1093,20 @@ function L(field){
 const fmtUSD = (n, d=2) => '$' + n.toLocaleString('en-US', {minimumFractionDigits:d, maximumFractionDigits:d});
 const fmtPct = (n) => (n>=0?'+':'') + n.toFixed(2) + '%';
 const fmtQty = (n, d) => n.toLocaleString('en-US', {minimumFractionDigits:d, maximumFractionDigits:d});
+
+function getNextCheckInfo(){
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'America/New_York', hour: 'numeric', minute: 'numeric', hour12: false
+  }).formatToParts(new Date());
+  let h = parseInt(parts.find(p=>p.type==='hour').value, 10);
+  const m = parseInt(parts.find(p=>p.type==='minute').value, 10);
+  if (h === 24) h = 0;
+  const nowMin = h*60 + m;
+  const morningMin = 11*60 + 30, closeMin = 15*60;
+  if (nowMin < morningMin) return { time:'11:30', today:true };
+  if (nowMin < closeMin) return { time:'15:00', today:true };
+  return { time:'11:30', today:false };
+}
 
 const ASSET_COLORS = {NVDA:'#ffb400', SPY:'#5eead4', BTC:'#f0a35c', CASH:'#3a4b4e'};
 function colorFor(sym){ return ASSET_COLORS[sym] || '#7c8e90'; }
@@ -1189,7 +1207,8 @@ function renderSectionChrome(){
   document.getElementById('secTradeLogTitle').textContent = t.secTradeLog;
   document.getElementById('secPrinciplesTitle').textContent = t.secPrinciples;
   document.getElementById('principlesNoteText').textContent = t.principlesNote;
-  document.getElementById('cursorText').textContent = t.cursorLine;
+  const nextCheck = getNextCheckInfo();
+  document.getElementById('cursorText').textContent = t.cursorLine(nextCheck.time, nextCheck.today ? t.todayLabel : t.tomorrowLabel);
   document.getElementById('baselineNote').innerHTML = `<span class="swatch"></span> ${t.baselineNote}`;
   document.getElementById('holdingsThead').innerHTML = `
     <tr><th>${t.thAsset}</th><th>${t.thType}</th><th>${t.thQty}</th><th>${t.thAvgCost}</th><th>${t.thPrice}</th><th>${t.thMktValue}</th><th>${t.thPnl}</th><th>${t.thWeight}</th></tr>
