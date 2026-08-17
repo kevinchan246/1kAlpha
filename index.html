@@ -139,6 +139,31 @@
   /* ---------- panel ---------- */
   .panel{background:var(--bg-panel); border:1px solid var(--border); padding:20px;}
 
+  /* ---------- subscribe ---------- */
+  .subscribe-panel{
+    background:var(--bg-panel); border:1px solid var(--amber-dim); padding:28px;
+    display:flex; align-items:center; justify-content:space-between; gap:24px; flex-wrap:wrap;
+  }
+  .subscribe-copy h3{font-size:16px; color:var(--text); margin-bottom:6px;}
+  .subscribe-copy p{font-size:13px; color:var(--text-dim); max-width:440px; line-height:1.6;}
+  .subscribe-form{display:flex; gap:8px; flex-wrap:wrap; align-items:flex-start;}
+  .subscribe-form input[type="email"]{
+    font-family:var(--mono); font-size:13px; color:var(--text);
+    background:var(--bg-panel-2); border:1px solid var(--border); border-radius:3px;
+    padding:10px 12px; min-width:240px;
+  }
+  .subscribe-form input[type="email"]::placeholder{color:var(--text-faint);}
+  .subscribe-form input[type="email"]:focus-visible{outline:2px solid var(--teal); outline-offset:1px;}
+  .subscribe-form input[type="submit"]{
+    font-family:var(--mono); font-size:13px; font-weight:700; letter-spacing:.03em;
+    background:var(--amber); color:#0a0e0f; border:none; border-radius:3px;
+    padding:10px 18px; cursor:pointer;
+  }
+  .subscribe-form input[type="submit"]:hover{background:#ffc636;}
+  .subscribe-form p{width:100%; margin-top:6px;}
+  .subscribe-form a{font-size:10.5px; color:var(--text-faint); font-family:var(--mono);}
+  @media (max-width:700px){ .subscribe-panel{flex-direction:column; align-items:flex-start;} }
+
   /* ---------- chart ---------- */
   .chart-panel{padding:22px 22px 12px;}
   .chart-box{position:relative; height:320px;}
@@ -320,6 +345,19 @@
     <span class="note" id="principlesNoteText"></span>
   </section>
   <div class="principles" id="principles"></div>
+
+  <div class="subscribe-panel">
+    <div class="subscribe-copy">
+      <h3 id="subscribeTitle"></h3>
+      <p id="subscribeNote"></p>
+    </div>
+    <form action="https://buttondown.com/api/emails/embed-subscribe/1kalpha" method="post" class="subscribe-form">
+      <label for="bd-email" style="position:absolute; left:-9999px;" id="subscribeLabel"></label>
+      <input type="email" name="email" id="bd-email" placeholder="you@example.com" required>
+      <input type="submit" id="subscribeSubmit" value="">
+      <p><a href="https://buttondown.com/refer/1kalpha" target="_blank" id="subscribePowered"></a></p>
+    </form>
+  </div>
 
   <footer>
     <p class="disclaimer" id="disclaimerText"></p>
@@ -831,6 +869,8 @@ const I18N = {
     reasonLabel:'Rationale',
     cursorLine:'Awaiting next entry…',
     secPrinciples:'Strategy Framework', principlesNote:'Principles guiding every decision',
+    subscribeTitle:'Weekly Recap by Email', subscribeNote:'What the AI decided this week, and why — no spam, unsubscribe anytime.',
+    subscribeLabel:'Enter your email', subscribeSubmit:'Subscribe', subscribePowered:'Powered by Buttondown.',
     footerInception:'Inception Date', footerLastUpdated:'Last Updated', footerInitialCapital:'Initial Capital',
     disclaimerIntro:'This page is',
     disclaimerLead:'a simulation using virtual funds',
@@ -883,6 +923,8 @@ const I18N = {
     reasonLabel:'交易逻辑',
     cursorLine:'等待下一次记录…',
     secPrinciples:'策略框架', principlesNote:'贯穿整场模拟的决策原则',
+    subscribeTitle:'邮件订阅 · 每周复盘', subscribeNote:'这周 AI 做了什么、为什么——不发垃圾邮件,随时可退订。',
+    subscribeLabel:'输入你的邮箱', subscribeSubmit:'订阅', subscribePowered:'Powered by Buttondown.',
     footerInception:'建仓日期', footerLastUpdated:'最后更新', footerInitialCapital:'初始本金',
     disclaimerIntro:'本页面为',
     disclaimerLead:'虚拟资金模拟',
@@ -935,6 +977,8 @@ const I18N = {
     reasonLabel:"Razonamiento",
     cursorLine:"Esperando el próximo registro…",
     secPrinciples:"Marco estratégico", principlesNote:"Principios que guían cada decisión",
+    subscribeTitle:"Resumen semanal por correo", subscribeNote:"Qué decidió la IA esta semana y por qué — sin spam, cancela cuando quieras.",
+    subscribeLabel:"Ingresa tu correo", subscribeSubmit:"Suscribirme", subscribePowered:"Con tecnología de Buttondown.",
     footerInception:"Fecha de apertura", footerLastUpdated:"Última actualización", footerInitialCapital:"Capital inicial",
     disclaimerIntro:"Esta página es",
     disclaimerLead:"una simulación con fondos virtuales",
@@ -987,6 +1031,8 @@ const I18N = {
     reasonLabel:"Raisonnement",
     cursorLine:"En attente de la prochaine entrée…",
     secPrinciples:"Cadre stratégique", principlesNote:"Principes guidant chaque décision",
+    subscribeTitle:"Récap hebdomadaire par e-mail", subscribeNote:"Ce que l'IA a décidé cette semaine, et pourquoi — pas de spam, désabonnement à tout moment.",
+    subscribeLabel:"Entrez votre e-mail", subscribeSubmit:"S'abonner", subscribePowered:"Propulsé par Buttondown.",
     footerInception:"Date d'ouverture", footerLastUpdated:"Dernière mise à jour", footerInitialCapital:"Capital initial",
     disclaimerIntro:"Cette page est",
     disclaimerLead:"une simulation utilisant des fonds virtuels",
@@ -1293,6 +1339,15 @@ function renderPrinciples(){
   `).join('');
 }
 
+function renderSubscribe(){
+  const t = I18N[currentLang];
+  document.getElementById('subscribeTitle').textContent = t.subscribeTitle;
+  document.getElementById('subscribeNote').textContent = t.subscribeNote;
+  document.getElementById('subscribeLabel').textContent = t.subscribeLabel;
+  document.getElementById('subscribeSubmit').value = t.subscribeSubmit;
+  document.getElementById('subscribePowered').textContent = t.subscribePowered;
+}
+
 function renderFooter(){
   const t = I18N[currentLang];
   document.getElementById('disclaimerText').innerHTML =
@@ -1321,6 +1376,7 @@ function renderAll(){
   renderTradeLog();
   renderNavChart();
   renderPrinciples();
+  renderSubscribe();
   renderFooter();
 }
 
