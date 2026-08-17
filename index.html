@@ -127,13 +127,14 @@
 
   /* ---------- stat grid ---------- */
   .stats-grid{
-    display:grid; grid-template-columns:repeat(5,1fr); gap:1px;
+    display:grid; grid-template-columns:repeat(6,1fr); gap:1px;
     background:var(--border); border:1px solid var(--border);
   }
   .stat-card{background:var(--bg-panel); padding:18px 18px 16px;}
   .stat-card .label{font-size:11px; color:var(--text-faint); letter-spacing:.08em; text-transform:uppercase; margin-bottom:10px; font-family:var(--mono);}
   .stat-card .value{font-family:var(--mono); font-size:21px; font-weight:600; color:var(--text);}
   .stat-card .sub{font-size:11px; margin-top:6px; font-family:var(--mono); color:var(--text-dim);}
+  @media (max-width:1080px){ .stats-grid{grid-template-columns:repeat(3,1fr);} }
   @media (max-width:900px){ .stats-grid{grid-template-columns:repeat(2,1fr);} }
 
   /* ---------- panel ---------- */
@@ -866,6 +867,7 @@ const I18N = {
     statTotalValue: 'Total Value',
     statTotalValueSub: 'Cash + Holdings Value',
     statTotalReturn: 'Total Return',
+    statDailyChange: 'Daily Change', dailyChangeSub: 'vs. yesterday\'s close', dailyChangeNA: 'No prior close yet',
     statCash: 'Cash Balance',
     statInvested: 'Invested Amount',
     statDays: 'Days Active',
@@ -923,6 +925,7 @@ const I18N = {
     statTotalValue: '账户总值',
     statTotalValueSub: '现金 + 持仓市值',
     statTotalReturn: '累计收益',
+    statDailyChange: '今日涨跌', dailyChangeSub: '较昨日收盘', dailyChangeNA: '暂无前一日收盘数据',
     statCash: '现金余额',
     statInvested: '已投资金额',
     statDays: '运行天数',
@@ -980,6 +983,7 @@ const I18N = {
     statTotalValue: "Valor total",
     statTotalValueSub: "Efectivo + valor de posiciones",
     statTotalReturn: "Rendimiento acumulado",
+    statDailyChange: "Variación diaria", dailyChangeSub: "vs. cierre de ayer", dailyChangeNA: "Aún sin cierre previo",
     statCash: "Saldo en efectivo",
     statInvested: "Monto invertido",
     statDays: "Días activo",
@@ -1037,6 +1041,7 @@ const I18N = {
     statTotalValue: "Valeur totale",
     statTotalValueSub: "Liquidités + valeur des positions",
     statTotalReturn: "Rendement cumulé",
+    statDailyChange: "Variation du jour", dailyChangeSub: "vs. clôture d'hier", dailyChangeNA: "Pas encore de clôture précédente",
     statCash: "Solde de liquidités",
     statInvested: "Montant investi",
     statDays: "Jours d'activité",
@@ -1134,6 +1139,18 @@ function computeTotals(){
   return {holdings, holdingsValue, totalValue, totalPnl, totalPnlPct};
 }
 
+function computeDailyChange(totalValue){
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'America/New_York', year:'numeric', month:'2-digit', day:'2-digit'
+  }).format(new Date());
+  const priorSnaps = ALPHA_DATA.snapshots.filter(s => s.date < parts);
+  if (priorSnaps.length === 0) return null;
+  const baseline = priorSnaps[priorSnaps.length - 1].totalValue;
+  if (!baseline) return null;
+  const change = totalValue - baseline;
+  return { change, changePct: change / baseline * 100 };
+}
+
 let navChartInstance = null;
 let allocChartInstance = null;
 let logExpanded = false;
@@ -1182,9 +1199,15 @@ function renderStats(totals){
   const t = I18N[currentLang];
   const {totalValue, holdingsValue, totalPnl, totalPnlPct} = totals;
   const cls = totalPnl>0?'up':(totalPnl<0?'down':'flat');
+  const daily = computeDailyChange(totalValue);
+  const dailyCls = !daily ? 'flat' : (daily.change>0?'up':(daily.change<0?'down':'flat'));
+  const dailyStat = !daily
+    ? {label:t.statDailyChange, value:'—', sub:t.dailyChangeNA}
+    : {label:t.statDailyChange, value:`<span class="${dailyCls}">${fmtPct(daily.changePct)}</span>`, sub:`<span class="${dailyCls}">${daily.change>=0?'+':''}${fmtUSD(daily.change)}</span> ${t.dailyChangeSub}`};
   const stats = [
     {label:t.statTotalValue, value:fmtUSD(totalValue), sub:t.statTotalValueSub},
     {label:t.statTotalReturn, value:`<span class="${cls}">${fmtPct(totalPnlPct)}</span>`, sub:`<span class="${cls}">${totalPnl>=0?'+':''}${fmtUSD(totalPnl)}</span>`},
+    dailyStat,
     {label:t.statCash, value:fmtUSD(ALPHA_DATA.cash), sub:t.pctOfPortfolio((ALPHA_DATA.cash/totalValue*100).toFixed(1))},
     {label:t.statInvested, value:fmtUSD(holdingsValue), sub:t.pctOfPortfolio((holdingsValue/totalValue*100).toFixed(1))},
     {label:t.statDays, value:t.dayN(ALPHA_DATA.meta.dayCount), sub:t.tradesTotal(ALPHA_DATA.trades.length, countTrades())}
