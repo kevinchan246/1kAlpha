@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 500">
+  <defs>
+    <radialGradient id="glowA" cx="12%" cy="-10%" r="65%">
+      <stop offset="0%" stop-color="#ffb400" stop-opacity="0.14"/>
+      <stop offset="60%" stop-color="#ffb400" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowB" cx="100%" cy="0%" r="70%">
+      <stop offset="0%" stop-color="#5eead4" stop-opacity="0.10"/>
+      <stop offset="55%" stop-color="#5eead4" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="scan" width="4" height="4" patternUnits="userSpaceOnUse">
+      <rect width="4" height="4" fill="none"/>
+      <line x1="0" y1="1" x2="4" y2="1" stroke="#ffffff" stroke-opacity="0.02" stroke-width="1"/>
+    </pattern>
+    <linearGradient id="navFade" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ffb400" stop-opacity="0"/>
+      <stop offset="15%" stop-color="#ffb400" stop-opacity="0.35"/>
+      <stop offset="85%" stop-color="#ffb400" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#ffb400" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1500" height="500" fill="#0a0e0f"/>
+  <rect width="1500" height="500" fill="url(#glowA)"/>
+  <rect width="1500" height="500" fill="url(#glowB)"/>
+  <rect width="1500" height="500" fill="url(#scan)"/>
+
+  <!-- faint NAV uptrend line across the whole banner, kept low so it reads as texture -->
+  <polyline points="0,360 140,352 260,368 400,330 540,340 660,300 800,312 940,268 1080,278 1220,232 1360,244 1500,205"
+            fill="none" stroke="url(#navFade)" stroke-width="3"/>
+  <polyline points="0,360 140,352 260,368 400,330 540,340 660,300 800,312 940,268 1080,278 1220,232 1360,244 1500,205"
+            fill="none" stroke="#ffb400" stroke-opacity="0.5" stroke-width="1.4"/>
+
+  <!-- content, kept clear of bottom-left ~380px where the avatar sits -->
+  <g font-family="'IBM Plex Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace">
+    <text x="430" y="245" font-size="66" font-weight="700" fill="#e7edee" letter-spacing="-1">1K<tspan fill="#ffb400">Alpha</tspan></text>
+    <text x="432" y="285" font-size="20" font-weight="600" fill="#8ba0a2" letter-spacing="4">AI TRADER SIMULATION TERMINAL</text>
+
+    <g transform="translate(432,325)">
+      <rect x="0" y="0" width="146" height="34" rx="4" fill="none" stroke="#8a640e" stroke-width="1.5"/>
+      <text x="73" y="22" font-size="13" font-weight="600" fill="#ffb400" text-anchor="middle" letter-spacing="1">NO LEVERAGE</text>
+
+      <rect x="160" y="0" width="150" height="34" rx="4" fill="none" stroke="#213032" stroke-width="1.5"/>
+      <text x="235" y="22" font-size="13" font-weight="600" fill="#8ba0a2" text-anchor="middle" letter-spacing="1">$1,000 START</text>
+
+      <rect x="326" y="0" width="176" height="34" rx="4" fill="none" stroke="#213032" stroke-width="1.5"/>
+      <text x="414" y="22" font-size="13" font-weight="600" fill="#8ba0a2" text-anchor="middle" letter-spacing="1">FULLY LOGGED</text>
+    </g>
+
+    <g transform="translate(432,392)">
+      <circle cx="6" cy="-4" r="4" fill="#34d399"/>
+      <text x="20" y="0" font-size="15" fill="#8ba0a2" letter-spacing="1.5">SIMULATION ACTIVE · 1kalpha.com</text>
+    </g>
+  </g>
+</svg>
