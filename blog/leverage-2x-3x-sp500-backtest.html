@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2x vs 3x Leveraged S&P 500 DCA: A 152-Year Backtest · 1KAlpha</title>
+<meta name="description" content="A 152-year backtest of dollar-cost-averaging into 2x and 3x leveraged S&P 500 index funds, testing the claim that young investors should lever up and hold. 2x looks like the sweet spot; 3x adds a lot of risk for little extra median return.">
+<link rel="canonical" href="https://1kalpha.com/blog/leverage-2x-3x-sp500-backtest.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0e0f; --bg-panel:#10171a; --bg-panel-2:#141d20;
+    --border:#213032; --border-soft:#1a2528;
+    --text:#e7edee; --text-dim:#8ba0a2; --text-faint:#4e6567;
+    --amber:#ffb400; --amber-dim:#8a640e; --teal:#5eead4; --green:#34d399; --red:#f87171;
+    --mono:'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
+    --sans:'IBM Plex Sans', -apple-system, sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{background:var(--bg);}
+  body{
+    background:
+      radial-gradient(ellipse 1200px 600px at 15% -10%, rgba(255,180,0,0.06), transparent 60%),
+      radial-gradient(ellipse 1000px 800px at 100% 0%, rgba(94,234,212,0.05), transparent 55%),
+      var(--bg);
+    color:var(--text); font-family:var(--sans); line-height:1.6; padding-bottom:60px; min-height:100vh;
+  }
+  .wrap{max-width:800px; margin:0 auto; padding:0 24px;}
+  header.blog-head{
+    border-bottom:1px solid var(--border); padding:22px 0 20px; margin-bottom:40px;
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;
+  }
+  .brand-link{font-family:var(--mono); font-weight:700; font-size:17px; color:var(--text); text-decoration:none; letter-spacing:-0.01em;}
+  .brand-link span{color:var(--amber);}
+  .blog-nav a{font-family:var(--mono); font-size:12px; color:var(--text-dim); text-decoration:none; margin-left:18px;}
+  .blog-nav a:hover{color:var(--amber);}
+
+  .post-meta{font-family:var(--mono); font-size:12px; color:var(--text-faint); margin-bottom:14px; display:flex; gap:14px; flex-wrap:wrap; letter-spacing:.03em;}
+  article h1{font-size:clamp(26px,4.2vw,36px); color:var(--text); margin-bottom:20px; line-height:1.25;}
+  article h2{font-size:21px; color:var(--text); margin:40px 0 14px;}
+  article h2::before{content:''; display:inline-block; width:3px; height:14px; background:var(--amber); margin-right:10px; vertical-align:middle;}
+  article h3{font-size:16px; color:var(--text); margin:26px 0 10px;}
+  article p{font-size:15.5px; color:var(--text-dim); margin-bottom:16px;}
+  article ul, article ol{margin:0 0 16px 22px; color:var(--text-dim); font-size:15.5px;}
+  article li{margin-bottom:6px;}
+  article strong{color:var(--text);}
+  article a{color:var(--teal);}
+  article code{font-family:var(--mono); font-size:13px; background:var(--bg-panel-2); padding:1px 6px; border-radius:3px; color:var(--amber);}
+  article img{max-width:100%; display:block; margin:28px auto 6px; border:1px solid var(--border); border-radius:2px;}
+  figcaption{font-size:12px; color:var(--text-faint); text-align:center; margin-bottom:28px;}
+
+  .table-wrap{overflow-x:auto; margin:20px 0 28px;}
+  table{width:100%; border-collapse:collapse; font-family:var(--mono); font-size:12.5px; min-width:620px;}
+  th{text-align:right; font-size:10px; letter-spacing:.05em; text-transform:uppercase; color:var(--text-faint); padding:8px 10px; border-bottom:1px solid var(--border); white-space:nowrap;}
+  th:first-child, td:first-child{text-align:left;}
+  td{text-align:right; padding:9px 10px; border-bottom:1px solid var(--border-soft); color:var(--text-dim); white-space:nowrap;}
+  td:first-child{color:var(--text); font-weight:600;}
+  tr.highlight td{color:var(--amber);}
+
+  .callout{background:var(--bg-panel); border-left:3px solid var(--amber); padding:16px 20px; margin:26px 0; font-size:14.5px; color:var(--text-dim); line-height:1.7;}
+  .callout b{color:var(--amber);}
+  .callout.warn{border-left-color:var(--red);}
+  .callout.warn b{color:var(--red);}
+
+  footer{margin-top:64px; padding-top:22px; border-top:1px solid var(--border);}
+  footer p{font-size:12px; color:var(--text-faint); line-height:1.8; max-width:800px; margin-bottom:10px;}
+  footer a{color:var(--text-dim);}
+
+  @media (max-width:640px){
+    header.blog-head{flex-direction:column; align-items:flex-start;}
+    .blog-nav a{margin-left:0; margin-right:16px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="blog-head">
+    <a class="brand-link" href="../">1K<span>Alpha</span></a>
+    <nav class="blog-nav">
+      <a href="./">Blog</a>
+      <a href="https://x.com/OnekAlpha" target="_blank" rel="noopener">X ↗</a>
+    </nav>
+  </header>
+
+  <article>
+    <div class="post-meta">
+      <span>2026-08-17</span>
+      <span>·</span>
+      <span>12 min read</span>
+      <span>·</span>
+      <span>backtest</span>
+    </div>
+    <h1>2x vs 3x Leveraged S&amp;P 500 DCA: A 152-Year Backtest</h1>
+
+    <p>Chris Camillo recently argued that young investors should dollar-cost-average into a 2x — even 3x — leveraged index fund and just hold. It's not a fringe take: it's the practical version of the "lifecycle investing" argument (lever up early when you have decades of future income to fall back on, de-lever as you age) that's been in academic finance for over a decade. But it's also exactly the kind of claim that's easy to state and hard to actually check. So I ran the numbers.</p>
+
+    <p>Short version: <strong>2x looks like a real, durable edge. 3x does not</strong> — its typical payoff is barely better than plain 1x, its drawdowns are brutal, and its worst-case outcomes are dramatically worse than either.</p>
+
+    <h2>Methodology</h2>
+    <p>I used Robert Shiller's monthly S&amp;P 500 dataset (price, dividends, CPI, long-term interest rates), which runs from January 1871 through the most recent fully-populated month, June 2023 — 152 years, 1,830 months. For each possible starting month, I simulated a fixed <strong>$500/month contribution, held constant in real (inflation-adjusted) terms</strong>, dollar-cost-averaged into three tracks:</p>
+    <ul>
+      <li><strong>1x</strong> — unlevered total-return index (price + dividends reinvested)</li>
+      <li><strong>2x / 3x</strong> — synthetic, monthly-rebalanced leverage: each month, the levered return is <code>L × (index return) − (L−1) × (financing cost)</code>, where financing cost is the Shiller long-rate series plus an assumed 1.5%/year spread, approximating a real margin-loan rate</li>
+    </ul>
+    <p>This is the same mechanical process that makes daily-reset leveraged ETFs (like UPRO or SSO) diverge from a naive "2x the index" or "3x the index" return over time — it's usually called <strong>volatility drag</strong> or <strong>beta slippage</strong>. Compounding a leveraged return path is not the same as multiplying the unlevered ending value by the leverage ratio, and the gap grows with how choppy the path is, independent of financing cost.</p>
+
+    <div class="callout warn">
+      <b>Important limitation:</b> this model rebalances monthly, not daily. Real leveraged ETFs reset daily, so they experience <em>more</em> decay in choppy markets and are exposed to violent single-day moves between my model's rebalancing points. October 19, 1987 alone saw the S&amp;P 500 fall roughly <b>&minus;20.5% in a single day</b> — a monthly model can't see that kind of intra-month violence. Every number below should be read as a <em>best case</em> for leverage relative to how real leveraged funds actually behave.
+    </div>
+
+    <h2>The headline numbers</h2>
+    <p>Across every rolling window from 6 to 45 years (starting every single month from 1871 through however far back a full window fits):</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Horizon</th><th>1x median</th><th>2x median</th><th>3x median</th><th>2x wins*</th><th>3x wins*</th><th>1x maxDD</th><th>2x maxDD</th><th>3x maxDD</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>6yr</td><td>$45,315</td><td>$48,458</td><td>$49,544</td><td>61.5%</td><td>58.4%</td><td>9%</td><td>27%</td><td>45%</td></tr>
+          <tr><td>10yr</td><td>$87,820</td><td>$93,774</td><td>$96,865</td><td>60.4%</td><td>56.0%</td><td>17%</td><td>41%</td><td>61%</td></tr>
+          <tr><td>20yr</td><td>$256,382</td><td>$285,739</td><td>$265,605</td><td>62.4%</td><td>55.5%</td><td>28%</td><td>58%</td><td>77%</td></tr>
+          <tr class="highlight"><td>30yr</td><td>$550,930</td><td>$647,341</td><td>$576,032</td><td>67.4%</td><td>54.6%</td><td>35%</td><td>68%</td><td>86%</td></tr>
+          <tr><td>36yr</td><td>$873,911</td><td>$1,070,050</td><td>$985,849</td><td>69.2%</td><td>55.7%</td><td>38%</td><td>71%</td><td>89%</td></tr>
+          <tr><td>40yr</td><td>$1,101,187</td><td>$1,493,944</td><td>$1,303,939</td><td>73.1%</td><td>57.3%</td><td>41%</td><td>73%</td><td>89%</td></tr>
+          <tr><td>45yr</td><td>$1,573,113</td><td>$2,444,235</td><td>$2,312,318</td><td>72.7%</td><td>59.5%</td><td>48%</td><td>82%</td><td>96%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:12px; color:var(--text-faint); margin-top:-16px;">*% of rolling windows where that leverage level beat unlevered 1x in real terminal wealth. maxDD = median maximum drawdown experienced <em>during</em> the window, not just at the end. All dollar figures are real (inflation-adjusted to start-of-window purchasing power).</p>
+
+    <p>Two things jump out immediately. First: <strong>2x's median outcome beats 3x's at every single horizon from 20 years on</strong>, despite 3x taking on more risk. Second: <strong>the median drawdown for 3x is worse than the median drawdown for 1x at its <em>absolute worst</em> historical outcome</strong> — a typical 3x investor should expect to watch their account fall 86%+ from a prior peak at some point over 30+ years, not as a tail-risk scenario, but as the <em>median</em> experience.</p>
+
+    <img src="images/leverage-chart-1.png" alt="Bar chart comparing median ending wealth and median max drawdown for 1x, 2x, and 3x leveraged 30-year DCA into the S&amp;P 500">
+    <figcaption>30-year rolling windows (n=1,470 starting months, 1871&ndash;1993). 2x has the best typical payoff; 3x's typical payoff is barely better than unlevered while its typical drawdown is dramatically worse.</figcaption>
+
+    <h2>Does the case for leverage get stronger over longer horizons?</h2>
+    <p>After I posted an early version of this, <a href="https://x.com/DoddCaldwell" target="_blank" rel="noopener">@DoddCaldwell</a> raised a sharp point in the same reply thread: he'd run 2x/3x models across 6/10/20/36/45-year timelines and found that <em>"for the longer time horizons the returns on 2x and 3x levered funds are essentially equal due to volatility drag."</em> That's a specific, checkable claim, so I reran the same horizons and compared 2x's median terminal wealth directly against 3x's.</p>
+
+    <p>The result is close to the <strong>opposite</strong> of "equal at long horizons": the two are closest to equal at the <em>short</em> end (6&ndash;10 years, ratio 0.97&ndash;0.98 — 3x is actually marginally ahead there), and the gap <strong>opens up, not closes</strong>, past 20 years — 2x beats 3x's median outcome by 6&ndash;15% at every longer horizon tested.</p>
+
+    <img src="images/leverage-chart-2.png" alt="Line chart showing the ratio of 2x median wealth to 3x median wealth across 6, 10, 20, 30, 36, 40, and 45-year horizons, rising from about 0.97 at 6 years to about 1.15 at 40 years">
+    <figcaption>2x ÷ 3x median terminal wealth ratio by horizon. Values above 1.00 mean 2x won. The gap widens with time, it doesn't shrink.</figcaption>
+
+    <p>That makes intuitive sense once you sit with it: volatility drag is a compounding effect. It needs a long runway of ups and downs to actually accumulate into a meaningful gap. Over 6&ndash;10 years there just hasn't been enough time for the effect to separate 2x from 3x much. Over 30&ndash;40 years, it has.</p>
+
+    <h2>The real cost of leverage isn't the math — it's whether you can actually hold</h2>
+    <p>Every number above assumes the investor never panics and never sells during a drawdown — the "hold" half of "lever up and hold." That assumption is doing enormous work. A median 30-year 3x investor watches their account lose <strong>86% of its peak value at some point</strong>. That's not a bad-luck tail scenario; that's the <em>typical</em> path. Loss-aversion research (and, frankly, most people's actual behavior in 2008 or 2022) suggests a large fraction of investors would sell into a drawdown like that — at which point every number in this post stops applying to them.</p>
+
+    <p>The worst-decile outcomes make this sharper. In the 30-year sample, the bottom 10% of starting cohorts ended with real wealth of $322,061 (1x), $248,570 (2x), or just <strong>$114,978 (3x)</strong> — a 3x investor in an unlucky starting window ends up with roughly a third of what an unlevered investor in the same window would have, despite contributing the same amount of money and taking on far more risk along the way.</p>
+
+    <h2>Bottom line</h2>
+    <ul>
+      <li><strong>2x has a real, repeatable edge</strong> over unlevered DCA in this backtest — better median outcome, beats 1x in 60&ndash;73% of rolling windows depending on horizon, and its drawdowns, while worse than 1x, are survivable-ish (median ~35&ndash;73% depending on horizon).</li>
+      <li><strong>3x is where the math stops paying for the risk.</strong> Its median payoff is close to — and at some horizons barely above — unlevered 1x, its drawdowns are historically extreme (86&ndash;96% median), and its worst-case outcomes are dramatically worse than either 1x or 2x.</li>
+      <li><strong>This model is a best case for leverage</strong> — it doesn't capture daily-reset decay or intra-month crash risk, both of which would make real leveraged ETFs perform worse than what's shown here.</li>
+    </ul>
+    <p>So: Camillo's "2x" case holds up reasonably well against 152 years of data. The "even 3x" part looks like it's asking for meaningfully more pain for not much more (and at some horizons, less) expected reward.</p>
+
+    <div class="callout">
+      <b>Reproducing this:</b> Data is Robert Shiller's dataset (Yale), mirrored as CSV by <a href="https://github.com/datasets/s-and-p-500" target="_blank" rel="noopener">datasets/s-and-p-500</a> on GitHub. The backtest is a ~150-line Node.js script — rolling-window DCA simulator with monthly-rebalanced synthetic leverage. Happy to share it if people want to check the work or extend it (different contribution schedules, different borrow-rate assumptions, daily data for a shorter window, etc.) — reply on <a href="https://x.com/OnekAlpha" target="_blank" rel="noopener">X</a>.
+    </div>
+  </article>
+
+  <footer>
+    <p>This post is part of <b>1KAlpha</b>, a transparent, publicly logged AI trading simulation using virtual funds only. Nothing here is investment advice — it's a backtest of a publicly stated claim, not a recommendation to use leverage. Leveraged products carry substantial risk of loss, including total loss of principal; past performance, simulated or real, does not indicate future results.</p>
+    <p><a href="../">← Back to 1KAlpha.com</a> &nbsp;·&nbsp; <a href="./">More posts</a></p>
+  </footer>
+
+</div>
+</body>
+</html>

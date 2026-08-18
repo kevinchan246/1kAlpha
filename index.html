@@ -100,6 +100,15 @@
   }
   .tag.warn{border-color:var(--amber-dim); color:var(--amber);}
 
+  .site-links{display:flex; gap:8px; align-items:center;}
+  .site-links a{
+    font-family:var(--mono); font-size:11px; font-weight:600; letter-spacing:.04em;
+    padding:6px 11px; border:1px solid var(--border); border-radius:5px;
+    color:var(--text-dim); text-decoration:none; transition:color .15s ease, border-color .15s ease;
+  }
+  .site-links a:hover{color:var(--amber); border-color:var(--amber-dim);}
+  .hero-nav{display:flex; gap:12px; align-items:center;}
+
   .lang-switch{display:flex; gap:3px; padding:3px; border:1px solid var(--border); border-radius:5px; background:var(--bg-panel);}
   .lang-btn{
     font-family:var(--mono); font-size:11px; font-weight:600; letter-spacing:.03em;
@@ -311,7 +320,13 @@
     </div>
     <div class="hero-controls">
       <div class="tag-row" id="heroTags"></div>
-      <div class="lang-switch" id="langSwitch"></div>
+      <div class="hero-nav">
+        <div class="site-links">
+          <a href="blog/" id="navBlogLink"></a>
+          <a href="https://x.com/OnekAlpha" target="_blank" rel="noopener" id="navXLink"></a>
+        </div>
+        <div class="lang-switch" id="langSwitch"></div>
+      </div>
     </div>
   </header>
 
@@ -864,6 +879,7 @@ const I18N = {
     tagHoldings: (n) => `${n} Holdings`,
     tagTrades: (n) => `${n} Trade${n===1?'':'s'}`,
     tagCheckins: (n) => `${n} Check-in${n===1?'':'s'}`,
+    navBlog: 'Blog', navFollowX: 'Follow on X ↗',
     statTotalValue: 'Total Value',
     statTotalValueSub: 'Cash + Holdings Value',
     statTotalReturn: 'Total Return',
@@ -922,6 +938,7 @@ const I18N = {
     tagHoldings: (n) => `${n} 项持仓`,
     tagTrades: (n) => `${n} 笔交易`,
     tagCheckins: (n) => `${n} 次检查`,
+    navBlog: '博客', navFollowX: '关注 X ↗',
     statTotalValue: '账户总值',
     statTotalValueSub: '现金 + 持仓市值',
     statTotalReturn: '累计收益',
@@ -980,6 +997,7 @@ const I18N = {
     tagHoldings: (n) => `${n} posiciones`,
     tagTrades: (n) => `${n} operaci${n===1?'ón':'ones'}`,
     tagCheckins: (n) => `${n} revisi${n===1?'ón':'ones'}`,
+    navBlog: 'Blog', navFollowX: 'Seguir en X ↗',
     statTotalValue: "Valor total",
     statTotalValueSub: "Efectivo + valor de posiciones",
     statTotalReturn: "Rendimiento acumulado",
@@ -1038,6 +1056,7 @@ const I18N = {
     tagHoldings: (n) => `${n} positions`,
     tagTrades: (n) => `${n} transaction${n===1?'':'s'}`,
     tagCheckins: (n) => `${n} vérification${n===1?'':'s'}`,
+    navBlog: 'Blog', navFollowX: 'Suivre sur X ↗',
     statTotalValue: "Valeur totale",
     statTotalValueSub: "Liquidités + valeur des positions",
     statTotalReturn: "Rendement cumulé",
@@ -1193,6 +1212,8 @@ function renderHero(totals){
     <span class="tag">${t.tagCheckins(ALPHA_DATA.trades.length)}</span>
     <span class="tag">${t.tagTrades(countTrades())}</span>
   `;
+  document.getElementById('navBlogLink').textContent = t.navBlog;
+  document.getElementById('navXLink').textContent = t.navFollowX;
 }
 
 function renderStats(totals){

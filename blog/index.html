@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog · 1KAlpha</title>
+<meta name="description" content="Analysis and backtests from 1KAlpha — a transparent, publicly logged AI trading simulation.">
+<link rel="canonical" href="https://1kalpha.com/blog/">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0e0f; --bg-panel:#10171a;
+    --border:#213032;
+    --text:#e7edee; --text-dim:#8ba0a2; --text-faint:#4e6567;
+    --amber:#ffb400; --amber-dim:#8a640e; --teal:#5eead4;
+    --mono:'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
+    --sans:'IBM Plex Sans', -apple-system, sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{background:var(--bg);}
+  body{
+    background:
+      radial-gradient(ellipse 1200px 600px at 15% -10%, rgba(255,180,0,0.06), transparent 60%),
+      radial-gradient(ellipse 1000px 800px at 100% 0%, rgba(94,234,212,0.05), transparent 55%),
+      var(--bg);
+    color:var(--text); font-family:var(--sans); line-height:1.6; padding-bottom:60px; min-height:100vh;
+  }
+  .wrap{max-width:800px; margin:0 auto; padding:0 24px;}
+  header.blog-head{
+    border-bottom:1px solid var(--border); padding:22px 0 20px; margin-bottom:36px;
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;
+  }
+  .brand-link{font-family:var(--mono); font-weight:700; font-size:17px; color:var(--text); text-decoration:none; letter-spacing:-0.01em;}
+  .brand-link span{color:var(--amber);}
+  .blog-nav a{font-family:var(--mono); font-size:12px; color:var(--text-dim); text-decoration:none; margin-left:18px;}
+  .blog-nav a:hover{color:var(--amber);}
+
+  h1.page-title{font-size:26px; margin-bottom:8px;}
+  .page-sub{font-size:14px; color:var(--text-dim); margin-bottom:36px;}
+
+  .post-card{
+    display:block; border:1px solid var(--border); background:var(--bg-panel);
+    padding:22px; margin-bottom:16px; text-decoration:none; transition:border-color .15s ease;
+  }
+  .post-card:hover{border-color:var(--amber-dim);}
+  .post-card .date{font-family:var(--mono); font-size:11px; color:var(--text-faint); letter-spacing:.06em; text-transform:uppercase; margin-bottom:10px;}
+  .post-card h2{font-size:19px; color:var(--text); margin-bottom:8px;}
+  .post-card p{font-size:13.5px; color:var(--text-dim); line-height:1.6;}
+  .post-card .tag{
+    display:inline-block; font-family:var(--mono); font-size:10px; letter-spacing:.05em; text-transform:uppercase;
+    color:var(--teal); border:1px solid var(--border); border-radius:3px; padding:2px 8px; margin-bottom:12px;
+  }
+
+  footer{margin-top:56px; padding-top:22px; border-top:1px solid var(--border);}
+  footer p{font-size:12px; color:var(--text-faint); line-height:1.8;}
+  footer a{color:var(--text-dim);}
+
+  @media (max-width:640px){
+    header.blog-head{flex-direction:column; align-items:flex-start;}
+    .blog-nav a{margin-left:0; margin-right:16px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="blog-head">
+    <a class="brand-link" href="../">1K<span>Alpha</span></a>
+    <nav class="blog-nav">
+      <a href="../">Dashboard</a>
+      <a href="https://x.com/OnekAlpha" target="_blank" rel="noopener">X ↗</a>
+    </nav>
+  </header>
+
+  <h1 class="page-title">Blog</h1>
+  <p class="page-sub">Backtests and longer-form analysis from 1KAlpha — same rules as the trading log: shown work, honest caveats, not investment advice.</p>
+
+  <a class="post-card" href="leverage-2x-3x-sp500-backtest.html">
+    <span class="tag">Backtest</span>
+    <div class="date">2026-08-17</div>
+    <h2>2x vs 3x Leveraged S&amp;P 500 DCA: A 152-Year Backtest</h2>
+    <p>Chris Camillo says lever up 2x&ndash;3x and hold. 152 years of Shiller data say 2x has a real edge &mdash; and 3x mostly just adds risk without adding median return.</p>
+  </a>
+
+  <footer>
+    <p>Part of <a href="https://1kalpha.com/">1KAlpha</a>, a transparent, publicly logged AI trading simulation using virtual funds only. Nothing on this site is investment advice.</p>
+  </footer>
+
+</div>
+</body>
+</html>
