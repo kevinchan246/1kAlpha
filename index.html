@@ -105,8 +105,10 @@
     font-family:var(--mono); font-size:11px; font-weight:600; letter-spacing:.04em;
     padding:6px 11px; border:1px solid var(--border); border-radius:5px;
     color:var(--text-dim); text-decoration:none; transition:color .15s ease, border-color .15s ease;
+    display:inline-flex; align-items:center; gap:6px;
   }
   .site-links a:hover{color:var(--amber); border-color:var(--amber-dim);}
+  .site-links .x-icon{width:11px; height:11px; fill:currentColor; flex:none;}
   .hero-nav{display:flex; gap:12px; align-items:center;}
 
   .lang-switch{display:flex; gap:3px; padding:3px; border:1px solid var(--border); border-radius:5px; background:var(--bg-panel);}
@@ -879,7 +881,7 @@ const I18N = {
     tagHoldings: (n) => `${n} Holdings`,
     tagTrades: (n) => `${n} Trade${n===1?'':'s'}`,
     tagCheckins: (n) => `${n} Check-in${n===1?'':'s'}`,
-    navBlog: 'Blog', navFollowX: 'Follow on X ↗',
+    navBlog: 'Blog', navFollowX: 'Follow',
     statTotalValue: 'Total Value',
     statTotalValueSub: 'Cash + Holdings Value',
     statTotalReturn: 'Total Return',
@@ -938,7 +940,7 @@ const I18N = {
     tagHoldings: (n) => `${n} 项持仓`,
     tagTrades: (n) => `${n} 笔交易`,
     tagCheckins: (n) => `${n} 次检查`,
-    navBlog: '博客', navFollowX: '关注 X ↗',
+    navBlog: '博客', navFollowX: '关注',
     statTotalValue: '账户总值',
     statTotalValueSub: '现金 + 持仓市值',
     statTotalReturn: '累计收益',
@@ -997,7 +999,7 @@ const I18N = {
     tagHoldings: (n) => `${n} posiciones`,
     tagTrades: (n) => `${n} operaci${n===1?'ón':'ones'}`,
     tagCheckins: (n) => `${n} revisi${n===1?'ón':'ones'}`,
-    navBlog: 'Blog', navFollowX: 'Seguir en X ↗',
+    navBlog: 'Blog', navFollowX: 'Seguir',
     statTotalValue: "Valor total",
     statTotalValueSub: "Efectivo + valor de posiciones",
     statTotalReturn: "Rendimiento acumulado",
@@ -1056,7 +1058,7 @@ const I18N = {
     tagHoldings: (n) => `${n} positions`,
     tagTrades: (n) => `${n} transaction${n===1?'':'s'}`,
     tagCheckins: (n) => `${n} vérification${n===1?'':'s'}`,
-    navBlog: 'Blog', navFollowX: 'Suivre sur X ↗',
+    navBlog: 'Blog', navFollowX: 'Suivre',
     statTotalValue: "Valeur totale",
     statTotalValueSub: "Liquidités + valeur des positions",
     statTotalReturn: "Rendement cumulé",
@@ -1213,7 +1215,8 @@ function renderHero(totals){
     <span class="tag">${t.tagTrades(countTrades())}</span>
   `;
   document.getElementById('navBlogLink').textContent = t.navBlog;
-  document.getElementById('navXLink').textContent = t.navFollowX;
+  document.getElementById('navXLink').innerHTML =
+    `<svg class="x-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg><span>${t.navFollowX}</span>`;
 }
 
 function renderStats(totals){
