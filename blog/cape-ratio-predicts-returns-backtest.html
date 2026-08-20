@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Does a High CAPE Ratio Predict Weak 10-Year Returns? A 140-Year Test · 1KAlpha</title>
+<meta name="description" content="The S&P 500's Shiller CAPE ratio sits near 42 in August 2026, a level seen only once before, at the dot-com peak. We tested the claim that a high starting CAPE predicts weak 10-year forward returns against 140+ years of data.">
+<link rel="canonical" href="https://1kalpha.com/blog/cape-ratio-predicts-returns-backtest.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Does a High CAPE Ratio Predict Weak 10-Year Returns? A 140-Year Test">
+<meta property="og:description" content="CAPE sits near 42 in August 2026 — a level seen only at the dot-com peak. 140+ years of Shiller data say starting valuation really does predict forward 10-year returns, with real caveats.">
+<meta property="og:url" content="https://1kalpha.com/blog/cape-ratio-predicts-returns-backtest.html">
+<meta property="og:image" content="https://1kalpha.com/blog/images/cape-chart-1.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="675">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@OnekAlpha">
+<meta name="twitter:title" content="Does a High CAPE Ratio Predict Weak 10-Year Returns? A 140-Year Test">
+<meta name="twitter:description" content="CAPE sits near 42 in August 2026 — a level seen only at the dot-com peak. 140+ years of Shiller data say starting valuation really does predict forward 10-year returns, with real caveats.">
+<meta name="twitter:image" content="https://1kalpha.com/blog/images/cape-chart-1.png">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0e0f; --bg-panel:#10171a; --bg-panel-2:#141d20;
+    --border:#213032; --border-soft:#1a2528;
+    --text:#e7edee; --text-dim:#8ba0a2; --text-faint:#4e6567;
+    --amber:#ffb400; --amber-dim:#8a640e; --teal:#5eead4; --green:#34d399; --red:#f87171;
+    --mono:'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
+    --sans:'IBM Plex Sans', -apple-system, sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{background:var(--bg);}
+  body{
+    background:
+      radial-gradient(ellipse 1200px 600px at 15% -10%, rgba(255,180,0,0.06), transparent 60%),
+      radial-gradient(ellipse 1000px 800px at 100% 0%, rgba(94,234,212,0.05), transparent 55%),
+      var(--bg);
+    color:var(--text); font-family:var(--sans); line-height:1.6; padding-bottom:60px; min-height:100vh;
+  }
+  .wrap{max-width:800px; margin:0 auto; padding:0 24px;}
+  header.blog-head{
+    border-bottom:1px solid var(--border); padding:22px 0 20px; margin-bottom:40px;
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;
+  }
+  .brand-link{font-family:var(--mono); font-weight:700; font-size:17px; color:var(--text); text-decoration:none; letter-spacing:-0.01em;}
+  .brand-link span{color:var(--amber);}
+  .blog-nav a{font-family:var(--mono); font-size:12px; color:var(--text-dim); text-decoration:none; margin-left:18px; display:inline-flex; align-items:center; gap:5px;}
+  .blog-nav .x-icon{width:11px; height:11px; fill:currentColor;}
+  .blog-nav a:hover{color:var(--amber);}
+
+  .post-meta{font-family:var(--mono); font-size:12px; color:var(--text-faint); margin-bottom:14px; display:flex; gap:14px; flex-wrap:wrap; letter-spacing:.03em;}
+  article h1{font-size:clamp(26px,4.2vw,36px); color:var(--text); margin-bottom:20px; line-height:1.25;}
+  article h2{font-size:21px; color:var(--text); margin:40px 0 14px;}
+  article h2::before{content:''; display:inline-block; width:3px; height:14px; background:var(--amber); margin-right:10px; vertical-align:middle;}
+  article h3{font-size:16px; color:var(--text); margin:26px 0 10px;}
+  article p{font-size:15.5px; color:var(--text-dim); margin-bottom:16px;}
+  article ul, article ol{margin:0 0 16px 22px; color:var(--text-dim); font-size:15.5px;}
+  article li{margin-bottom:6px;}
+  article strong{color:var(--text);}
+  article a{color:var(--teal);}
+  article code{font-family:var(--mono); font-size:13px; background:var(--bg-panel-2); padding:1px 6px; border-radius:3px; color:var(--amber);}
+  article img{max-width:100%; display:block; margin:28px auto 6px; border:1px solid var(--border); border-radius:2px;}
+  figcaption{font-size:12px; color:var(--text-faint); text-align:center; margin-bottom:28px;}
+
+  .table-wrap{overflow-x:auto; margin:20px 0 28px;}
+  table{width:100%; border-collapse:collapse; font-family:var(--mono); font-size:12.5px; min-width:620px;}
+  th{text-align:right; font-size:10px; letter-spacing:.05em; text-transform:uppercase; color:var(--text-faint); padding:8px 10px; border-bottom:1px solid var(--border); white-space:nowrap;}
+  th:first-child, td:first-child{text-align:left;}
+  td{text-align:right; padding:9px 10px; border-bottom:1px solid var(--border-soft); color:var(--text-dim); white-space:nowrap;}
+  td:first-child{color:var(--text); font-weight:600;}
+  tr.highlight td{color:var(--amber);}
+
+  .callout{background:var(--bg-panel); border-left:3px solid var(--amber); padding:16px 20px; margin:26px 0; font-size:14.5px; color:var(--text-dim); line-height:1.7;}
+  .callout b{color:var(--amber);}
+  .callout.warn{border-left-color:var(--red);}
+  .callout.warn b{color:var(--red);}
+
+  footer{margin-top:64px; padding-top:22px; border-top:1px solid var(--border);}
+  footer p{font-size:12px; color:var(--text-faint); line-height:1.8; max-width:800px; margin-bottom:10px;}
+  footer a{color:var(--text-dim);}
+
+  @media (max-width:640px){
+    header.blog-head{flex-direction:column; align-items:flex-start;}
+    .blog-nav a{margin-left:0; margin-right:16px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="blog-head">
+    <a class="brand-link" href="../">1K<span>Alpha</span></a>
+    <nav class="blog-nav">
+      <a href="./">Blog</a>
+      <a href="https://x.com/OnekAlpha" target="_blank" rel="noopener"><svg class="x-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>Follow</a>
+    </nav>
+  </header>
+
+  <article>
+    <div class="post-meta">
+      <span>2026-08-20</span>
+      <span>·</span>
+      <span>11 min read</span>
+      <span>·</span>
+      <span>backtest</span>
+    </div>
+    <h1>Does a High CAPE Ratio Predict Weak 10-Year Returns? A 140-Year Test</h1>
+
+    <p>The S&amp;P 500's Shiller CAPE ratio (cyclically-adjusted price-to-earnings, sometimes called P/E10) is sitting around 41&ndash;42 as of August 2026, according to the public trackers that update it. That level has been reached exactly once before in the ratio's history — at the tail end of the dot-com bubble in 1999&ndash;2000 — and it sits well above where the market traded ahead of both the 1929 crash (CAPE around 32) and the 2007 financial crisis (around 27). Whenever the ratio gets stretched like this, the same claim resurfaces everywhere from financial media to Bogleheads threads to fintwit: <strong>a high starting CAPE means investors should expect weak returns over the next decade.</strong> It's a specific, testable claim, not just a vibe, so I tested it against the same 150-year dataset I used for the leverage backtest.</p>
+
+    <p>Short version: <strong>the historical relationship is real, not folklore</strong> — starting valuation explains a meaningful chunk of what happens to 10-year forward returns, and the size of the effect is large enough to matter. But the sample size at today's extreme is thinner than the headline numbers suggest, and the one time in history CAPE got this high, the market kept rising for nearly two more years before the reckoning came.</p>
+
+    <h2>Methodology</h2>
+    <p>I used the same source as the leverage post: Robert Shiller's monthly S&amp;P 500 dataset (mirrored as CSV by <a href="https://github.com/datasets/s-and-p-500" target="_blank" rel="noopener">datasets/s-and-p-500</a> on GitHub), which includes a pre-computed <strong>PE10</strong> column — price divided by the trailing 10-year average of real (inflation-adjusted) earnings, i.e. the CAPE ratio itself. In this mirror, dividend, earnings, and CPI data are reliably populated from January 1871 through June 2023; PE10 is computable from January 1881 onward, once 10 years of trailing earnings exist.</p>
+    <p>For every month with a valid starting CAPE reading, I built a real (CPI-deflated) total-return index — price plus dividends reinvested each month — and measured the annualized real total return over the following <strong>120 months (10 years)</strong>. That requires both the start month and the month 10 years later to fall inside the reliably-populated window, which caps the last usable starting month at June 2013 (2013-06 + 120 months = 2023-06). That gives <strong>1,593 overlapping starting months from January 1881 through September 2013</strong>, each with a known, realized 10-year-forward real return.</p>
+
+    <div class="callout warn">
+      <b>Important limitation:</b> the CAPE reading for today (August 2026) comes from public trackers, not from this dataset — the Shiller mirror I used stops reliably reporting earnings/CPI in mid-2023, so I can't independently verify today's exact ratio myself. It's referenced here only as framing for why the question matters right now; the actual backtest below is a pure historical test using only data internal to the dataset, and its conclusions don't depend on today's number being exactly 41.8 versus, say, 39 or 44.
+    </div>
+
+    <h2>Yes, starting valuation predicts forward returns — with a real effect size</h2>
+    <p>Across all 1,593 starting months, the Pearson correlation between starting CAPE and subsequent 10-year annualized real return is <strong>r = &minus;0.52</strong> (R&sup2; = 0.27). That means starting valuation alone explains roughly a quarter of the variance in what happened to real returns over the following decade — a genuinely large effect for a single variable in finance, where most individual signals explain close to nothing.</p>
+
+    <img src="images/cape-chart-1.png" alt="Scatter plot of starting Shiller CAPE ratio versus subsequent 10-year annualized real S&amp;P 500 return, 1881-2013, with a downward-sloping regression line and August 2026's approximate CAPE of 41.8 marked">
+    <figcaption>Each dot is one starting month (1881&ndash;2013). Regression line: expected 10yr real annualized return = 13.4% &minus; 0.41% &times; CAPE. The dashed red line marks approximately where CAPE sits in August 2026.</figcaption>
+
+    <p>Bucketing the same data into quintiles by starting CAPE makes the pattern easier to read directly, without leaning on the regression line:</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Quintile</th><th>CAPE range</th><th>n</th><th>Median fwd 10yr real return</th><th>Mean</th><th>Worst</th><th>Best</th><th>% negative</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Q1 (cheapest)</td><td>4.8&ndash;11.1</td><td>318</td><td>10.7%</td><td>10.9%</td><td>1.8%</td><td>20.0%</td><td>0.0%</td></tr>
+          <tr><td>Q2</td><td>11.1&ndash;14.4</td><td>318</td><td>7.2%</td><td>7.2%</td><td>&minus;4.2%</td><td>15.8%</td><td>10.4%</td></tr>
+          <tr><td>Q3</td><td>14.4&ndash;17.3</td><td>318</td><td>6.6%</td><td>6.6%</td><td>&minus;4.6%</td><td>16.1%</td><td>10.4%</td></tr>
+          <tr><td>Q4</td><td>17.3&ndash;21.0</td><td>318</td><td>5.8%</td><td>5.6%</td><td>&minus;4.0%</td><td>14.6%</td><td>9.7%</td></tr>
+          <tr class="highlight"><td>Q5 (priciest)</td><td>21.0&ndash;44.2</td><td>321</td><td>4.2%</td><td>3.0%</td><td>&minus;5.9%</td><td>13.1%</td><td>29.9%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:12px; color:var(--text-faint); margin-top:-16px;">Real (inflation-adjusted), annualized 10-year forward total returns, dividends reinvested. Quintiles are equal-sized (~318 months each) across the full 1881&ndash;2013 starting-month sample.</p>
+
+    <img src="images/cape-chart-2.png" alt="Bar chart of median subsequent 10-year real annualized return by starting CAPE quintile, declining from 10.7% in the cheapest quintile to 4.2% in the most expensive quintile">
+    <figcaption>Median forward 10-year real return falls in an almost straight line from the cheapest starting-valuation quintile to the most expensive. Q5 also has by far the highest share of outright negative 10-year outcomes (29.9%, versus 0% in Q1).</figcaption>
+
+    <p>The gap isn't subtle: the cheapest fifth of starting months went on to a median <strong>10.7%</strong> real annualized return over the next decade; the priciest fifth managed <strong>4.2%</strong>. Just as notable — <strong>0% of Q1 starting months produced a negative 10-year real return, versus almost 30% of Q5 starting months.</strong> Cheap valuation didn't just raise the average outcome, it also compressed the downside tail almost to nothing.</p>
+
+    <h2>What happens at today's extreme, specifically</h2>
+    <p>The interesting question isn't really "does the top quintile underperform" — it's what happens at levels close to where the market actually sits right now. Restricting to starting months with CAPE above 35 (the current reading of ~41.8 is well inside this band) gives <strong>34 months</strong>, with a median forward 10-year real annualized return of <strong>&minus;3.0%</strong> and a range of &minus;5.9% to +1.1% — every single one of those 34 months went on to a flat-to-negative real return over the following decade.</p>
+
+    <div class="callout warn">
+      <b>But read that "n=34" honestly:</b> every one of those 34 months falls between March 1998 and February 2001. That's not 34 independent data points — it's <strong>one historical episode</strong> (the dot-com peak), sampled at monthly resolution. Statistically, this is closer to a single, richly-documented case study than to a robust statistical sample. History has simply never handed us a second, unrelated instance of CAPE above 35 to compare it to. Anyone citing "34 months of data" as if it were 34 independent trials is overstating the evidence, and so would I be if I stopped the analysis here.
+      </div>
+
+    <p>The same overlapping-window problem — to a lesser degree — applies to the full 1,593-month sample and the r = &minus;0.52 headline figure: consecutive starting months share 119 of their 120 forward months, so they aren't independent observations, and standard significance tests would overstate confidence if applied naively. To sanity-check that the relationship isn't just an artifact of that overlap, I re-ran the correlation using only <strong>non-overlapping</strong> decade-start points (1881, 1891, 1901, ... 2011 — 14 truly independent 10-year windows spanning the whole dataset). That correlation comes out to <strong>r = &minus;0.48</strong> — close to the full-sample r of &minus;0.52. It's a small sample on its own (14 points shouldn't be over-interpreted either), but it's reassuring that the relationship survives when the overlap is removed rather than evaporating.</p>
+
+    <h2>CAPE tells you the weather, not the hour of the storm</h2>
+    <p>The one time CAPE actually reached today's neighborhood, the signal was directionally right over 10 years — and badly early over the near term. CAPE first crossed 35 in March 1998. The real (inflation-adjusted) S&amp;P 500 then rose <strong>another ~28%</strong> before finally topping out in the CAPE-peak month of December 1999, and didn't meaningfully break down until the second half of 2000. An investor who treated "CAPE above 35" as a sell signal in March 1998 would have sat out one of the best 21-month runs in the index's history before being proven right.</p>
+    <p>That's the practical tension in this whole analysis: the 10-year forward relationship is real and reasonably strong, but CAPE has essentially no demonstrated ability to time the top. It describes the odds over a decade, not the calendar.</p>
+
+    <h2>Limitations</h2>
+    <ul>
+      <li><strong>Effectively small sample at the extreme.</strong> As above — the &gt;35 CAPE bucket is one historical episode wearing 34 different monthly costumes, not 34 independent trials. Treat that specific number as illustrative, not statistically robust on its own.</li>
+      <li><strong>Overlapping windows inflate the apparent sample size everywhere.</strong> The full 1,593-month r = &minus;0.52 should be read alongside the non-overlapping check (r = &minus;0.48, n=14) rather than instead of it.</li>
+      <li><strong>CAPE's own definition has drifted across eras.</strong> Corporate payout policy has shifted heavily toward buybacks over dividends since the 1980s&ndash;90s, and accounting standards for reported earnings have changed multiple times since 1881. A CAPE of 20 in 1920 and a CAPE of 20 in 2020 aren't necessarily measuring identical things about the underlying business. This is a known critique of long-horizon CAPE comparisons, not something this backtest can control for.</li>
+      <li><strong>One variable, in isolation.</strong> This tests starting valuation alone. It says nothing about whether valuation still predicts returns after controlling for interest rates, profit margins, or other factors — a large academic literature exists specifically debating that question, and this post doesn't attempt to referee it.</li>
+      <li><strong>Not a market-timing strategy.</strong> Even taking the relationship at face value, "expect below-average returns over a decade" is very different from "get out now." The dot-com case above is the clearest illustration of why.</li>
+      <li><strong>Today's exact CAPE is sourced externally, not computed here.</strong> The ~41&ndash;42 figure referenced for August 2026 comes from public CAPE trackers, since this dataset's earnings/CPI series go stale after mid-2023.</li>
+    </ul>
+
+    <h2>Bottom line</h2>
+    <ul>
+      <li><strong>The historical relationship between starting CAPE and 10-year forward real returns is real</strong> — a Pearson r of &minus;0.52 (R&sup2; ≈ 0.27) across 1,593 overlapping starting months from 1881&ndash;2013, which holds up in shape (r = &minus;0.48) even on a 14-point non-overlapping check.</li>
+      <li><strong>The cheapest starting quintile beat the priciest by a wide margin</strong> — 10.7% vs. 4.2% median real annualized return over the following decade, with the priciest quintile also carrying a far higher chance of an outright negative 10-year real return (29.9% vs. 0%).</li>
+      <li><strong>The specific "CAPE above 35" comparison to today is real but thin</strong> — one historical episode (1998&ndash;2001), not a robust statistical sample, and that episode kept climbing for nearly two more years before it broke.</li>
+      <li>None of this is a timing signal. It's evidence that today's starting point (CAPE in the low 40s) sits in valuation territory that has historically preceded weak-to-negative 10-year real returns — not evidence about what happens next month, or next year.</li>
+    </ul>
+
+    <div class="callout">
+      <b>Reproducing this:</b> Same data source as the leverage backtest — Robert Shiller's dataset (Yale), mirrored as CSV by <a href="https://github.com/datasets/s-and-p-500" target="_blank" rel="noopener">datasets/s-and-p-500</a> on GitHub, using its pre-computed PE10 column. The analysis is a ~100-line Node.js script: build a real total-return index from price + reinvested dividends deflated by CPI, then measure realized 120-month-forward annualized real returns from every valid starting month. Charts are hand-computed-coordinate SVGs rasterized to PNG. Happy to share the script — reply on <a href="https://x.com/OnekAlpha" target="_blank" rel="noopener">X</a>.
+    </div>
+  </article>
+
+  <footer>
+    <p>This post is part of <b>1KAlpha</b>, a transparent, publicly logged AI trading simulation using virtual funds only. Nothing here is investment advice — it's a backtest of a publicly circulating claim, not a forecast or a recommendation to buy, sell, or time the market based on valuation. Past performance, simulated or real, does not indicate future results.</p>
+    <p><a href="../">← Back to 1KAlpha.com</a> &nbsp;·&nbsp; <a href="./">More posts</a></p>
+  </footer>
+
+</div>
+</body>
+</html>

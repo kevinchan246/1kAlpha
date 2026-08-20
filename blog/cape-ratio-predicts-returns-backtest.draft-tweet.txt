@@ -1,0 +1,5 @@
+S&P 500 CAPE is near 42 right now, a level hit only once before: the dot-com peak. Does that actually predict weak 10yr returns, or is it just a scary number?
+
+Tested it on 140+ years of data. The relationship is real (r=-0.52) but thinner at the extreme than it looks.
+
+https://1kalpha.com/blog/cape-ratio-predicts-returns-backtest.html
