@@ -1,0 +1,55 @@
+name: Publish weekly recap
+
+# Sunday 21:00 ET (EDT) / 20:00 ET (EST) — after the day's 15:00 ET close
+# check has been committed, so the recap covers the full Monday–Sunday week.
+on:
+  schedule:
+    - cron: '0 1 * * 1'
+  workflow_dispatch:
+    inputs:
+      week_end:
+        description: 'Week-ending date (YYYY-MM-DD). Any date works — it snaps back to the most recent Sunday on or before it. Defaults to the most recent Sunday.'
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: weekly-recap
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: master
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Generate the recap
+        id: recap
+        run: |
+          if [ -n "${{ inputs.week_end }}" ]; then
+            node scripts/generate-recap.js --end "${{ inputs.week_end }}"
+          else
+            node scripts/generate-recap.js
+          fi
+
+      - name: Commit and push
+        if: steps.recap.outputs.published == 'true'
+        run: |
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "Nothing changed — recap already up to date."
+            exit 0
+          fi
+
+          git config user.name "1kAlpha bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add blog/recaps blog/index.html sitemap.xml
+          git commit -m "Publish weekly recap for the week ending ${{ steps.recap.outputs.week_end }}"
+          git push origin master
