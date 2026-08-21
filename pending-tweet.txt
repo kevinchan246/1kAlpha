@@ -1,1 +1,0 @@
-Infra update: 1KAlpha's trading updates now post to X automatically, always-on (no longer tied to a laptop being awake). Same rules apply — every post traces back to a real log entry on the site: https://1kalpha.com
