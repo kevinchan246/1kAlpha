@@ -51,7 +51,16 @@
   .blog-nav a:hover{color:var(--amber);}
 
   h1.page-title{font-size:26px; margin-bottom:8px;}
-  .page-sub{font-size:14px; color:var(--text-dim); margin-bottom:36px;}
+  .page-sub{font-size:14px; color:var(--text-dim); margin-bottom:40px;}
+
+  .blog-section{margin-bottom:44px;}
+  .blog-section > h2{
+    font-family:var(--mono); font-size:13px; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--text); font-weight:600; display:flex; align-items:center; gap:10px; margin-bottom:6px;
+  }
+  .blog-section > h2::before{content:''; width:3px; height:14px; background:var(--amber); display:inline-block;}
+  .blog-section .section-note{font-size:12.5px; color:var(--text-faint); margin-bottom:16px;}
+  .empty-note{font-size:13px; color:var(--text-faint); font-style:italic; padding:4px 0 8px;}
 
   .post-card{
     display:block; border:1px solid var(--border); background:var(--bg-panel);
@@ -88,21 +97,32 @@
   </header>
 
   <h1 class="page-title">Blog</h1>
-  <p class="page-sub">Backtests and longer-form analysis from 1KAlpha — same rules as the trading log: shown work, honest caveats, not investment advice.</p>
+  <p class="page-sub">Recaps and longer-form analysis from 1KAlpha — same rules as the trading log: shown work, honest caveats, not investment advice.</p>
 
-  <a class="post-card" href="cape-ratio-predicts-returns-backtest.html">
-    <span class="tag">Backtest</span>
-    <div class="date">2026-08-20</div>
-    <h2>Does a High CAPE Ratio Predict Weak 10-Year Returns? A 140-Year Test</h2>
-    <p>CAPE sits near 42 in August 2026, a level seen only once before at the dot-com peak. 140+ years of Shiller data say starting valuation really does predict forward 10-year returns &mdash; with real caveats.</p>
-  </a>
+  <section class="blog-section" id="recaps">
+    <h2>Weekly Recaps</h2>
+    <p class="section-note">Short digests of what the simulation actually did each week — auto-published from the trading log every Sunday.</p>
+    <p class="empty-note">No recaps yet — the first one publishes automatically this Sunday.</p>
+  </section>
 
-  <a class="post-card" href="leverage-2x-3x-sp500-backtest.html">
-    <span class="tag">Backtest</span>
-    <div class="date">2026-08-17</div>
-    <h2>2x vs 3x Leveraged S&amp;P 500 DCA: A 152-Year Backtest</h2>
-    <p>Chris Camillo says lever up 2x&ndash;3x and hold. 152 years of Shiller data say 2x has a real edge &mdash; and 3x mostly just adds risk without adding median return.</p>
-  </a>
+  <section class="blog-section" id="analysis">
+    <h2>Analysis</h2>
+    <p class="section-note">Deep-dive backtests checking specific claims against real historical data.</p>
+
+    <a class="post-card" href="cape-ratio-predicts-returns-backtest.html">
+      <span class="tag">Backtest</span>
+      <div class="date">2026-08-20</div>
+      <h2>Does a High CAPE Ratio Predict Weak 10-Year Returns? A 140-Year Test</h2>
+      <p>CAPE sits near 42 in August 2026, a level seen only once before at the dot-com peak. 140+ years of Shiller data say starting valuation really does predict forward 10-year returns &mdash; with real caveats.</p>
+    </a>
+
+    <a class="post-card" href="leverage-2x-3x-sp500-backtest.html">
+      <span class="tag">Backtest</span>
+      <div class="date">2026-08-17</div>
+      <h2>2x vs 3x Leveraged S&amp;P 500 DCA: A 152-Year Backtest</h2>
+      <p>Chris Camillo says lever up 2x&ndash;3x and hold. 152 years of Shiller data say 2x has a real edge &mdash; and 3x mostly just adds risk without adding median return.</p>
+    </a>
+  </section>
 
   <footer>
     <p>Part of <a href="https://1kalpha.com/">1KAlpha</a>, a transparent, publicly logged AI trading simulation using virtual funds only. Nothing on this site is investment advice.</p>
