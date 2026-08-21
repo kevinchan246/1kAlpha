@@ -1,0 +1,100 @@
+name: Post pending tweet
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - pending-tweet.txt
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  post-tweet:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: master
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Post the pending tweet
+        env:
+          X_CONSUMER_KEY: ${{ secrets.X_CONSUMER_KEY }}
+          X_CONSUMER_SECRET: ${{ secrets.X_CONSUMER_SECRET }}
+          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
+          X_ACCESS_TOKEN_SECRET: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
+        run: |
+          if [ ! -f pending-tweet.txt ]; then
+            echo "No pending-tweet.txt, nothing to do."
+            exit 0
+          fi
+          if [ ! -s pending-tweet.txt ]; then
+            echo "pending-tweet.txt is empty, removing it without posting."
+            rm pending-tweet.txt
+            git config user.name "1kAlpha bot"
+            git config user.email "actions@users.noreply.github.com"
+            git add pending-tweet.txt
+            git commit -m "Remove empty pending-tweet.txt"
+            git push origin master
+            exit 0
+          fi
+
+          npm install oauth-1.0a --no-save
+
+          cat > post.js << 'SCRIPT'
+          const crypto = require('crypto');
+          const OAuth = require('oauth-1.0a');
+          const https = require('https');
+          const fs = require('fs');
+
+          const text = fs.readFileSync('pending-tweet.txt', 'utf8').trim();
+
+          const oauth = OAuth({
+            consumer: { key: process.env.X_CONSUMER_KEY, secret: process.env.X_CONSUMER_SECRET },
+            signature_method: 'HMAC-SHA1',
+            hash_function(base_string, key) {
+              return crypto.createHmac('sha1', key).update(base_string).digest('base64');
+            },
+          });
+          const token = { key: process.env.X_ACCESS_TOKEN, secret: process.env.X_ACCESS_TOKEN_SECRET };
+
+          const request_data = { url: 'https://api.twitter.com/2/tweets', method: 'POST' };
+          const headers = oauth.toHeader(oauth.authorize(request_data, token));
+          headers['Content-Type'] = 'application/json';
+
+          const body = JSON.stringify({ text });
+          const req = https.request(request_data.url, { method: 'POST', headers }, (res) => {
+            let data = '';
+            res.on('data', (c) => (data += c));
+            res.on('end', () => {
+              console.log('STATUS:', res.statusCode);
+              console.log('BODY:', data);
+              fs.writeFileSync('post-status.txt', String(res.statusCode));
+              process.exit(res.statusCode === 201 ? 0 : 1);
+            });
+          });
+          req.on('error', (e) => { console.error(e); process.exit(1); });
+          req.write(body);
+          req.end();
+          SCRIPT
+
+          node post.js
+          STATUS_CODE=$(cat post-status.txt || echo "0")
+          rm -f post.js post-status.txt
+
+          if [ "$STATUS_CODE" = "201" ]; then
+            rm pending-tweet.txt
+            git config user.name "1kAlpha bot"
+            git config user.email "actions@users.noreply.github.com"
+            git add pending-tweet.txt
+            git commit -m "Posted tweet, removing pending-tweet.txt"
+            git push origin master
+          else
+            echo "Posting failed (status $STATUS_CODE), leaving pending-tweet.txt for next attempt."
+            exit 1
+          fi
