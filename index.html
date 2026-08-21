@@ -1511,7 +1511,7 @@ function renderTradeLog(){
         </div>
       `;
     return `
-      <div class="log-entry ${tr.action}">
+      <div class="log-entry ${tr.action}" id="${id}">
         <div class="log-top">
           <span class="log-id">${id}</span>
           <span class="log-date">${tr.date} · ${L(tr.time)}</span>
