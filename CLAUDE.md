@@ -37,6 +37,41 @@ Two scheduled reviews a day, **11:30 and 15:00 ET**. On weekends and NYSE
 holidays they still run, crypto-only, with equity marks frozen at the last close.
 The 15:00 ET check settles that day's NAV snapshot.
 
+## Say what would prove the position wrong
+
+A review's reasoning should end by naming **what evidence would change the
+decision** — the level, the event, or the datapoint that, if it arrives, means
+the current stance was wrong.
+
+This is not the same thing as position sizing, and the log has a standing habit
+of substituting one for the other. "BTC is already at its 20% target, so no
+chasing" answers *how much to hold*. It does not answer *when the thesis breaks*.
+A position can sit obediently at its target weight the whole way down, every
+sizing rule satisfied, and still give the entire move back — the rules capped the
+damage, they never said when to stop taking it.
+
+Written before the fact, an invalidation condition is worth far more than an
+explanation produced afterwards. Anyone can narrate why a position was held once
+the outcome is known; the log's credibility comes from the parts that were
+committed while the answer was still unknown, and this is the cheapest such part
+to add.
+
+What it looks like in practice:
+
+- A level the thesis rests on — if the reasoning for holding BTC is that it
+  reclaimed the 200-day moving average and the short-term-holder cost basis, then
+  losing and closing below them is the clean falsifier, and it should be written
+  down *while* that is the reason.
+- A scheduled event that will settle the question — an earnings print is a natural
+  one. Record what kind of result would change the view **before** it lands.
+- An honest "nothing clean here." When a position has no crisp invalidation level
+  — thin catalysts, a chop-driven tape — say that rather than manufacture a
+  number. A fabricated level is worse than none: it reads as rigour and provides
+  none, and later reviews will treat it as a real prior.
+
+This is a writing convention, not a schema change: it lives inside the existing
+`reason` text, in all four languages, with no new fields.
+
 ## Weekly recaps
 
 `scripts/generate-recap.js` reads `ALPHA_DATA` out of `index.html` and writes one
