@@ -74,6 +74,35 @@ tracking on the subscribe-box funnel. Not yet installed: it is waiting on the
 owner to sign up and hand over the tracking snippet / website ID. There is
 currently **no analytics of any kind** on the site.
 
+## Credentials
+
+Nothing secret belongs in this repo — it is public, and a value pushed here is
+harvested within seconds. Removing it afterwards does not help; the only fix is
+to revoke and reissue.
+
+Where the X credentials live:
+
+- **GitHub Actions secrets** on this repo: `X_CONSUMER_KEY`, `X_CONSUMER_SECRET`,
+  `X_ACCESS_TOKEN`, `X_ACCESS_TOKEN_SECRET`. These survive a change of repository
+  visibility. The `Post pending tweet` workflow is the only thing that reads them.
+- **A second copy on the owner's machine**, for the local `reply-tweet.js`. Keep it
+  in a user-scoped environment variable or a file outside the repo — never beside
+  the code. Both copies must be updated together on rotation.
+
+If a credential is exposed, or on the annual rotation:
+
+1. Regenerate the keys in the X developer portal — this invalidates the old ones,
+   which is the part that actually closes the hole.
+2. Update all four GitHub Actions secrets.
+3. Update the local copy.
+4. Post something through the workflow to confirm the new keys work: only an HTTP
+   201 makes it delete `pending-tweet.txt`, so a surviving file means it failed.
+
+Open item: the four secrets are repository-level, so *every* workflow in this repo
+can read them. Moving them into a GitHub Environment (and declaring
+`environment:` on the posting job only) would scope them to the one job that
+needs them. Worth doing as the number of workflows grows.
+
 ## Housekeeping
 
 - Don't commit working files. A draft tweet was once committed and then deleted
