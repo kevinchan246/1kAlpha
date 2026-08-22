@@ -164,6 +164,25 @@ can read them. Moving them into a GitHub Environment (and declaring
 `environment:` on the posting job only) would scope them to the one job that
 needs them. Worth doing as the number of workflows grows.
 
+## Merging
+
+The owner has standing authorisation for Claude to merge its own pull requests
+once they are clean — no need to wait for a review. "Clean" means all four of:
+
+1. A security review of the diff turns up nothing.
+2. CI is green on the PR's current head.
+3. The PR is mergeable with no conflicts.
+4. No review comment is left unaddressed.
+
+**Merging to `master` ships to production.** Netlify deploys the default branch,
+so a merge is a release to 1kalpha.com, not just a repository operation. Check
+the diff for anything a visitor would see before merging, not after.
+
+Still worth asking about first, standing authorisation notwithstanding: changes
+to how credentials are handled, anything that rewrites published history, and
+anything touching the meaning of `ALPHA_DATA` — the trading log is the product,
+and a mistake there is not a bug, it is a false record.
+
 ## Housekeeping
 
 - Don't commit working files. A draft tweet was once committed and then deleted
