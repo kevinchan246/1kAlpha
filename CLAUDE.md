@@ -102,12 +102,38 @@ it is merged to `master`.
 - A push made with `GITHUB_TOKEN` does not trigger other workflows, so a workflow
   cannot chain into the tweet workflow without a PAT.
 
-## Analytics — pending
+## Analytics
 
-**Umami Cloud (free tier)** is the chosen analytics, picked for custom-event
-tracking on the subscribe-box funnel. Not yet installed: it is waiting on the
-owner to sign up and hand over the tracking snippet / website ID. There is
-currently **no analytics of any kind** on the site.
+**Umami Cloud (free tier)**, chosen for custom-event tracking on the
+subscribe-box funnel. The tracking script is in the `<head>` of every page,
+including the recap template in `scripts/lib/render.js`, so generated pages
+carry it too. The website ID is a public identifier — it ships in the page
+source to every visitor — so it belongs in the tree like any other markup.
+
+Two custom events instrument the subscribe box, both defined in the funnel
+script at the bottom of `index.html`:
+
+- `subscribe-view` — fired once, when the box first scrolls into view.
+- `subscribe-submit` — fired when the form is submitted.
+
+The pair is the point: submissions over *views* is a conversion rate,
+submissions over pageviews mostly measures whether people scroll.
+
+Both carry a `source` property — `utm_source`/`ref` if the URL has one, else
+the referring host, else `direct` — and the same string is posted to Buttondown
+as `metadata__signup_source`. That is what lets "which channel produced this
+subscriber" be answered later, since no web analytics can see what happens
+inside the newsletter.
+
+Two constraints worth remembering:
+
+- `cloud.umami.is` is blocked by most ad blockers, so `window.umami` is absent
+  for a real share of visitors. Every call is guarded; **subscribing must keep
+  working when tracking does not.** The form is never `preventDefault`ed to wait
+  on an analytics call.
+- The free tier keeps **6 months** of data. For a project whose whole claim is a
+  long, continuous record, that is short — either move to Pro before the first
+  six months lapse, or export periodically through the API.
 
 ## Credentials
 
