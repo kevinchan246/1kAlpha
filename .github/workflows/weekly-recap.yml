@@ -33,15 +33,24 @@ jobs:
 
       - name: Generate the recap
         id: recap
+        # week_end goes through the environment rather than being interpolated
+        # into the script. Only someone with write access can dispatch this, so
+        # it is not an escalation either way, but a `${{ }}` expansion inside a
+        # run block is pasted in as text before the shell ever sees it — one
+        # stray quote in the input and the rest is a command.
+        env:
+          WEEK_END: ${{ inputs.week_end }}
         run: |
-          if [ -n "${{ inputs.week_end }}" ]; then
-            node scripts/generate-recap.js --end "${{ inputs.week_end }}"
+          if [ -n "$WEEK_END" ]; then
+            node scripts/generate-recap.js --end "$WEEK_END"
           else
             node scripts/generate-recap.js
           fi
 
       - name: Commit and push
         if: steps.recap.outputs.published == 'true'
+        env:
+          WEEK_END: ${{ steps.recap.outputs.week_end }}
         run: |
           if [ -z "$(git status --porcelain)" ]; then
             echo "Nothing changed — recap already up to date."
@@ -51,5 +60,5 @@ jobs:
           git config user.name "1kAlpha bot"
           git config user.email "actions@users.noreply.github.com"
           git add blog/recaps blog/index.html sitemap.xml
-          git commit -m "Publish weekly recap for the week ending ${{ steps.recap.outputs.week_end }}"
+          git commit -m "Publish weekly recap for the week ending $WEEK_END"
           git push origin master
