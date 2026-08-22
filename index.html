@@ -318,6 +318,7 @@
     .lang-switch{align-self:flex-start;}
   }
 </style>
+<script defer src="https://cloud.umami.is/script.js" data-website-id="2dcbaf06-d535-480a-a4a3-f571b7b1a79c"></script>
 </head>
 <body>
 <div class="scanlines"></div>
@@ -397,9 +398,12 @@
       <h3 id="subscribeTitle"></h3>
       <p id="subscribeNote"></p>
     </div>
-    <form action="https://buttondown.com/api/emails/embed-subscribe/1kalpha" method="post" class="subscribe-form">
+    <form action="https://buttondown.com/api/emails/embed-subscribe/1kalpha" method="post" class="subscribe-form" id="subscribeForm">
       <label for="bd-email" style="position:absolute; left:-9999px;" id="subscribeLabel"></label>
       <input type="email" name="email" id="bd-email" placeholder="you@example.com" required>
+      <!-- Filled in by the funnel script below, so Buttondown records the same
+           source string Umami does and the two halves can be joined later. -->
+      <input type="hidden" name="metadata__signup_source" id="bdSignupSource" value="">
       <input type="submit" id="subscribeSubmit" value="">
       <p><a href="https://buttondown.com/refer/1kalpha" target="_blank" id="subscribePowered"></a></p>
     </form>
@@ -1708,6 +1712,66 @@ document.getElementById('logMoreRow').addEventListener('click', (e) => {
 });
 
 renderAll();
+</script>
+
+<script>
+/* ======================================================================
+   Subscribe-box funnel (Umami custom events)
+
+   The useful conversion rate is "of the people who actually reached the
+   subscribe box, how many submitted" — not submissions over pageviews, which
+   mostly measures whether people scroll. So the box reports being seen, and
+   the form reports being submitted, and both carry the same source string.
+
+   Every call is optional-chained and wrapped: cloud.umami.is is blocked by
+   most ad blockers, so window.umami is simply absent for a good share of
+   visitors. Subscribing must keep working when it is.
+   ====================================================================== */
+(function(){
+  function signupSource(){
+    try {
+      const q = new URLSearchParams(location.search);
+      const tagged = q.get('utm_source') || q.get('ref');
+      if (tagged) return tagged.slice(0, 40);
+      if (!document.referrer) return 'direct';
+      const host = new URL(document.referrer).hostname.replace(/^www\./, '');
+      return host === location.hostname ? 'internal' : host.slice(0, 40);
+    } catch (e) { return 'unknown'; }
+  }
+
+  function track(name, data){
+    try { window.umami && window.umami.track(name, data); } catch (e) {}
+  }
+
+  const source = signupSource();
+
+  const hidden = document.getElementById('bdSignupSource');
+  if (hidden) hidden.value = source;
+
+  const form = document.getElementById('subscribeForm');
+  if (!form) return;
+
+  // Fired once, the first time the box is actually on screen.
+  if ('IntersectionObserver' in window) {
+    let seen = false;
+    const io = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting || seen) continue;
+        seen = true;
+        io.disconnect();
+        track('subscribe-view', { source: source });
+      }
+    }, { threshold: 0.5 });
+    io.observe(form);
+  }
+
+  // Not preventDefault'd on purpose: the form posts to Buttondown and the page
+  // navigates away. Blocking that to wait on an analytics call would risk the
+  // conversion itself, which is a far worse trade than losing some events.
+  form.addEventListener('submit', function(){
+    track('subscribe-submit', { source: source });
+  });
+})();
 </script>
 </body>
 </html>

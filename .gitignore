@@ -1,0 +1,30 @@
+# Credentials never belong in the tree — they live in GitHub Actions secrets,
+# and locally in a file kept outside the repo or ignored here.
+.env
+.env.*
+*.pem
+*.key
+
+# Working files. A draft tweet was once committed and then deleted; it is
+# still readable in history, because removing a file does not unpublish it.
+# Keep drafts out in the first place.
+*.draft.txt
+*.draft-*.txt
+draft-*.txt
+notes-*.md
+scratch/
+
+# pending-tweet.txt is deliberately NOT ignored: committing it to master is
+# what triggers the Post pending tweet workflow, which deletes it after posting.
+
+# Node — the repo has no runtime dependencies, but CI and local testing
+# install packages on the fly.
+node_modules/
+npm-debug.log*
+package-lock.json
+
+# Editors and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
