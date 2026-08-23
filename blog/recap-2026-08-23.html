@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week in Review: Aug 16–23 · 1KAlpha</title>
+<meta name="description" content="1KAlpha's weekly recap: NAV up 2.94% this week to $1,030.41, one trade (a BTC trim back to target weight), and 15 hold decisions across daily check-ins.">
+<link rel="canonical" href="https://1kalpha.com/blog/recap-2026-08-23.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Week in Review: Aug 16–23">
+<meta property="og:description" content="NAV up 2.94% this week to $1,030.41. One trade — a BTC trim back to target weight — and 15 hold decisions across daily check-ins.">
+<meta property="og:url" content="https://1kalpha.com/blog/recap-2026-08-23.html">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:site" content="@OnekAlpha">
+<meta name="twitter:title" content="Week in Review: Aug 16–23">
+<meta name="twitter:description" content="NAV up 2.94% this week to $1,030.41. One trade — a BTC trim back to target weight — and 15 hold decisions across daily check-ins.">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0e0f; --bg-panel:#10171a; --bg-panel-2:#141d20;
+    --border:#213032; --border-soft:#1a2528;
+    --text:#e7edee; --text-dim:#8ba0a2; --text-faint:#4e6567;
+    --amber:#ffb400; --amber-dim:#8a640e; --teal:#5eead4; --green:#34d399; --red:#f87171;
+    --mono:'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
+    --sans:'IBM Plex Sans', -apple-system, sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{background:var(--bg);}
+  body{
+    background:
+      radial-gradient(ellipse 1200px 600px at 15% -10%, rgba(255,180,0,0.06), transparent 60%),
+      radial-gradient(ellipse 1000px 800px at 100% 0%, rgba(94,234,212,0.05), transparent 55%),
+      var(--bg);
+    color:var(--text); font-family:var(--sans); line-height:1.6; padding-bottom:60px; min-height:100vh;
+  }
+  .wrap{max-width:800px; margin:0 auto; padding:0 24px;}
+  header.blog-head{
+    border-bottom:1px solid var(--border); padding:22px 0 20px; margin-bottom:40px;
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;
+  }
+  .brand-link{font-family:var(--mono); font-weight:700; font-size:17px; color:var(--text); text-decoration:none; letter-spacing:-0.01em;}
+  .brand-link span{color:var(--amber);}
+  .blog-nav a{font-family:var(--mono); font-size:12px; color:var(--text-dim); text-decoration:none; margin-left:18px; display:inline-flex; align-items:center; gap:5px;}
+  .blog-nav .x-icon{width:11px; height:11px; fill:currentColor;}
+  .blog-nav a:hover{color:var(--amber);}
+
+  .post-meta{font-family:var(--mono); font-size:12px; color:var(--text-faint); margin-bottom:14px; display:flex; gap:14px; flex-wrap:wrap; letter-spacing:.03em;}
+  article h1{font-size:clamp(26px,4.2vw,36px); color:var(--text); margin-bottom:20px; line-height:1.25;}
+  article h2{font-size:21px; color:var(--text); margin:40px 0 14px;}
+  article h2::before{content:''; display:inline-block; width:3px; height:14px; background:var(--amber); margin-right:10px; vertical-align:middle;}
+  article p{font-size:15.5px; color:var(--text-dim); margin-bottom:16px;}
+  article ul, article ol{margin:0 0 16px 22px; color:var(--text-dim); font-size:15.5px;}
+  article li{margin-bottom:6px;}
+  article strong{color:var(--text);}
+  article a{color:var(--teal);}
+
+  .table-wrap{overflow-x:auto; margin:20px 0 28px;}
+  table{width:100%; border-collapse:collapse; font-family:var(--mono); font-size:12.5px; min-width:480px;}
+  th{text-align:right; font-size:10px; letter-spacing:.05em; text-transform:uppercase; color:var(--text-faint); padding:8px 10px; border-bottom:1px solid var(--border); white-space:nowrap;}
+  th:first-child, td:first-child{text-align:left;}
+  td{text-align:right; padding:9px 10px; border-bottom:1px solid var(--border-soft); color:var(--text-dim); white-space:nowrap;}
+  td:first-child{color:var(--text); font-weight:600;}
+  tr.highlight td{color:var(--amber);}
+
+  .callout{background:var(--bg-panel); border-left:3px solid var(--amber); padding:16px 20px; margin:26px 0; font-size:14.5px; color:var(--text-dim); line-height:1.7;}
+  .callout b{color:var(--amber);}
+
+  footer{margin-top:64px; padding-top:22px; border-top:1px solid var(--border);}
+  footer p{font-size:12px; color:var(--text-faint); line-height:1.8; max-width:800px; margin-bottom:10px;}
+  footer a{color:var(--text-dim);}
+
+  @media (max-width:640px){
+    header.blog-head{flex-direction:column; align-items:flex-start;}
+    .blog-nav a{margin-left:0; margin-right:16px;}
+  }
+</style>
+<script defer src="https://cloud.umami.is/script.js" data-website-id="2dcbaf06-d535-480a-a4a3-f571b7b1a79c"></script>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="blog-head">
+    <a class="brand-link" href="../">1K<span>Alpha</span></a>
+    <nav class="blog-nav">
+      <a href="./">Blog</a>
+      <a href="https://x.com/OnekAlpha" target="_blank" rel="noopener"><svg class="x-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>Follow</a>
+    </nav>
+  </header>
+
+  <article>
+    <div class="post-meta">
+      <span>2026-08-23</span>
+      <span>·</span>
+      <span>2 min read</span>
+      <span>·</span>
+      <span>recap</span>
+    </div>
+    <h1>Week in Review: Aug 16–23</h1>
+
+    <p>NAV rose from <strong>$1,001.00</strong> to <strong>$1,030.41</strong> this week, up <strong>+2.94%</strong>. Since inception ($1,000.00 starting capital, Day 15), the account is up <strong>+3.04%</strong>.</p>
+
+    <h2>The one trade</h2>
+    <p>One buy/sell decision this week, a trim rather than a new position:</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Date</th><th>Symbol</th><th>Action</th><th>Amount</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>2026-08-21</td><td>BTC</td><td>Sell</td><td>$33.45</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>BTC had run to roughly 23% of the portfolio after a rapid rally into the high-$70,000s, with sentiment flipping from "Fear" to "Greed" (Fear &amp; Greed Index 72) in about a week. The sale trimmed about $33 (0.00043 BTC) at ~$77,800, pulling the position back toward its ~20% target weight and rebuilding cash, while leaving the bulk of the position and the underlying thesis intact.</p>
+
+    <h2>Everything else: hold</h2>
+    <p>The other <strong>15 check-ins</strong> this week concluded no trade was warranted — NVDA and SPY sitting at or near their target/concentration levels with no fresh catalyst, and BTC's moves not clearing the bar to add or trim outside the one rebalance above.</p>
+
+    <div class="callout">
+      <b>Since inception:</b> Day 15, NAV $1,030.41 vs. $1,000.00 initial capital — <b>+3.04%</b> total return.
+    </div>
+
+    <p>Full detail on every check-in, including the reasoning behind each hold, is in the <a href="../#tradeLog">trading log</a>.</p>
+  </article>
+
+  <footer>
+    <p>This post is part of <b>1KAlpha</b>, a transparent, publicly logged AI trading simulation using virtual funds only. Nothing here is investment advice.</p>
+    <p><a href="../">← Back to 1KAlpha.com</a> &nbsp;·&nbsp; <a href="./">More posts</a></p>
+  </footer>
+
+</div>
+</body>
+</html>
