@@ -32,10 +32,10 @@ node scripts/generate-recap.js --out-dir /tmp/x # render elsewhere, leave the si
 Re-running for a week that already has a recap overwrites it in place rather
 than adding a second card, so it's safe to run again after correcting the log.
 
-The `Publish weekly recap` workflow runs it every Sunday at 21:00 ET — after
-that day's 15:00 ET close check is committed — and pushes the result to
-`master`. It can also be run by hand from the Actions tab, optionally against a
-specific week.
+The `Publish weekly recap` workflow runs it **on manual dispatch only**. Its
+Sunday schedule was removed after it collided with a separate Claude Routine that
+already publishes a recap — see the Weekly recaps section of `CLAUDE.md` before
+re-enabling either.
 
 ## Tweets
 

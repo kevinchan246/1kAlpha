@@ -74,15 +74,38 @@ This is a writing convention, not a schema change: it lives inside the existing
 
 ## Weekly recaps
 
-`scripts/generate-recap.js` reads `ALPHA_DATA` out of `index.html` and writes one
-Monday–Sunday recap to `blog/recaps/week-<sunday>.html`, links it from
-`blog/index.html`, and rebuilds `sitemap.xml`. Every figure is read from the log;
-nothing is estimated. Re-running a week overwrites it in place. See `README.md`
-for the flags.
+**There are two mechanisms, and only one is live. Read this before touching
+either.**
 
-The `Publish weekly recap` workflow runs it Sunday 21:00 ET. **Scheduled workflows
-only fire from the default branch** — a change to the schedule does nothing until
-it is merged to `master`.
+**Live: a Claude Routine.** It writes `blog/recap-<date>.html` — flat in `blog/`,
+not in a subdirectory — and links it from `blog/index.html`. Its week runs
+**Sunday to Sunday** (the 2026-08-23 edition covered Aug 16–23). It produces
+written prose, so it can say what actually mattered that week; it can also get
+things wrong, and once did, tweeting "Week 15" from `meta.dayCount` when the log
+was about two calendar weeks old (see `be2f6ee`).
+
+**Dormant: `scripts/generate-recap.js`.** It reads `ALPHA_DATA` out of
+`index.html` and writes `blog/recaps/week-<sunday>.html`, links it from
+`blog/index.html`, and rebuilds `sitemap.xml`. Its week runs **Monday to
+Sunday**. Every figure is read from the log — deterministic, same input always
+gives the same output, and it cannot invent a number. It is also mechanical: it
+will never tell you what mattered. `README.md` documents the flags; the
+`Publish weekly recap` workflow still runs it on manual dispatch.
+
+On 2026-08-23 both ran. The blog carried two cards for the same week reading
++2.87% and +2.94%, the difference being only the week convention. The generator's
+`schedule:` trigger was removed and its output reverted, leaving the Routine as
+the single publisher — the Routine was already established, so it kept the slot.
+
+Unresolved, and worth settling before the next one: which week convention is
+correct, whether the two should be combined (generator computes the figures and
+tables, a session writes the narrative on top), and where recaps should live —
+`blog/` or `blog/recaps/`. Whichever survives, only one should write to
+`blog/index.html`.
+
+Note for either path: **scheduled workflows only fire from the default branch**,
+and GitHub runs them late — the one run this schedule got fired 82 minutes
+after its cron slot.
 
 **Naming: never "Week N."** `meta.dayCount` counts days since inception, not
 weeks — a recap titled or tweeted as "Week 15" when the log is only ~2 calendar
