@@ -1,10 +1,17 @@
 name: Publish weekly recap
 
-# Sunday 21:00 ET (EDT) / 20:00 ET (EST) — after the day's 15:00 ET close
-# check has been committed, so the recap covers the full Monday–Sunday week.
+# DORMANT — manual dispatch only.
+#
+# A separate Claude Routine already publishes the weekly recap (as
+# blog/recap-<date>.html, on a Sunday-to-Sunday week). On 2026-08-23 both ran
+# and the blog carried two cards for the same week with different numbers,
+# because the two use different week conventions. The schedule was removed
+# here rather than there, since that one was already established and working.
+#
+# The generator itself still works and is still the deterministic option; see
+# CLAUDE.md for what is unresolved before either is made the single mechanism.
+# It used to run on: schedule: - cron: '0 1 * * 1'  (Sunday 21:00 ET)
 on:
-  schedule:
-    - cron: '0 1 * * 1'
   workflow_dispatch:
     inputs:
       week_end:
