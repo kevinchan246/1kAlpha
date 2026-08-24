@@ -84,6 +84,12 @@ The `Publish weekly recap` workflow runs it Sunday 21:00 ET. **Scheduled workflo
 only fire from the default branch** — a change to the schedule does nothing until
 it is merged to `master`.
 
+**Naming: never "Week N."** `meta.dayCount` counts days since inception, not
+weeks — a recap titled or tweeted as "Week 15" when the log is only ~2 calendar
+weeks old is a real error (this happened once, in the tweet text only, and had
+to be caught after posting). Title recaps and their tweets by the date range
+instead, e.g. `Week in Review: Aug 16–23`.
+
 ## X / Twitter
 
 - Committing `pending-tweet.txt` to `master` triggers `Post pending tweet`, which
