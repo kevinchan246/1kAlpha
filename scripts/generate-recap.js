@@ -11,12 +11,19 @@
  *   node scripts/generate-recap.js --end 2026-08-23 # a specific week-ending Sunday
  *   node scripts/generate-recap.js --dry-run        # print the target paths, write nothing
  *   node scripts/generate-recap.js --out-dir /tmp/x # write the post elsewhere (testing)
+ *   node scripts/generate-recap.js --narrative path.md  # override the narrative file
+ *
+ * The narrative — the part a session writes, saying what actually mattered — is
+ * read from content/recaps/week-<sunday>.md when it exists. The generator owns
+ * every figure and the layout; the narrative file owns the words. Neither can
+ * do the other's job, which is the point: a session cannot mistype a number
+ * into the page, and the generator cannot invent a story.
  */
 
 const fs = require('fs');
 const path = require('path');
 const { readAlphaData, ROOT } = require('./lib/alpha-data');
-const { SITE, esc, paragraphs, page } = require('./lib/render');
+const { SITE, esc, paragraphs, renderNarrative, page } = require('./lib/render');
 
 /* When run from GitHub Actions, hand the calling workflow the week we
    published so it doesn't have to parse stdout or guess from git status. */
@@ -187,7 +194,7 @@ function navChart(week, baseline) {
 
 /* ---------- article body ---------- */
 
-function buildArticle(data, week) {
+function buildArticle(data, week, narrative) {
   const range = dateRangeLabel(week.startStr, week.endStr);
   const title = `Weekly Recap: ${range}`;
   const baseline = data.meta.initialCapital;
@@ -302,9 +309,12 @@ ${posRows}
   const watchSection = (data.watchlist && data.watchlist.length) ? `    <h2>Still on the watchlist</h2>
 ${data.watchlist.map((w) => `    <p><strong>${esc(w.symbol)}</strong> — ${esc(w.status.en)} · ${esc(w.price.en)}<br>${esc(w.note.en)}</p>`).join('\n')}` : '';
 
-  const genNote = `    <div class="gennote">This recap is generated straight from the trading log in <code>index.html</code> by <code>scripts/generate-recap.js</code>, and published automatically every Sunday. Every figure above is read from the same data the live dashboard renders — nothing here is estimated or filled in after the fact.</div>`;
+  const genNote = `    <div class="gennote">Every figure on this page is generated straight from the trading log in <code>index.html</code> by <code>scripts/generate-recap.js</code> — read from the same data the live dashboard renders, never estimated or filled in after the fact.${narrative ? ' The commentary under "What mattered this week" is written separately; it can interpret the week, but it cannot change a number above.' : ''}</div>`;
 
-  const body = [intro, statGrid, navSection, tradeSection, holdSection, bookSection, watchSection, genNote]
+  const narrativeSection = narrative ? `    <h2>What mattered this week</h2>
+    ${renderNarrative(narrative)}` : '';
+
+  const body = [intro, narrativeSection, statGrid, navSection, tradeSection, holdSection, bookSection, watchSection, genNote]
     .filter(Boolean).join('\n\n');
 
   const readMin = Math.max(2, Math.round(body.replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length / 200));
@@ -411,11 +421,12 @@ function buildSitemap(root) {
 /* ---------- main ---------- */
 
 function parseArgs(argv) {
-  const args = { dryRun: false, end: null, outDir: null };
+  const args = { dryRun: false, end: null, outDir: null, narrative: null };
   for (let i = 0; i < argv.length; i++) {
     if (argv[i] === '--dry-run') args.dryRun = true;
     else if (argv[i] === '--end') args.end = argv[++i];
     else if (argv[i] === '--out-dir') args.outDir = argv[++i];
+    else if (argv[i] === '--narrative') args.narrative = argv[++i];
     else throw new Error(`Unknown argument: ${argv[i]}`);
   }
   if (args.end && !/^\d{4}-\d{2}-\d{2}$/.test(args.end)) {
@@ -437,7 +448,14 @@ function main() {
     return;
   }
 
-  const { title, description, summary, articleHtml } = buildArticle(data, week);
+  const narrativePath = args.narrative
+    ? path.resolve(args.narrative)
+    : path.join(ROOT, 'content', 'recaps', `week-${endStr}.md`);
+  const narrative = fs.existsSync(narrativePath)
+    ? fs.readFileSync(narrativePath, 'utf8').trim()
+    : null;
+
+  const { title, description, summary, articleHtml } = buildArticle(data, week, narrative);
   const slug = `week-${endStr}.html`;
   const canonical = `${SITE}/blog/recaps/${slug}`;
 
@@ -449,6 +467,7 @@ function main() {
   console.log(`Week ${week.startStr} → ${endStr}`);
   console.log(`  NAV ${usd(week.navOpen)} → ${usd(week.navClose)} (${signedPct(week.weekPct)})`);
   console.log(`  ${week.trades.length} check-ins, ${week.executed.length} order${week.executed.length === 1 ? "" : "s"} filled`);
+  console.log(`  narrative: ${narrative ? path.relative(ROOT, narrativePath) : `none (looked for ${path.relative(ROOT, narrativePath)})`}`);
   console.log(`  post: ${path.relative(ROOT, outFile)}`);
 
   if (args.dryRun) {

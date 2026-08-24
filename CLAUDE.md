@@ -74,38 +74,53 @@ This is a writing convention, not a schema change: it lives inside the existing
 
 ## Weekly recaps
 
-**There are two mechanisms, and only one is live. Read this before touching
-either.**
+Settled design, after the two mechanisms collided on 2026-08-23 (see the note at
+the end).
 
-**Live: a Claude Routine.** It writes `blog/recap-<date>.html` — flat in `blog/`,
-not in a subdirectory — and links it from `blog/index.html`. Its week runs
-**Sunday to Sunday** (the 2026-08-23 edition covered Aug 16–23). It produces
-written prose, so it can say what actually mattered that week; it can also get
-things wrong, and once did, tweeting "Week 15" from `meta.dayCount` when the log
-was about two calendar weeks old (see `be2f6ee`).
+**One week convention: Monday to Sunday.** A recap covers the seven days ending
+on the Sunday that names it.
 
-**Dormant: `scripts/generate-recap.js`.** It reads `ALPHA_DATA` out of
-`index.html` and writes `blog/recaps/week-<sunday>.html`, links it from
-`blog/index.html`, and rebuilds `sitemap.xml`. Its week runs **Monday to
-Sunday**. Every figure is read from the log — deterministic, same input always
-gives the same output, and it cannot invent a number. It is also mechanical: it
-will never tell you what mattered. `README.md` documents the flags; the
-`Publish weekly recap` workflow still runs it on manual dispatch.
+**One output location: `blog/recaps/week-<sunday>.html`.**
 
-On 2026-08-23 both ran. The blog carried two cards for the same week reading
-+2.87% and +2.94%, the difference being only the week convention. The generator's
-`schedule:` trigger was removed and its output reverted, leaving the Routine as
-the single publisher — the Routine was already established, so it kept the slot.
+**Two authors, split so neither can do the other's job:**
 
-Unresolved, and worth settling before the next one: which week convention is
-correct, whether the two should be combined (generator computes the figures and
-tables, a session writes the narrative on top), and where recaps should live —
-`blog/` or `blog/recaps/`. Whichever survives, only one should write to
-`blog/index.html`.
+- `scripts/generate-recap.js` owns **every figure, table, chart and the layout**.
+  It reads `ALPHA_DATA` out of `index.html`; it cannot invent a number, and the
+  same input always produces the same page. It also links the post from
+  `blog/index.html` and rebuilds `sitemap.xml` — it is the only thing that writes
+  either.
+- `content/recaps/week-<sunday>.md` owns **the words** — what actually mattered,
+  what the numbers do not say, what would change the view. A session writes it.
+  It renders into the "What mattered this week" section. Only a small markdown
+  subset is supported, and everything is escaped before formatting is applied,
+  so prose cannot introduce markup. If the file is absent the recap still
+  publishes, just without commentary. See `content/recaps/README.md`.
 
-Note for either path: **scheduled workflows only fire from the default branch**,
-and GitHub runs them late — the one run this schedule got fired 82 minutes
-after its cron slot.
+The publishing flow, which the Routine drives:
+
+1. `node scripts/generate-recap.js --dry-run` — see the week's figures.
+2. Write `content/recaps/week-<sunday>.md`.
+3. `node scripts/generate-recap.js` — renders the page, links it, rebuilds the
+   sitemap.
+4. Commit all of it together.
+
+Re-running step 3 after editing the narrative overwrites the page in place and
+replaces the existing card rather than adding a second one, so it is safe to run
+again.
+
+**The `Publish weekly recap` workflow stays on manual dispatch only.** Its
+schedule is deliberately off: if it fired on its own it would be a second
+publisher writing `blog/index.html`, which is exactly what went wrong before. Use
+it to backfill a week by hand (`week_end` input), not as a routine.
+
+Two notes on the history:
+
+- `blog/recap-2026-08-23.html` is the one recap published under the old
+  arrangement — flat in `blog/`, on a Sunday-to-Sunday week. **Leave it alone.**
+  It is what was published, and the log's whole claim is that published things
+  are not quietly rewritten.
+- Scheduled workflows only fire from the default branch, and GitHub runs them
+  late — the one run that schedule got fired 82 minutes after its cron slot.
 
 **Naming: never "Week N."** `meta.dayCount` counts days since inception, not
 weeks — a recap titled or tweeted as "Week 15" when the log is only ~2 calendar
