@@ -12,6 +12,7 @@ dependencies at runtime.
 | `index.html` | The dashboard, and the single source of truth for portfolio state. The `ALPHA_DATA` block near the bottom holds holdings, cash, the trading log and the daily NAV snapshots; the comment above it documents the daily update procedure. |
 | `blog/` | Hand-written analysis posts. |
 | `blog/recaps/` | Weekly recaps, generated — not hand-edited. |
+| `content/recaps/` | The narrative half of each weekly recap, one markdown file per week. |
 | `holidays.json` | NYSE closures, so equity marks freeze on non-trading days. |
 | `sitemap.xml` | Rebuilt by the recap generator; don't hand-edit. |
 
@@ -32,10 +33,15 @@ node scripts/generate-recap.js --out-dir /tmp/x # render elsewhere, leave the si
 Re-running for a week that already has a recap overwrites it in place rather
 than adding a second card, so it's safe to run again after correcting the log.
 
-The `Publish weekly recap` workflow runs it **on manual dispatch only**. Its
-Sunday schedule was removed after it collided with a separate Claude Routine that
-already publishes a recap — see the Weekly recaps section of `CLAUDE.md` before
-re-enabling either.
+The commentary — the "What mattered this week" section — is written separately in
+`content/recaps/week-<sunday>.md` and rendered into the page. The generator owns
+every figure and the layout; that file owns the words. If it is missing the
+recap still publishes, without commentary.
+
+The `Publish weekly recap` workflow runs the generator **on manual dispatch
+only**, for backfilling a week by hand. Regular publishing is driven by a Claude
+Routine so that the narrative and the figures land in one commit — see the
+Weekly recaps section of `CLAUDE.md`.
 
 ## Tweets
 

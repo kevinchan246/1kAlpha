@@ -174,4 +174,45 @@ ${bodyHtml}
 `;
 }
 
-module.exports = { SITE, X_ICON, CSS, esc, paragraphs, page };
+/*
+ * Renders the hand-written narrative for a recap.
+ *
+ * The narrative is prose authored by a session; everything else on the page is
+ * computed. Escaping happens FIRST and formatting is applied to the escaped
+ * text, so prose can never introduce markup — a stray "<" in a sentence is a
+ * broken page, and an authored href is a worse problem than that. Only a small
+ * subset is supported on purpose: paragraphs, "## " subheadings, bullet lists,
+ * **bold**, *italic*, and [links](https://...) restricted to http(s) or a
+ * relative path.
+ */
+function inlineMarkdown(escaped) {
+  return escaped
+    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/(^|[^*])\*([^*]+)\*/g, '$1<em>$2</em>')
+    .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+|\.{0,2}\/[^\s)]*)\)/g, '<a href="$2">$1</a>');
+}
+
+function renderNarrative(md) {
+  const blocks = String(md)
+    .replace(/\r\n/g, '\n')
+    .split(/\n{2,}/)
+    .map((b) => b.trim())
+    .filter(Boolean);
+
+  return blocks.map((block) => {
+    const heading = block.match(/^##\s+(.+)$/);
+    if (heading) return `<h3>${inlineMarkdown(esc(heading[1]))}</h3>`;
+
+    const lines = block.split('\n').map((l) => l.trim());
+    if (lines.length && lines.every((l) => /^[-*]\s+/.test(l))) {
+      const items = lines
+        .map((l) => `<li>${inlineMarkdown(esc(l.replace(/^[-*]\s+/, '')))}</li>`)
+        .join('\n      ');
+      return `<ul>\n      ${items}\n    </ul>`;
+    }
+
+    return `<p>${inlineMarkdown(esc(block.replace(/\n/g, ' ')))}</p>`;
+  }).join('\n    ');
+}
+
+module.exports = { SITE, X_ICON, CSS, esc, paragraphs, renderNarrative, page };
