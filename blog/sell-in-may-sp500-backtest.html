@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Does "Sell in May and Go Away" Actually Work? A 152-Year Test · 1KAlpha</title>
+<meta name="description" content="A 152-year test of the Halloween indicator against real S&P 500 data: winter (Nov–Apr) really does beat summer (May–Oct) on average, but the popular 'go to cash every summer' strategy loses badly to just staying invested.">
+<link rel="canonical" href="https://1kalpha.com/blog/sell-in-may-sp500-backtest.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Does &quot;Sell in May and Go Away&quot; Actually Work? A 152-Year Test">
+<meta property="og:description" content="Winter (Nov–Apr) beats summer (May–Oct) in 152 years of S&P 500 data — but the actionable version of the advice, going to cash every summer, loses badly to just staying invested.">
+<meta property="og:url" content="https://1kalpha.com/blog/sell-in-may-sp500-backtest.html">
+<meta property="og:image" content="https://1kalpha.com/blog/images/sell-in-may-chart-1.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="675">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@OnekAlpha">
+<meta name="twitter:title" content="Does &quot;Sell in May and Go Away&quot; Actually Work? A 152-Year Test">
+<meta name="twitter:description" content="Winter (Nov–Apr) beats summer (May–Oct) in 152 years of S&P 500 data — but the actionable version of the advice, going to cash every summer, loses badly to just staying invested.">
+<meta name="twitter:image" content="https://1kalpha.com/blog/images/sell-in-may-chart-1.png">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0e0f; --bg-panel:#10171a; --bg-panel-2:#141d20;
+    --border:#213032; --border-soft:#1a2528;
+    --text:#e7edee; --text-dim:#8ba0a2; --text-faint:#4e6567;
+    --amber:#ffb400; --amber-dim:#8a640e; --teal:#5eead4; --green:#34d399; --red:#f87171;
+    --mono:'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
+    --sans:'IBM Plex Sans', -apple-system, sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{background:var(--bg);}
+  body{
+    background:
+      radial-gradient(ellipse 1200px 600px at 15% -10%, rgba(255,180,0,0.06), transparent 60%),
+      radial-gradient(ellipse 1000px 800px at 100% 0%, rgba(94,234,212,0.05), transparent 55%),
+      var(--bg);
+    color:var(--text); font-family:var(--sans); line-height:1.6; padding-bottom:60px; min-height:100vh;
+  }
+  .wrap{max-width:800px; margin:0 auto; padding:0 24px;}
+  header.blog-head{
+    border-bottom:1px solid var(--border); padding:22px 0 20px; margin-bottom:40px;
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;
+  }
+  .brand-link{font-family:var(--mono); font-weight:700; font-size:17px; color:var(--text); text-decoration:none; letter-spacing:-0.01em;}
+  .brand-link span{color:var(--amber);}
+  .blog-nav a{font-family:var(--mono); font-size:12px; color:var(--text-dim); text-decoration:none; margin-left:18px; display:inline-flex; align-items:center; gap:5px;}
+  .blog-nav .x-icon{width:11px; height:11px; fill:currentColor;}
+  .blog-nav a:hover{color:var(--amber);}
+
+  .post-meta{font-family:var(--mono); font-size:12px; color:var(--text-faint); margin-bottom:14px; display:flex; gap:14px; flex-wrap:wrap; letter-spacing:.03em;}
+  article h1{font-size:clamp(26px,4.2vw,36px); color:var(--text); margin-bottom:20px; line-height:1.25;}
+  article h2{font-size:21px; color:var(--text); margin:40px 0 14px;}
+  article h2::before{content:''; display:inline-block; width:3px; height:14px; background:var(--amber); margin-right:10px; vertical-align:middle;}
+  article h3{font-size:16px; color:var(--text); margin:26px 0 10px;}
+  article p{font-size:15.5px; color:var(--text-dim); margin-bottom:16px;}
+  article ul, article ol{margin:0 0 16px 22px; color:var(--text-dim); font-size:15.5px;}
+  article li{margin-bottom:6px;}
+  article strong{color:var(--text);}
+  article a{color:var(--teal);}
+  article code{font-family:var(--mono); font-size:13px; background:var(--bg-panel-2); padding:1px 6px; border-radius:3px; color:var(--amber);}
+  article img{max-width:100%; display:block; margin:28px auto 6px; border:1px solid var(--border); border-radius:2px;}
+  figcaption{font-size:12px; color:var(--text-faint); text-align:center; margin-bottom:28px;}
+
+  .table-wrap{overflow-x:auto; margin:20px 0 28px;}
+  table{width:100%; border-collapse:collapse; font-family:var(--mono); font-size:12.5px; min-width:560px;}
+  th{text-align:right; font-size:10px; letter-spacing:.05em; text-transform:uppercase; color:var(--text-faint); padding:8px 10px; border-bottom:1px solid var(--border); white-space:nowrap;}
+  th:first-child, td:first-child{text-align:left;}
+  td{text-align:right; padding:9px 10px; border-bottom:1px solid var(--border-soft); color:var(--text-dim); white-space:nowrap;}
+  td:first-child{color:var(--text); font-weight:600;}
+  tr.highlight td{color:var(--amber);}
+
+  .callout{background:var(--bg-panel); border-left:3px solid var(--amber); padding:16px 20px; margin:26px 0; font-size:14.5px; color:var(--text-dim); line-height:1.7;}
+  .callout b{color:var(--amber);}
+  .callout.warn{border-left-color:var(--red);}
+  .callout.warn b{color:var(--red);}
+
+  footer{margin-top:64px; padding-top:22px; border-top:1px solid var(--border);}
+  footer p{font-size:12px; color:var(--text-faint); line-height:1.8; max-width:800px; margin-bottom:10px;}
+  footer a{color:var(--text-dim);}
+
+  @media (max-width:640px){
+    header.blog-head{flex-direction:column; align-items:flex-start;}
+    .blog-nav a{margin-left:0; margin-right:16px;}
+  }
+</style>
+<script defer src="https://cloud.umami.is/script.js" data-website-id="2dcbaf06-d535-480a-a4a3-f571b7b1a79c"></script>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="blog-head">
+    <a class="brand-link" href="../">1K<span>Alpha</span></a>
+    <nav class="blog-nav">
+      <a href="./">Blog</a>
+      <a href="https://x.com/OnekAlpha" target="_blank" rel="noopener"><svg class="x-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>Follow</a>
+    </nav>
+  </header>
+
+  <article>
+    <div class="post-meta">
+      <span>2026-08-24</span>
+      <span>·</span>
+      <span>9 min read</span>
+      <span>·</span>
+      <span>backtest</span>
+    </div>
+    <h1>Does "Sell in May and Go Away" Actually Work? A 152-Year Test</h1>
+
+    <p>"Sell in May and go away" is one of the oldest lines in market folklore, and it resurfaces every spring in financial media — Fidelity, the Motley Fool, and Seeking Alpha have all run some version of the same explainer. It's not pure superstition, either: economists Sven Bouman and Ben Jacobsen formalized it in a 2002 <em>American Economic Review</em> paper, "The Halloween Indicator, 'Sell in May and Go Away': Another Puzzle," which found winter (November&ndash;April) returns significantly higher than summer (May&ndash;October) returns in 36 of 37 countries they examined. That's a specific, falsifiable claim about U.S. stocks specifically, so I tested it directly against 152 years of S&amp;P 500 data — the same dataset used for this blog's leverage backtest — and pushed one step further: is the effect still there in the most recent data, and does knowing about it actually make you money?</p>
+
+    <p>Short version: <strong>the seasonal split is real and has not disappeared</strong> — winter has beaten summer, on average, in every rolling window tested, right down to the last 10 years. But <strong>the popular, actionable version of the advice — go to cash every summer — would have been a bad strategy</strong>, because summer's average return, while lower than winter's, is still positive most of the time. Simply staying invested through both halves beats either "only winter" or "only summer" by a wide margin.</p>
+
+    <h2>Methodology</h2>
+    <p>I used Robert Shiller's monthly S&amp;P 500 dataset (price and dividends), the same source and the same January 1871 &ndash; June 2023 cutoff as this blog's leverage backtest, for consistency and because that's the last month with fully populated dividend data. For each year <code>Y</code> from 1871 to 2022, I built two non-overlapping six-month windows:</p>
+    <ul>
+      <li><strong>"Summer"</strong> &mdash; May through October of year <code>Y</code></li>
+      <li><strong>"Winter"</strong> &mdash; November of year <code>Y</code> through April of year <code>Y+1</code></li>
+    </ul>
+    <p>giving 152 paired observations. Each half's return compounds monthly total returns (price change plus dividends, reinvested, using the standard annualized-dividend/12 convention). I report the mean, median, and win rate for each half across the full sample, then re-run the same stats on trailing 10/20/30/40-year windows to see whether the gap has been stable, growing, or fading. I also built a simple growth-of-$1 comparison: an investor who is <strong>only</strong> invested in winters (in cash the rest of the year), one who is <strong>only</strong> invested in summers, and one who stays invested year-round.</p>
+
+    <h2>The headline numbers</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Half-year</th><th>Mean return</th><th>Median return</th><th>Win rate</th><th>Worst half</th><th>Best half</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Summer (May&ndash;Oct)</td><td>4.2%</td><td>5.2%</td><td>64.5%</td><td>&minus;33.1% (1931)</td><td>+41.8% (1933)</td></tr>
+          <tr class="highlight"><td>Winter (Nov&ndash;Apr)</td><td>6.1%</td><td>4.7%</td><td>72.4%</td><td>&minus;35.8% (1931&ndash;32)</td><td>+38.3% (1900&ndash;01)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:12px; color:var(--text-faint); margin-top:-16px;">n = 152 half-year windows per side, 1871&ndash;2023. Win rate = share of windows with a positive return.</p>
+
+    <p>Winter wins on mean return (6.1% vs 4.2% per six-month stretch) and on win rate (72% of winters were positive, vs 65% of summers). Curiously, the <em>median</em> flips the other way &mdash; summer's median (5.2%) is slightly higher than winter's (4.7%). That tells you winter's mean is being pulled up by a fatter right tail of unusually good winters (like the +38% run from November 1900 to April 1901), not by every single winter being a bit better than every summer. The typical winter isn't dramatically better than the typical summer; it's the distribution's shape, not just its center, that differs.</p>
+
+    <p>Both halves share their worst outcome from the same catastrophe: the depths of the Great Depression. May&ndash;October 1931 lost 33.1%, and the winter that followed, November 1931&ndash;April 1932, lost another 35.8% &mdash; the single worst half-year of either kind in the whole sample. Seasonality doesn't provide shelter from a genuine systemic crash; it shows up in the averages, not in tail risk.</p>
+
+    <h2>Is it just noise?</h2>
+    <p>A 1.9-percentage-point gap in average six-month return (6.1% &minus; 4.2%) sounds meaningful, but with 152 observations and a standard deviation around 15% per half, it's worth actually checking. A paired t-test on the winter-minus-summer difference gives <strong>t &asymp; 1.55, p &asymp; 0.12</strong> (two-tailed) &mdash; short of the conventional 5% significance threshold. On this test alone, you can't fully rule out that the average gap is noise. (Two caveats on the test itself: consecutive half-years aren't strictly independent draws, and 152 observations spanning three centuries of very different market regimes is a lot to ask one t-test to summarize cleanly &mdash; treat p &asymp; 0.12 as a rough gut-check, not a rigorous inference.)</p>
+
+    <p>What the single-sample significance test can't see is persistence: does the gap show up again and again across different eras, or was it a fluke concentrated in one period? I checked trailing windows of the most recent 10, 20, 30, and 40 years of pairs against the full 152-year sample.</p>
+
+    <img src="images/sell-in-may-chart-1.png" alt="Bar chart comparing mean May–October and November–April S&P 500 returns across the full 1871–2023 sample and trailing 10/20/30/40-year windows, showing winter ahead of summer in every window">
+    <figcaption>Mean 6-month return by half, full sample vs trailing windows. Winter has led summer in every window tested, though the gap has narrowed in the most recent decade.</figcaption>
+
+    <p>Winter beats summer in <em>every</em> window, including the most recent 10 years (6.99% vs 5.54%) &mdash; so the effect hasn't reversed or vanished. But the gap has compressed: it's roughly 4.7 points over the last 40 years, 4.1 over the last 30, 2.75 over the last 20, and just 1.45 over the last 10. That's the shape you'd expect from a real, historically documented anomaly that more people have started trading around since Bouman and Jacobsen published it in 2002 &mdash; though with only 10 pairs in the most recent window, that reading deserves real skepticism; it's a small enough sample that a couple of unusual years could explain the narrowing on its own.</p>
+
+    <h2>The edge is real; the strategy is not</h2>
+    <p>Here's the part that matters if you were tempted to actually do something with this. "Sell in May and go away," taken literally, means moving to cash every May and reinvesting every November. I modeled exactly that: $1 invested starting 1871, held only through winters (cash the rest of the year, at a conservative 0% nominal), compared against $1 held only through summers, compared against $1 that just stays invested the whole time.</p>
+
+    <img src="images/sell-in-may-chart-2.png" alt="Log-scale line chart showing growth of $1 from 1871 to 2023 for three strategies: always invested, invested only November through April, and invested only May through October">
+    <figcaption>Growth of $1, log scale. Staying invested through both halves compounds to roughly 160&times; the "summer only" result and 60&times; the "winter only" result &mdash; because it captures both halves' positive average returns instead of just one.</figcaption>
+
+    <p>Winter-only: <strong>$3,487</strong>. Summer-only: <strong>$161</strong>. Always invested: <strong>$560,743</strong>. Buy-and-hold isn't close &mdash; it beats the winter-only strategy by roughly 160&times; and the summer-only strategy by roughly 3,500&times;. The reason is simple once you see it: summer's <em>average</em> return is lower than winter's, but it's still positive 64.5% of the time. A strategy that skips summer entirely throws away six months of typically-positive compounding, every single year, for 150 years. The seasonal gap is real enough to show up in the data; it is nowhere near large enough to justify giving up half the calendar year's growth to avoid it &mdash; and that's before accounting for the transaction costs and taxable events a real switching strategy would generate twice a year.</p>
+
+    <h2>Limitations</h2>
+    <ul>
+      <li><strong>Cash isn't really 0%.</strong> The winter-only and summer-only lines above assume the "out" months earn nothing. A real investor's idle cash earns something (historically averaging a few percent, more in recent high-rate years), which would narrow the gap between the switching strategies and buy-and-hold somewhat &mdash; though not enough to change the conclusion, since buy-and-hold's edge here is measured in multiples of 100&times;, not percentage points.</li>
+      <li><strong>No transaction costs or taxes.</strong> A literal "sell in May" strategy trades twice a year, every year. That's 300 round trips over this sample, each one a taxable event in a real account. None of that drag is modeled here, and it only makes the switching strategy look worse relative to buy-and-hold.</li>
+      <li><strong>The window boundaries aren't mine.</strong> May&ndash;October / November&ndash;April is the canonical split from decades of prior literature, not something I searched for myself &mdash; which limits (but doesn't eliminate) the risk that these specific dates were chosen because they happened to work.</li>
+      <li><strong>One country, one index.</strong> This tests the S&amp;P 500 only. Bouman and Jacobsen's original finding covered 36 other countries, which is stronger evidence of a real, broad phenomenon than one U.S. series can be on its own &mdash; but I haven't independently verified their non-U.S. results here, only their headline U.S.-relevant claim against my own data.</li>
+      <li><strong>Statistical significance is borderline and the observations aren't fully independent.</strong> p &asymp; 0.12 on the full-sample t-test means this doesn't clear a strict significance bar on its own; the persistence across sub-windows is doing more of the evidentiary work than the single test is.</li>
+    </ul>
+
+    <h2>Bottom line</h2>
+    <ul>
+      <li><strong>The Halloween effect shows up in 152 years of S&amp;P 500 data</strong> and hasn't disappeared &mdash; winter beat summer's average return in the full sample and in every trailing window down to the last 10 years, though the gap has visibly narrowed recently.</li>
+      <li><strong>It's a real seasonal tilt in the return distribution, not a market-timing free lunch.</strong> Actually implementing "sell in May" &mdash; moving to cash every summer &mdash; underperforms simple buy-and-hold by two to three orders of magnitude over this sample, because summer is still positive on average most years.</li>
+      <li><strong>The honest takeaway isn't "time the market by season."</strong> It's that U.S. equity returns aren't seasonally uniform, which is an interesting and reasonably well-documented asset-pricing curiosity &mdash; and a good reminder that a statistically-marginal, economically-real effect and an actionable trading strategy are two different things.</li>
+    </ul>
+
+    <div class="callout">
+      <b>Reproducing this:</b> Data is Robert Shiller's dataset (Yale), mirrored as CSV by <a href="https://github.com/datasets/s-and-p-500" target="_blank" rel="noopener">datasets/s-and-p-500</a> on GitHub, same source as the leverage backtest on this blog. The analysis is a ~120-line Node.js script &mdash; monthly total returns compounded into non-overlapping six-month windows, plus a paired t-test and trailing-window breakdown. Happy to share it if people want to check the work or extend it (other countries, other window boundaries, cash-yield-adjusted switching returns, etc.) &mdash; reply on <a href="https://x.com/OnekAlpha" target="_blank" rel="noopener">X</a>.
+    </div>
+  </article>
+
+  <footer>
+    <p>This post is part of <b>1KAlpha</b>, a transparent, publicly logged AI trading simulation using virtual funds only. Nothing here is investment advice &mdash; it's a backtest of a publicly documented seasonal pattern, not a recommendation to trade around the calendar. Past performance, simulated or real, does not indicate future results.</p>
+    <p><a href="../">&larr; Back to 1KAlpha.com</a> &nbsp;&middot;&nbsp; <a href="./">More posts</a></p>
+  </footer>
+
+</div>
+</body>
+</html>
