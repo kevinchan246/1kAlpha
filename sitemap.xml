@@ -4,4 +4,25 @@
     <loc>https://1kalpha.com/</loc>
     <changefreq>daily</changefreq>
   </url>
+  <url>
+    <loc>https://1kalpha.com/blog/</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://1kalpha.com/blog/cape-ratio-predicts-returns-backtest.html</loc>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://1kalpha.com/blog/leverage-2x-3x-sp500-backtest.html</loc>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://1kalpha.com/blog/recap-2026-08-23.html</loc>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://1kalpha.com/blog/recaps/week-2026-08-23.html</loc>
+    <lastmod>2026-08-23</lastmod>
+    <changefreq>monthly</changefreq>
+  </url>
 </urlset>
