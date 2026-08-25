@@ -69,6 +69,21 @@ What it looks like in practice:
   number. A fabricated level is worse than none: it reads as rigour and provides
   none, and later reviews will treat it as a real prior.
 
+**A position can be large because nobody decided it should be.** The 35%
+concentration cap is a ceiling, not a thesis. A holding that drifted up to 33% on
+appreciation — or stayed there while falling — was never sized for whatever is
+about to happen to it. *"No room to add, no reason to sell"* is the sentence that
+hides this: it reads as discipline and contains no decision.
+
+So before a scheduled event that will move a position hard — an earnings print
+above all — the review has to do two things, and the last check before the event
+is the last chance to do either honestly:
+
+1. Name the result that would change the view.
+2. Ask whether the current weight is one you would choose *today* if the position
+   were cash. If the answer is no, that weight is a bet nobody made, and saying so
+   is more useful than any level.
+
 This is a writing convention, not a schema change: it lives inside the existing
 `reason` text, in all four languages, with no new fields.
 
