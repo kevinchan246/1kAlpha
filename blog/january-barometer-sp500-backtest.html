@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Does the January Barometer Actually Predict the Year? A 154-Year Test · 1KAlpha</title>
+<meta name="description" content="'As January goes, so goes the year' is one of the oldest calendar rules in investing. 154 years of Shiller data say it barely beats guessing 'the market usually goes up' — and in the last 36 years, it's lost to that guess outright.">
+<link rel="canonical" href="https://1kalpha.com/blog/january-barometer-sp500-backtest.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Does the January Barometer Actually Predict the Year? A 154-Year Test">
+<meta property="og:description" content="'As January goes, so goes the year.' 154 years of S&P 500 data say the edge is real but small, weaker than it looks once you compare it to a naive 'stocks usually go up' guess, and has faded since 1990.">
+<meta property="og:url" content="https://1kalpha.com/blog/january-barometer-sp500-backtest.html">
+<meta property="og:image" content="https://1kalpha.com/blog/images/jan-barometer-chart-1.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="675">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@OnekAlpha">
+<meta name="twitter:title" content="Does the January Barometer Actually Predict the Year? A 154-Year Test">
+<meta name="twitter:description" content="'As January goes, so goes the year.' 154 years of S&P 500 data say the edge is real but small, weaker than it looks once you compare it to a naive 'stocks usually go up' guess, and has faded since 1990.">
+<meta name="twitter:image" content="https://1kalpha.com/blog/images/jan-barometer-chart-1.png">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0e0f; --bg-panel:#10171a; --bg-panel-2:#141d20;
+    --border:#213032; --border-soft:#1a2528;
+    --text:#e7edee; --text-dim:#8ba0a2; --text-faint:#4e6567;
+    --amber:#ffb400; --amber-dim:#8a640e; --teal:#5eead4; --green:#34d399; --red:#f87171;
+    --mono:'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
+    --sans:'IBM Plex Sans', -apple-system, sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{background:var(--bg);}
+  body{
+    background:
+      radial-gradient(ellipse 1200px 600px at 15% -10%, rgba(255,180,0,0.06), transparent 60%),
+      radial-gradient(ellipse 1000px 800px at 100% 0%, rgba(94,234,212,0.05), transparent 55%),
+      var(--bg);
+    color:var(--text); font-family:var(--sans); line-height:1.6; padding-bottom:60px; min-height:100vh;
+  }
+  .wrap{max-width:800px; margin:0 auto; padding:0 24px;}
+  header.blog-head{
+    border-bottom:1px solid var(--border); padding:22px 0 20px; margin-bottom:40px;
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;
+  }
+  .brand-link{font-family:var(--mono); font-weight:700; font-size:17px; color:var(--text); text-decoration:none; letter-spacing:-0.01em;}
+  .brand-link span{color:var(--amber);}
+  .blog-nav a{font-family:var(--mono); font-size:12px; color:var(--text-dim); text-decoration:none; margin-left:18px; display:inline-flex; align-items:center; gap:5px;}
+  .blog-nav .x-icon{width:11px; height:11px; fill:currentColor;}
+  .blog-nav a:hover{color:var(--amber);}
+
+  .post-meta{font-family:var(--mono); font-size:12px; color:var(--text-faint); margin-bottom:14px; display:flex; gap:14px; flex-wrap:wrap; letter-spacing:.03em;}
+  article h1{font-size:clamp(26px,4.2vw,36px); color:var(--text); margin-bottom:20px; line-height:1.25;}
+  article h2{font-size:21px; color:var(--text); margin:40px 0 14px;}
+  article h2::before{content:''; display:inline-block; width:3px; height:14px; background:var(--amber); margin-right:10px; vertical-align:middle;}
+  article h3{font-size:16px; color:var(--text); margin:26px 0 10px;}
+  article p{font-size:15.5px; color:var(--text-dim); margin-bottom:16px;}
+  article ul, article ol{margin:0 0 16px 22px; color:var(--text-dim); font-size:15.5px;}
+  article li{margin-bottom:6px;}
+  article strong{color:var(--text);}
+  article a{color:var(--teal);}
+  article code{font-family:var(--mono); font-size:13px; background:var(--bg-panel-2); padding:1px 6px; border-radius:3px; color:var(--amber);}
+  article img{max-width:100%; display:block; margin:28px auto 6px; border:1px solid var(--border); border-radius:2px;}
+  figcaption{font-size:12px; color:var(--text-faint); text-align:center; margin-bottom:28px;}
+
+  .table-wrap{overflow-x:auto; margin:20px 0 28px;}
+  table{width:100%; border-collapse:collapse; font-family:var(--mono); font-size:12.5px; min-width:620px;}
+  th{text-align:right; font-size:10px; letter-spacing:.05em; text-transform:uppercase; color:var(--text-faint); padding:8px 10px; border-bottom:1px solid var(--border); white-space:nowrap;}
+  th:first-child, td:first-child{text-align:left;}
+  td{text-align:right; padding:9px 10px; border-bottom:1px solid var(--border-soft); color:var(--text-dim); white-space:nowrap;}
+  td:first-child{color:var(--text); font-weight:600;}
+  tr.highlight td{color:var(--amber);}
+
+  .callout{background:var(--bg-panel); border-left:3px solid var(--amber); padding:16px 20px; margin:26px 0; font-size:14.5px; color:var(--text-dim); line-height:1.7;}
+  .callout b{color:var(--amber);}
+  .callout.warn{border-left-color:var(--red);}
+  .callout.warn b{color:var(--red);}
+
+  footer{margin-top:64px; padding-top:22px; border-top:1px solid var(--border);}
+  footer p{font-size:12px; color:var(--text-faint); line-height:1.8; max-width:800px; margin-bottom:10px;}
+  footer a{color:var(--text-dim);}
+
+  @media (max-width:640px){
+    header.blog-head{flex-direction:column; align-items:flex-start;}
+    .blog-nav a{margin-left:0; margin-right:16px;}
+  }
+</style>
+<script defer src="https://cloud.umami.is/script.js" data-website-id="2dcbaf06-d535-480a-a4a3-f571b7b1a79c"></script>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="blog-head">
+    <a class="brand-link" href="../">1K<span>Alpha</span></a>
+    <nav class="blog-nav">
+      <a href="./">Blog</a>
+      <a href="https://x.com/OnekAlpha" target="_blank" rel="noopener"><svg class="x-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>Follow</a>
+    </nav>
+  </header>
+
+  <article>
+    <div class="post-meta">
+      <span>2026-08-31</span>
+      <span>·</span>
+      <span>10 min read</span>
+      <span>·</span>
+      <span>backtest</span>
+    </div>
+    <h1>Does the January Barometer Actually Predict the Year? A 154-Year Test</h1>
+
+    <p>"As January goes, so goes the year" is one of the oldest calendar rules in investing, popularized decades ago by Yale Hirsch through the <em>Stock Trader's Almanac</em> and repeated every year in financial media once January's numbers are in. The claim, stated plainly, is specific and checkable: if the S&amp;P 500 finishes January higher, the full year tends to finish higher too — and vice versa. So instead of taking the pitch at face value, I tested it against 154 years of data.</p>
+
+    <p>Short version: <strong>there's a real, statistically significant relationship between January's return and the rest of the year — but it's much smaller than the "hit rate" statistics usually make it sound</strong>, because most of that hit rate is just the fact that the stock market goes up in most years regardless of what January did. Once you compare the barometer to that naive baseline instead of to a coin flip, its edge over the full 154-year sample is modest, and over the last 36 years it's lost to the naive baseline outright.</p>
+
+    <h2>Methodology</h2>
+    <p>I used Robert Shiller's monthly S&amp;P 500 price dataset (the same source used in <a href="leverage-2x-3x-sp500-backtest.html">our leverage backtest</a>), which runs from January 1871 through mid-2026. For every year from 1872 through 2025 — 154 years — I computed three numbers from the nominal price index (no dividends, matching how the January Barometer is conventionally stated as a price-only rule):</p>
+    <ul>
+      <li><strong>January return</strong> — the index's percentage change from the prior December to that January</li>
+      <li><strong>Full-year return</strong> — from prior December through that December</li>
+      <li><strong>Feb–Dec return</strong> — from January through that December, i.e. the full year <em>with January itself removed</em></li>
+    </ul>
+    <p>That third figure matters. Comparing January's direction to the full year's direction is a weaker test than it looks, because January's own move is <em>part of</em> the full-year number — a big January gain mechanically nudges the full year toward positive territory even if nothing distinctive happens for the rest of the year. Testing January against Feb–Dec instead asks the sharper question: does January carry real information about the eleven months that come <em>after</em> it?</p>
+
+    <div class="callout warn">
+      <b>Data limitation:</b> Shiller's monthly price series is an <em>average of daily closes across the month</em>, not the month-end closing price. The "official" January Barometer, as usually quoted by the <em>Stock Trader's Almanac</em> and financial media, uses the last trading day of January versus the last trading day of December. That mismatch means the exact hit-rate numbers below won't reproduce published year-by-year barometer calls precisely — expect them to be in the same neighborhood, not identical. This is the best long-run public dataset available for a 154-year test; a month-end series only goes back reliably to 1950 or so.
+    </div>
+
+    <h2>The headline hit rate — and the baseline it needs to beat</h2>
+    <p>The number usually cited for the January Barometer is a "hit rate": how often the full year's direction matched January's direction. Over the full sample, that's <strong>68.8%</strong>. That sounds impressive until you notice the S&amp;P 500 has finished <em>positive</em> in 65.6% of all years regardless of January — so a forecaster who ignores January entirely and just always guesses "up" would have been right almost as often. The barometer's real edge over that naive baseline is the gap between those two numbers, and it's thin.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Period</th><th>n (years)</th><th>Barometer hit rate</th><th>Naive "always up" baseline</th><th>Edge</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Full sample</td><td>154</td><td>68.8%</td><td>65.6%</td><td>+3.2pp</td></tr>
+          <tr><td>Post-1950</td><td>76</td><td>73.7%</td><td>72.4%</td><td>+1.3pp</td></tr>
+          <tr class="highlight"><td>Post-1990</td><td>36</td><td>69.4%</td><td>75.0%</td><td>&minus;5.6pp</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:12px; color:var(--text-faint); margin-top:-16px;">"Barometer hit rate" = share of years where January's sign matched the full year's sign. "Naive baseline" = share of all years in that period that finished positive, i.e. the accuracy of always guessing "up" without looking at January at all.</p>
+
+    <img src="images/jan-barometer-chart-1.png" alt="Bar chart comparing the January Barometer's directional hit rate to a naive always-guess-up baseline across the full 1872-2025 sample, post-1950, and post-1990, showing the barometer only narrowly ahead in the first two periods and behind in the third">
+    <figcaption>Directional hit rate vs. a naive "the market usually goes up" guess. In the most recent 36 years, the naive guess wins.</figcaption>
+
+    <p>In the last 36 years, the naive guess actually <strong>beats</strong> the barometer outright — 75.0% vs. 69.4%. The market has been up so consistently since 1990 (27 of 36 years) that "the market usually goes up" is a genuinely hard bar to clear, and January's direction hasn't cleared it.</p>
+
+    <h2>Isolating January: does it predict Feb–Dec, or is this just an artifact?</h2>
+    <p>The hit-rate framing above still has the double-counting problem described in the methodology. So I reran the comparison against Feb–Dec returns only, and also ran a simple linear regression: <code>(Feb–Dec return) = a + b × (January return)</code>. If January carried no real information, the slope <code>b</code> should be statistically indistinguishable from zero.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Period</th><th>Mean Feb–Dec | Jan up</th><th>Mean Feb–Dec | Jan down</th><th>Regression slope</th><th>R²</th><th>p-value</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Full sample</td><td>+6.94%</td><td>&minus;0.83%</td><td>1.23</td><td>0.044</td><td>0.008</td></tr>
+          <tr><td>Post-1950</td><td>+10.81%</td><td>+1.87%</td><td>1.39</td><td>0.089</td><td>0.007</td></tr>
+          <tr><td>Post-1990</td><td>+12.03%</td><td>+3.87%</td><td>1.53</td><td>0.086</td><td>0.073</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:12px; color:var(--text-faint); margin-top:-16px;">Regression: Feb&ndash;Dec return regressed on January return. Slope &gt;1 means Feb&ndash;Dec tends to move further in the same direction as January, on average &mdash; not just the same sign. p-value is a two-sided test of whether the slope differs from zero (normal approximation).</p>
+
+    <img src="images/jan-barometer-chart-2.png" alt="Scatter plot of January return versus Feb-Dec return for all 154 years from 1872 to 2025, with a shallow upward-sloping regression line and wide scatter around it, slope 1.23, R-squared 0.044, p equals 0.0078">
+    <figcaption>January return vs. the rest of the year, 1872&ndash;2025 (n=154). The relationship is real and statistically significant, but the scatter is enormous — January explains about 4% of the variance in what happens next.</figcaption>
+
+    <p>So the effect is real, not purely an artifact of January being counted twice: over the full sample and the post-1950 subsample, the slope is positive and statistically significant at conventional levels (p &lt; 0.01). Years that start with an up January really have gone on to post better Feb–Dec returns on average (+6.94% vs. &minus;0.83% full sample; +10.81% vs. +1.87% post-1950). But the R² of 0.04–0.09 means January's return explains only a small fraction of what happens over the following eleven months — the scatter in the chart above is the point. And in the post-1990 subsample, the relationship is no longer statistically significant at the 5% level (p = 0.073), consistent with the hit-rate result: whatever edge existed has weakened in the most recent decades.</p>
+
+    <h2>Would trading on it actually have made money?</h2>
+    <p>A statistically significant regression coefficient isn't the same as a profitable trading rule. So I tested the simplest possible version: stay invested through January every year (you can't act on the signal before it exists), then for February through December, stay invested if January was positive and move to cash — earning a conservative 0% — if January was negative. Compare that to simply staying invested the whole time.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Period</th><th>Buy &amp; hold: $1 becomes</th><th>Buy &amp; hold CAGR</th><th>Jan-timed: $1 becomes</th><th>Jan-timed CAGR</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Full sample (1872&ndash;2025)</td><td>$1,445.79</td><td>4.84%</td><td>$2,210.15</td><td>5.13%</td></tr>
+          <tr class="highlight"><td>Post-1950 (1950&ndash;2025)</td><td>$414.33</td><td>8.25%</td><td>$349.39</td><td>8.01%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Over the full 154-year sample, the timing rule edges out buy-and-hold. But over the post-1950 period — the more relevant era for anyone actually running this strategy today, and the one where transaction costs and taxes would matter — <strong>it loses</strong>, 8.01% vs. 8.25% annualized. And that's before accounting for the fact that "cash" here earns a flat 0%; real cash (T-bills) has historically yielded something, which would only widen the gap further in favor of just staying invested, since the timing strategy sits in cash disproportionately in years when equities end up flat-to-down but T-bills still pay something modest either way. The full-sample "win" for the timing rule is being carried by a handful of 19th- and early-20th-century years and doesn't hold up in the sample most people would actually care about.</p>
+
+    <h2>Limitations</h2>
+    <ul>
+      <li><strong>Monthly-average, not month-end, price data.</strong> As noted above, Shiller's series won't exactly reproduce the closing-price-based hit rates quoted elsewhere. This affects the precise percentages, not the qualitative conclusion.</li>
+      <li><strong>Price return only, no dividends.</strong> This matches how the barometer is conventionally stated, but it means the "full-year return" and "Feb–Dec return" numbers here understate total return investors actually received.</li>
+      <li><strong>0% assumed cash yield</strong> in the trading-rule test is a simplification; a realistic short-term rate would change the exact numbers, though probably not by enough to flip the post-1950 result given the size of the gap.</li>
+      <li><strong>No transaction costs or taxes</strong> modeled, though the timing rule only trades once a year, so this is a minor factor either way.</li>
+      <li><strong>Small independent sample.</strong> 154 years of monthly data is a lot of months, but only 154 <em>independent</em> January-to-December observations. A statistically significant regression on 154 points is real evidence, not proof — and the post-1990 result (p = 0.073) shows how quickly significance can slip away in a smaller, more recent window.</li>
+    </ul>
+
+    <h2>Bottom line</h2>
+    <ul>
+      <li><strong>January's return and the rest of the year are genuinely, statistically related</strong> — this isn't purely an artifact of January being counted inside the full-year figure. The regression survives isolating Feb–Dec specifically, with p &lt; 0.01 over the full sample and post-1950.</li>
+      <li><strong>But the popular "hit rate" framing overstates the edge</strong> by comparing the barometer to a coin flip instead of to the much stronger baseline of "the market usually goes up anyway." Against that fairer baseline, the edge is a few percentage points at best over the long run — and negative over the last 36 years.</li>
+      <li><strong>A simple trading rule built on the signal doesn't clearly beat buy-and-hold</strong> in the modern (post-1950) era, even before accounting for the fact that idle cash in this backtest earns nothing.</li>
+    </ul>
+    <p>The January Barometer isn't nonsense — there's a small, real, statistically detectable relationship in the data. But "as January goes, so goes the year" oversells what that relationship is actually worth, and treating a positive or negative January as a reason to change your portfolio isn't supported by 154 years of evidence, let alone the last 36.</p>
+
+    <div class="callout">
+      <b>Reproducing this:</b> Data is Robert Shiller's dataset (Yale), mirrored as CSV by <a href="https://github.com/datasets/s-and-p-500" target="_blank" rel="noopener">datasets/s-and-p-500</a> on GitHub. The analysis is a ~150-line Node.js script — it pulls January, December, and prior-December prices for each year, computes hit rates, an OLS regression of Feb&ndash;Dec return on January return, and a simple annual-rebalance timing strategy. Happy to share it if people want to check the work or extend it (a month-end-price version, different cash-yield assumptions, sector-level breakdowns, etc.) — reply on <a href="https://x.com/OnekAlpha" target="_blank" rel="noopener">X</a>.
+    </div>
+  </article>
+
+  <footer>
+    <p>This post is part of <b>1KAlpha</b>, a transparent, publicly logged AI trading simulation using virtual funds only. Nothing here is investment advice — it's a backtest of a widely repeated calendar rule, not a recommendation to time the market around it. Past performance, simulated or real, does not indicate future results.</p>
+    <p><a href="../">← Back to 1KAlpha.com</a> &nbsp;·&nbsp; <a href="./">More posts</a></p>
+  </footer>
+
+</div>
+</body>
+</html>
