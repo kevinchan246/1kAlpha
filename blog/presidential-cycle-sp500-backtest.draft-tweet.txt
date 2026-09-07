@@ -1,0 +1,3 @@
+Oldest calendar rule on Wall Street: the year after a midterm ("Year 3") is historically the S&P's best year, midterms the worst. Ran 151 years of data — real, but only significant since 1945. Full-period, neither half of the claim hits p<0.05.
+
+https://1kalpha.com/blog/presidential-cycle-sp500-backtest.html
