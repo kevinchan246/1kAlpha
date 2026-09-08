@@ -161,6 +161,63 @@ instead, e.g. `Week in Review: Aug 16–23`.
 - A push made with `GITHUB_TOKEN` does not trigger other workflows, so a workflow
   cannot chain into the tweet workflow without a PAT.
 
+## Writing the tweet
+
+Every check queues a `pending-tweet.txt`. Those tweets are getting 2–12 views
+each, while one *reply* to a large account got 460. The reply worked because it
+had a point and a number someone else could check. The daily posts do not,
+because of their shape:
+
+> Close check: HOLD. Oil (WTI $94.54, Brent ~$99) and 10Y yield (4.79%) crept
+> closer to our triggers amid Houthi strikes on Saudi oil sites, but neither
+> cleared the bar. NAV settled $1,048.92 (-0.05% vs this AM). [link]
+
+The reasoning in the middle is genuinely interesting. It is buried behind an
+announcement of our own schedule, and followed by a NAV move of five cents.
+**Nobody follows an account for its calendar.** Same content, led differently:
+
+> Houthi strikes on Saudi oil sites put WTI at $94.54. Our trigger to act is
+> $100. That gap is the whole decision — 62 reviews in, we've traded 5 times,
+> and "close to the line" has never been a reason to cross it.
+
+Rules that follow from that:
+
+- **Open with the finding, never the ritual.** No "Close check:", "Hold.",
+  "Day 30 close:", "Sat 15:00 ET check:". The reader does not need to know which
+  slot this was; if the post is worth reading it is worth reading without that.
+- **Lead with what nearly changed the decision.** A hold is only interesting as
+  the story of what almost made us act and why it did not. "Oil at $94.54
+  against a $100 trigger" is that story. "No invalidation levels touched" is a
+  status code.
+- **Name the level.** The specific threshold is the differentiated content —
+  it is already in the log, it is checkable, and almost nobody else posts one.
+- **NAV only when it is the story.** On a ±$0.50 day it is noise, and printing
+  it daily teaches readers the number does not matter. Weekly recaps and days
+  the book actually moved are where it belongs.
+- **Use the ratio.** As of Day 31: 62 reviews, 5 trades. Restraint is the whole
+  thesis and the posts never say it. It is worth a mention whenever a check
+  concludes in another hold.
+- **Vary the length.** Every post being three sentences is why they blur
+  together. When a day genuinely has nothing, one short line is the honest
+  version — do not inflate it to fill the usual shape.
+- **No hashtags.** X ranks on the full text semantically; hashtags are not a
+  ranking feature, and three or more trip spam classifiers. This account is
+  already automated, templated and link-bearing, which is spam-adjacent enough
+  without them.
+
+Still true regardless of shape: no forecasts, no advice, nothing the log does
+not support.
+
+**Known gap — no images.** The `Post pending tweet` workflow sends `{ text }`
+only, so every post is a bare link in a feed that rewards visuals. Fixing it
+means adding a media-upload step to the workflow and generating a chart per
+post. That is real work, not a writing convention, and it is probably the
+single highest-leverage change available to this account.
+
+**Not a Routine's job:** replying to other accounts. Those replies are the
+best-performing thing this account does and they stay manual — see the X /
+Twitter section on why.
+
 ## Analytics
 
 **Umami Cloud (free tier)**, chosen for custom-event tracking on the
