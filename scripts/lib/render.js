@@ -126,7 +126,11 @@ function paragraphs(text, cls) {
  */
 function page({ title, description, canonical, ogImage, depth, bodyHtml }) {
   const up = '../'.repeat(depth);
-  const img = ogImage || `${SITE}/apple-touch-icon.png`;
+  /* The site card, not the app icon: a 180px logo in a feed that renders
+     1600x900 wastes the whole preview. og-card.png is regenerated after every
+     posted tweet, so a recap shared on the day it publishes shows the book's
+     current shape. */
+  const img = ogImage || `${SITE}/og-card.png`;
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -140,11 +144,14 @@ function page({ title, description, canonical, ogImage, depth, bodyHtml }) {
 <meta property="og:description" content="${esc(description)}">
 <meta property="og:url" content="${esc(canonical)}">
 <meta property="og:image" content="${esc(img)}">
-<meta name="twitter:card" content="summary">
+<meta property="og:image:width" content="1600">
+<meta property="og:image:height" content="900">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@OnekAlpha">
 <meta name="twitter:title" content="${esc(title)}">
 <meta name="twitter:description" content="${esc(description)}">
 <meta name="twitter:image" content="${esc(img)}">
+<meta name="twitter:image:alt" content="1KAlpha net asset value since inception, with the days a trade happened ringed on the line.">
 <link rel="icon" href="${up}favicon.svg" type="image/svg+xml">
 <link rel="icon" href="${up}favicon.ico" sizes="any">
 <link rel="preconnect" href="https://fonts.googleapis.com">
