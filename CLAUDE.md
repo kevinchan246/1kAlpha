@@ -208,11 +208,33 @@ Rules that follow from that:
 Still true regardless of shape: no forecasts, no advice, nothing the log does
 not support.
 
-**Known gap — no images.** The `Post pending tweet` workflow sends `{ text }`
-only, so every post is a bare link in a feed that rewards visuals. Fixing it
-means adding a media-upload step to the workflow and generating a chart per
-post. That is real work, not a writing convention, and it is probably the
-single highest-leverage change available to this account.
+**Images arrive through the link preview, not an upload.** Posts used to render
+as a small app icon because `index.html` declared `twitter:card=summary`. It now
+declares `summary_large_image` pointing at `og-card.png`, so a post linking to
+the site gets a full-width card showing the NAV line since inception, the days a
+trade happened ringed on it, and the review-to-trade ratio.
+
+`scripts/generate-card.js` builds it from `ALPHA_DATA` — SVG always, plus the
+PNG when `sharp` is present. The `Post pending tweet` workflow installs `sharp`,
+regenerates the card after a successful post and commits it alongside removing
+`pending-tweet.txt`, so the card tracks the log with no change to any Routine.
+Card generation is deliberately non-fatal there: the tweet is already out by
+that point, and letting a card failure abort the commit would leave
+`pending-tweet.txt` in place and repost the same text on the next check.
+
+Two things to know about this route:
+
+- **X caches card images per URL.** Every log post links to `1kalpha.com/#LOG-nnn`
+  and the fragment is invisible to the crawler, so they share one cached card.
+  Expect it to lag the live number rather than match it post-for-post. The text
+  carries the specifics; the card carries the shape.
+- **Attaching a fresh image per post is not currently possible.** That needs
+  `POST /2/media/upload`, which requires OAuth 2.0 with the `media.write` scope;
+  the v1.1 upload endpoint that OAuth 1.0a could use was deprecated in March
+  2025. This repo authenticates with OAuth 1.0a, so per-post images would mean
+  migrating the whole credential flow — including refresh-token rotation inside
+  a stateless workflow — with developers still reporting 403s afterwards. Not
+  worth it for the gain over the link preview.
 
 **Not a Routine's job:** replying to other accounts. Those replies are the
 best-performing thing this account does and they stay manual — see the X /
