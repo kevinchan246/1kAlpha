@@ -123,6 +123,18 @@ Re-running step 3 after editing the narrative overwrites the page in place and
 replaces the existing card rather than adding a second one, so it is safe to run
 again.
 
+**Re-running a *past* week is a different thing, and it rewrites numbers.**
+`snapshots[]` records only `totalValue`, so there is no per-holding price
+history — the book table always shows the marks currently in `ALPHA_DATA`.
+Generated on the Sunday it covers, those are that week's close and the heading
+says "The book at week close"; run later, they are not, and the heading says
+"The book as of <lastUpdated>" instead. The TOTAL row's P&L is derived from the
+same book value the rows sum to, so it can never print today's book beside a
+stale week's gain. Everything else on the page — NAV, the chart, the trades — is
+week-scoped and reproducible. **Regenerating an already-published recap still
+changes its holdings table, so don't**, and patch the head by hand if a meta
+tag needs to move.
+
 **The `Publish weekly recap` workflow stays on manual dispatch only.** Its
 schedule is deliberately off: if it fired on its own it would be a second
 publisher writing `blog/index.html`, which is exactly what went wrong before. Use
@@ -235,6 +247,11 @@ Two things to know about this route:
   migrating the whole credential flow — including refresh-token rotation inside
   a stateless workflow — with developers still reporting 403s afterwards. Not
   worth it for the gain over the link preview.
+
+Every page carries the same card: `index.html`, `blog/index.html`, and the recap
+template in `scripts/lib/render.js`. The one exception is
+`blog/recap-2026-08-23.html`, left on the old `summary` card for the same reason
+its layout was left alone.
 
 **Not a Routine's job:** replying to other accounts. Those replies are the
 best-performing thing this account does and they stay manual — see the X /

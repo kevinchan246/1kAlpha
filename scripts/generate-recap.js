@@ -292,14 +292,27 @@ ${holdList}
   }).join('\n');
   const cashWeight = week.bookValue ? (data.cash / week.bookValue) * 100 : 0;
 
-  const bookSection = `    <h2>The book at week close</h2>
+  /* Snapshots record only totalValue, so there is no per-holding price history
+     to rebuild a past week's book from — these rows are the marks currently in
+     ALPHA_DATA. Generated on the Sunday it covers (the normal path) that is the
+     week's close; backfilled later it is not, so the heading says which, and
+     the TOTAL P&L is derived from the same bookValue the rows sum to rather
+     than from the week's settled NAV. Otherwise a backfill prints today's book
+     value beside a stale week's gain. */
+  // lastUpdated is "YYYY-MM-DD HH:MM ET"; only the date part is comparable to endStr.
+  const marksDate = (data.meta.lastUpdated || '').slice(0, 10);
+  const marksAreWeekClose = !marksDate || marksDate <= week.endStr;
+  const bookPnl = week.bookValue - data.meta.initialCapital;
+  const bookPct = data.meta.initialCapital ? (bookPnl / data.meta.initialCapital) * 100 : 0;
+
+  const bookSection = `    <h2>${marksAreWeekClose ? 'The book at week close' : `The book as of ${esc(data.meta.lastUpdated)}`}</h2>
     <div class="table-wrap">
       <table>
         <thead><tr><th>Asset</th><th>Qty</th><th>Avg cost</th><th>Price</th><th>Market value</th><th>Unrealised P&amp;L</th><th>Weight</th></tr></thead>
         <tbody>
 ${posRows}
         <tr><td>CASH</td><td>—</td><td>—</td><td>—</td><td>${esc(usd(data.cash))}</td><td>—</td><td>${cashWeight.toFixed(1)}%</td></tr>
-        <tr class="highlight"><td>TOTAL</td><td>—</td><td>—</td><td>—</td><td>${esc(usd(week.bookValue))}</td><td>${esc(signedUsd(week.totalPnl))} (${esc(signedPct(week.totalPct))})</td><td>100.0%</td></tr>
+        <tr class="highlight"><td>TOTAL</td><td>—</td><td>—</td><td>—</td><td>${esc(usd(week.bookValue))}</td><td>${esc(signedUsd(bookPnl))} (${esc(signedPct(bookPct))})</td><td>100.0%</td></tr>
         </tbody>
       </table>
     </div>
