@@ -44,7 +44,7 @@ jobs:
             exit 0
           fi
 
-          npm install oauth-1.0a --no-save
+          npm install oauth-1.0a sharp --no-save
 
           cat > post.js << 'SCRIPT'
           const crypto = require('crypto');
@@ -89,10 +89,17 @@ jobs:
 
           if [ "$STATUS_CODE" = "201" ]; then
             rm pending-tweet.txt
+
+            # Refresh the social card so the image X shows for 1kalpha.com
+            # tracks the log. The tweet is already out at this point, so a
+            # failure here must not stop pending-tweet.txt being removed —
+            # leaving it would repost the same text on the next check.
+            node scripts/generate-card.js || echo "card generation failed; posting the tweet still succeeded"
+
             git config user.name "1kAlpha bot"
             git config user.email "actions@users.noreply.github.com"
-            git add pending-tweet.txt
-            git commit -m "Posted tweet, removing pending-tweet.txt"
+            git add pending-tweet.txt og-card.png
+            git commit -m "Posted tweet, removing pending-tweet.txt; refresh social card"
             git push origin master
           else
             echo "Posting failed (status $STATUS_CODE), leaving pending-tweet.txt for next attempt."
