@@ -212,10 +212,29 @@ Rules that follow from that:
 - **Vary the length.** Every post being three sentences is why they blur
   together. When a day genuinely has nothing, one short line is the honest
   version — do not inflate it to fill the usual shape.
+- **Not every post carries the link.** Every post to date ended with
+  `1kalpha.com/#LOG-nnn` — 48 of 48 when this was written, which is the
+  definition of a template. Default to no link: the post is a complete thought,
+  and the level and the number that make it worth reading are already in the
+  text. Add the link when there is something to *see* — a weekly recap, a day
+  the book actually moved, a trade, a milestone. Two or three posts a fortnight,
+  not all fourteen. The variation is itself the point: posts that do not all end
+  the same way stop reading as a feed, and the large card, when it does appear,
+  means something arrived.
 - **No hashtags.** X ranks on the full text semantically; hashtags are not a
   ranking feature, and three or more trip spam classifiers. This account is
-  already automated, templated and link-bearing, which is spam-adjacent enough
+  already automated, formulaic and sometimes link-bearing, which is spam-adjacent enough
   without them.
+
+Two things the link rule is **not**. It is not a bet that X suppresses posts
+containing links — that claim is widely repeated and unsettled, and this
+account's own evidence does not support it: the reply that got 460 views did so
+by borrowing a large account's audience, which has nothing to do with links. And
+it is not a fix for reach. Roughly 340 impressions across 48 posts produced
+about 5 visits — a ~1.5% click-through, which is unremarkable rather than
+broken. **The clicks are not the problem; the impressions are**, and dropping
+the link will not change that. This rule is about not looking automated, and
+should not be sold to a future session as a growth tactic.
 
 Still true regardless of shape: no forecasts, no advice, nothing the log does
 not support.
@@ -239,7 +258,10 @@ Two things to know about this route:
 - **X caches card images per URL.** Every log post links to `1kalpha.com/#LOG-nnn`
   and the fragment is invisible to the crawler, so they share one cached card.
   Expect it to lag the live number rather than match it post-for-post. The text
-  carries the specifics; the card carries the shape.
+  carries the specifics; the card carries the shape. It also means consecutive
+  posts carry an *identical* image, which compounds the templated look rather
+  than relieving it — one more reason the link belongs on some posts rather than
+  every one.
 - **Attaching a fresh image per post is not currently possible.** That needs
   `POST /2/media/upload`, which requires OAuth 2.0 with the `media.write` scope;
   the v1.1 upload endpoint that OAuth 1.0a could use was deprecated in March
