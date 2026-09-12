@@ -321,6 +321,49 @@
     .lang-switch{align-self:flex-start;}
   }
 </style>
+<!-- ======================================================================
+     Own-device analytics opt-out.
+
+     The owner checks this page several times a day to see whether the
+     scheduled review ran, which Umami cannot tell apart from a reader: same
+     browser, no referrer, lands on "/", leaves in seconds. At 123 visitors
+     over three weeks that self-traffic is most of the sample, so the numbers
+     mostly measure the owner.
+
+     Umami's own opt-out is a localStorage key, which means a console — fine
+     on a laptop, awkward on a phone, and the phone is where most of the
+     self-traffic comes from. So the switch is a URL instead: open
+     /?nostat=1 once per device to stop being counted, /?nostat=0 to undo it.
+     localStorage is per-origin, so setting it here covers /blog/ too.
+
+     This runs before the tracker loads, so the visit that flips the switch
+     is not itself counted. It touches nothing unless the parameter is
+     present, and the confirmation only ever appears for whoever typed it.
+     ====================================================================== -->
+<script>
+(function(){
+  var v;
+  try { v = new URLSearchParams(location.search).get('nostat'); } catch (e) { return; }
+  if (v !== '0' && v !== '1') return;
+  var off = v === '1';
+  try {
+    if (off) localStorage.setItem('umami.disabled', 1);
+    else localStorage.removeItem('umami.disabled');
+  } catch (e) { return; }   // private mode: nothing to confirm
+  document.addEventListener('DOMContentLoaded', function(){
+    var el = document.createElement('div');
+    el.textContent = off
+      ? 'Analytics off for this device.'
+      : 'Analytics back on for this device.';
+    el.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);'
+      + 'z-index:9999;padding:10px 18px;border:1px solid var(--border);border-radius:6px;'
+      + 'background:var(--bg-panel);color:var(--text);font:500 13px/1.4 var(--mono);'
+      + 'box-shadow:0 4px 16px rgba(0,0,0,.5)';
+    document.body.appendChild(el);
+    setTimeout(function(){ el.remove(); }, 4000);
+  });
+})();
+</script>
 <script defer src="https://cloud.umami.is/script.js" data-website-id="2dcbaf06-d535-480a-a4a3-f571b7b1a79c"></script>
 </head>
 <body>
