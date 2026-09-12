@@ -221,10 +221,23 @@ Rules that follow from that:
   not all fourteen. The variation is itself the point: posts that do not all end
   the same way stop reading as a feed, and the large card, when it does appear,
   means something arrived.
+- **Cashtags for the tickers a post is actually about.** Write `$NVDA`, `$SPY`,
+  `$BTC` rather than the bare symbol. A cashtag is not a hashtag: X resolves it
+  to that ticker's page and the post surfaces for people browsing it, which is
+  one of the few distribution levers this account has that does not require
+  already having followers — and impressions, not clicks, are what is short.
+  Tag only what the post discusses. A post about oil and the SPY trigger is
+  `$SPY`, not a recital of the whole book; first mention only, since repeating
+  it buys nothing and reads as stuffing. Dollar figures are unaffected — X
+  reads `$` before letters as a cashtag and `$` before digits as text, so
+  `$102.59` stays a price. Tweet text only: `ALPHA_DATA` keeps tickers as
+  plain strings, identical across languages.
 - **No hashtags.** X ranks on the full text semantically; hashtags are not a
   ranking feature, and three or more trip spam classifiers. This account is
-  already automated, formulaic and sometimes link-bearing, which is spam-adjacent enough
-  without them.
+  already automated, formulaic and sometimes link-bearing, which is
+  spam-adjacent enough without them. Cashtags are the exception, and only
+  because they are a different mechanism — a link, not a keyword — so the two
+  rules do not conflict.
 
 Two things the link rule is **not**. It is not a bet that X suppresses posts
 containing links — that claim is widely repeated and unsettled, and this
@@ -235,6 +248,13 @@ about 5 visits — a ~1.5% click-through, which is unremarkable rather than
 broken. **The clicks are not the problem; the impressions are**, and dropping
 the link will not change that. This rule is about not looking automated, and
 should not be sold to a future session as a growth tactic.
+
+One cost of cashtags, worth knowing before the first surprised session: those
+feeds are thick with pump accounts, so some of the attention they bring will be
+low quality. That is the price of the only free reach on offer. The posts do not
+change to suit whoever arrives — a log about restraint is not much use to
+someone hunting signals, and trying to hold both audiences would cost the thing
+this account is for.
 
 Still true regardless of shape: no forecasts, no advice, nothing the log does
 not support.
