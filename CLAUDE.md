@@ -280,6 +280,34 @@ as `metadata__signup_source`. That is what lets "which channel produced this
 subscriber" be answered later, since no web analytics can see what happens
 inside the newsletter.
 
+**Own visits are excluded by URL, not by console.** The owner opens this page
+several times a day to see whether the scheduled review ran, and Umami cannot
+tell that apart from a reader: same browser, no referrer, lands on `/`, leaves
+in seconds. In the first three weeks that self-traffic was most of the sample —
+123 visitors, 91% bounce, 6s average — so the numbers largely measured the
+owner.
+
+Umami's opt-out is the `umami.disabled` localStorage key, which normally needs a
+console; awkward on a phone, and the phone is where most of the self-traffic
+comes from. So there is a URL switch in the `<head>` of `index.html`, placed
+**before** the tracker so the visit that flips it is not itself counted:
+
+- `1kalpha.com/?nostat=1` — stop counting this device, once per browser.
+- `1kalpha.com/?nostat=0` — undo it.
+
+localStorage is per-origin, so setting it on the homepage covers `/blog/` too —
+the switch lives on `index.html` only. It does nothing unless the parameter is
+present, and the small confirmation only ever appears for whoever typed it.
+
+Unverified from a cloud session: that Umami honours that key name. It is their
+documented opt-out, but `cloud.umami.is` is proxy-blocked here, so the tracker
+source could not be read to confirm it. The empirical check is that a visit from
+a switched-off device stops showing in Umami's realtime view.
+
+**Interpreting "visitors":** Umami's visitor id is a daily-rotating hash, so the
+count is closer to *device-days* than to people. A single owner checking on a
+phone and a laptop produces a couple of "visitors" a day on its own.
+
 Two constraints worth remembering:
 
 - `cloud.umami.is` is blocked by most ad blockers, so `window.umami` is absent
