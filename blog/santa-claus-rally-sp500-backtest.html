@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Does the Santa Claus Rally Predict the Next Year? A 97-Year Test · 1KAlpha</title>
+<meta name="description" content="Yale Hirsch's Santa Claus Rally — the last 5 trading days of December plus the first 2 of January — is a real, statistically significant effect in 97 years of S&P 500 data. His follow-on warning, that a failed rally predicts a weak year, is not.">
+<link rel="canonical" href="https://1kalpha.com/blog/santa-claus-rally-sp500-backtest.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Does the Santa Claus Rally Predict the Next Year? A 97-Year Test">
+<meta property="og:description" content="The last 5 trading days of December plus the first 2 of January really do outperform. Whether a weak version of that window is a bearish omen for the year ahead does not hold up in 97 years of data.">
+<meta property="og:url" content="https://1kalpha.com/blog/santa-claus-rally-sp500-backtest.html">
+<meta property="og:image" content="https://1kalpha.com/blog/images/santa-chart-1.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="675">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@OnekAlpha">
+<meta name="twitter:title" content="Does the Santa Claus Rally Predict the Next Year? A 97-Year Test">
+<meta name="twitter:description" content="The last 5 trading days of December plus the first 2 of January really do outperform. Whether a weak version of that window is a bearish omen for the year ahead does not hold up in 97 years of data.">
+<meta name="twitter:image" content="https://1kalpha.com/blog/images/santa-chart-1.png">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0e0f; --bg-panel:#10171a; --bg-panel-2:#141d20;
+    --border:#213032; --border-soft:#1a2528;
+    --text:#e7edee; --text-dim:#8ba0a2; --text-faint:#4e6567;
+    --amber:#ffb400; --amber-dim:#8a640e; --teal:#5eead4; --green:#34d399; --red:#f87171;
+    --mono:'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
+    --sans:'IBM Plex Sans', -apple-system, sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{background:var(--bg);}
+  body{
+    background:
+      radial-gradient(ellipse 1200px 600px at 15% -10%, rgba(255,180,0,0.06), transparent 60%),
+      radial-gradient(ellipse 1000px 800px at 100% 0%, rgba(94,234,212,0.05), transparent 55%),
+      var(--bg);
+    color:var(--text); font-family:var(--sans); line-height:1.6; padding-bottom:60px; min-height:100vh;
+  }
+  .wrap{max-width:800px; margin:0 auto; padding:0 24px;}
+  header.blog-head{
+    border-bottom:1px solid var(--border); padding:22px 0 20px; margin-bottom:40px;
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;
+  }
+  .brand-link{font-family:var(--mono); font-weight:700; font-size:17px; color:var(--text); text-decoration:none; letter-spacing:-0.01em;}
+  .brand-link span{color:var(--amber);}
+  .blog-nav a{font-family:var(--mono); font-size:12px; color:var(--text-dim); text-decoration:none; margin-left:18px; display:inline-flex; align-items:center; gap:5px;}
+  .blog-nav .x-icon{width:11px; height:11px; fill:currentColor;}
+  .blog-nav a:hover{color:var(--amber);}
+
+  .post-meta{font-family:var(--mono); font-size:12px; color:var(--text-faint); margin-bottom:14px; display:flex; gap:14px; flex-wrap:wrap; letter-spacing:.03em;}
+  article h1{font-size:clamp(26px,4.2vw,36px); color:var(--text); margin-bottom:20px; line-height:1.25;}
+  article h2{font-size:21px; color:var(--text); margin:40px 0 14px;}
+  article h2::before{content:''; display:inline-block; width:3px; height:14px; background:var(--amber); margin-right:10px; vertical-align:middle;}
+  article h3{font-size:16px; color:var(--text); margin:26px 0 10px;}
+  article p{font-size:15.5px; color:var(--text-dim); margin-bottom:16px;}
+  article ul, article ol{margin:0 0 16px 22px; color:var(--text-dim); font-size:15.5px;}
+  article li{margin-bottom:6px;}
+  article strong{color:var(--text);}
+  article a{color:var(--teal);}
+  article code{font-family:var(--mono); font-size:13px; background:var(--bg-panel-2); padding:1px 6px; border-radius:3px; color:var(--amber);}
+  article img{max-width:100%; display:block; margin:28px auto 6px; border:1px solid var(--border); border-radius:2px;}
+  figcaption{font-size:12px; color:var(--text-faint); text-align:center; margin-bottom:28px;}
+
+  .table-wrap{overflow-x:auto; margin:20px 0 28px;}
+  table{width:100%; border-collapse:collapse; font-family:var(--mono); font-size:12.5px; min-width:560px;}
+  th{text-align:right; font-size:10px; letter-spacing:.05em; text-transform:uppercase; color:var(--text-faint); padding:8px 10px; border-bottom:1px solid var(--border); white-space:nowrap;}
+  th:first-child, td:first-child{text-align:left;}
+  td{text-align:right; padding:9px 10px; border-bottom:1px solid var(--border-soft); color:var(--text-dim); white-space:nowrap;}
+  td:first-child{color:var(--text); font-weight:600;}
+  tr.highlight td{color:var(--amber);}
+
+  .callout{background:var(--bg-panel); border-left:3px solid var(--amber); padding:16px 20px; margin:26px 0; font-size:14.5px; color:var(--text-dim); line-height:1.7;}
+  .callout b{color:var(--amber);}
+  .callout.warn{border-left-color:var(--red);}
+  .callout.warn b{color:var(--red);}
+
+  footer{margin-top:64px; padding-top:22px; border-top:1px solid var(--border);}
+  footer p{font-size:12px; color:var(--text-faint); line-height:1.8; max-width:800px; margin-bottom:10px;}
+  footer a{color:var(--text-dim);}
+
+  @media (max-width:640px){
+    header.blog-head{flex-direction:column; align-items:flex-start;}
+    .blog-nav a{margin-left:0; margin-right:16px;}
+  }
+</style>
+<script defer src="https://cloud.umami.is/script.js" data-website-id="2dcbaf06-d535-480a-a4a3-f571b7b1a79c"></script>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="blog-head">
+    <a class="brand-link" href="../">1K<span>Alpha</span></a>
+    <nav class="blog-nav">
+      <a href="./">Blog</a>
+      <a href="https://x.com/OnekAlpha" target="_blank" rel="noopener"><svg class="x-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>Follow</a>
+    </nav>
+  </header>
+
+  <article>
+    <div class="post-meta">
+      <span>2026-09-14</span>
+      <span>·</span>
+      <span>9 min read</span>
+      <span>·</span>
+      <span>backtest</span>
+    </div>
+    <h1>Does the Santa Claus Rally Predict the Next Year? A 97-Year Test</h1>
+
+    <p>Every December, market commentary reaches for the same seasonal indicator: the <strong>Santa Claus Rally</strong>, coined by Yale Hirsch in the <em>Stock Trader's Almanac</em> in 1972 and defined precisely — the last five trading days of December plus the first two trading days of January. Hirsch's own line about it is the part that actually gets quoted: <em>"If Santa Claus should fail to call, bears may come to Broad and Wall."</em> The implication is that this seven-day window isn't just a curiosity — a weak one is a warning sign for the year ahead.</p>
+
+    <p>That's two separate, checkable claims stacked on top of each other. First: is the window itself unusual — does the S&amp;P 500 actually behave differently over these specific seven trading days than it does over a random seven trading days? Second, the one that actually gets used as a forecasting tool: when the window is negative, does the following year tend to be worse? I pulled 97 years of daily S&amp;P 500 data and tested both.</p>
+
+    <p>Short version: <strong>the rally itself is real and statistically significant. The omen is not</strong> — a negative Santa Claus Rally window has no detectable relationship with how the following year turns out, in the full sample or in either half of it.</p>
+
+    <h2>Methodology</h2>
+    <p>I used a daily U.S. equity price series assembled from Robert Shiller's data, Yahoo Finance's S&amp;P 500 history (^GSPC, June 1962&ndash;June 2023), and SPY ETF prices since (June 2023&ndash;present), maintained as a public GitHub dataset. That source's own documentation flags that data before January 1928 is a Dow Jones composite portfolio, not the S&amp;P 500 — so I restricted the analysis to <strong>January 3, 1928 through the data's current vintage, December 19, 2025</strong>, the period the source itself labels S&amp;P 500 price data. Trading days are as recorded in that series (weekends and NYSE holidays already excluded).</p>
+    <p>For each December from 1928 to 2024, I took the last 5 recorded trading days of that month and the first 2 trading days of the following January — Hirsch's exact definition — and computed the return from the close just before the window starts to the close on the window's last day. That gives <strong>97 rally windows</strong>. To test whether this window behaves differently from an arbitrary seven-day stretch, I computed the return of every possible rolling 7-trading-day window across the same 1928&ndash;2025 span (24,602 of them) as a baseline. To test the "omen," I paired each rally window with the full calendar-year return (first trading day to last trading day) of the January immediately following it, split into years that followed a positive vs. a negative rally window, and compared the two groups — 96 pairs have a complete following year in this dataset; the January 2025 window is the 97th but its year isn't over yet, so it's reported separately, not folded into the statistics.</p>
+
+    <div class="callout warn">
+      <b>Data-quality caveat, from the source itself:</b> the underlying dataset's README describes itself as good for "crude buy-and-hold backtests," not precision work — dividends are approximated rather than exact, and it's stitched from three different providers at two splice points (June 1962, June 2023), neither of which falls inside a December/January window this analysis uses. As a sanity check, I recomputed the rally's hit rate for exactly the 1950&ndash;2022 span the <em>Stock Trader's Almanac</em> itself reports on (58 of 73 years positive, average +1.4%): this dataset gives <b>56 of 72 years positive, average +1.36%</b> — close enough to trust the series for a seasonality test like this one, even if it isn't precise enough for, say, exact total-return accounting.
+    </div>
+
+    <h2>Claim 1: is the window itself unusual?</h2>
+    <p>Yes, clearly. Across the 97 rally windows, the S&amp;P 500 returned a mean of <strong>+1.64%</strong> (median +1.48%) and was positive <strong>76.3%</strong> of the time. Across all 24,602 possible rolling 7-trading-day windows in the same period, the mean return was +0.22% and the positive rate was 56.9%. A Welch's t-test comparing the rally-window sample to the full population of 7-day windows gives <strong>t = 5.26, p &lt; 0.0001</strong> — this is not noise dressed up as a pattern. Whatever the cause (holiday-thinned trading volume, institutional book-squaring, retail flows around bonuses, light-volume markets amplifying whatever the marginal buyer wants to do), the window genuinely behaves differently from an average week.</p>
+
+    <img src="images/santa-chart-1.png" alt="Two bar charts. Left: mean 7-day return, Santa Claus Rally window +1.64% vs random 7-day window +0.22%. Right: share of windows positive, rally window 76.3% vs random window 56.9%.">
+    <figcaption>S&amp;P 500, 1928&ndash;2025. The rally window (n=97) clearly outperforms a typical 7-trading-day stretch (n=24,602) on both return and hit rate.</figcaption>
+
+    <h2>Claim 2: does a weak rally predict a weak year?</h2>
+    <p>This is where the folklore breaks down. Splitting the 96 complete year-pairs by whether the preceding rally window was positive or negative:</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Group</th><th>n</th><th>Mean next-year return</th><th>Median next-year return</th><th>Year positive</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>All years</td><td>96</td><td>+7.56%</td><td>+11.08%</td><td>66.7%</td></tr>
+          <tr class="highlight"><td>After positive rally</td><td>74</td><td>+7.50%</td><td>+11.61%</td><td>66.2%</td></tr>
+          <tr><td>After negative rally ("failed to call")</td><td>22</td><td>+7.77%</td><td>+5.19%</td><td>68.2%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:12px; color:var(--text-faint); margin-top:-16px;">Next-year return = S&amp;P 500's first trading day to last trading day return for the January immediately following the rally window. 1929&ndash;2024 (n=96); 2025's pending year is excluded from these statistics.</p>
+
+    <p>The mean return after a negative rally (+7.77%) is not lower than after a positive one (+7.50%) — if anything, marginally higher, and a Welch's t-test says the two groups are statistically indistinguishable: <strong>t = &minus;0.06, p = 0.95</strong>. Regressing next-year return on the rally window's own return gives a slope of 0.04 and an R&sup2; of 0.00003 (p = 0.95) — essentially zero explanatory power. The scatter below is what that looks like: amber dots (positive rally) and red dots (negative rally) are interleaved across the entire vertical range, and the best-fit line is flat.</p>
+
+    <img src="images/santa-chart-2.png" alt="Scatter plot of Santa Claus Rally window return against the following full calendar year's S&P 500 return, 1929 to 2024, with a nearly flat regression line showing no relationship between the two.">
+    <figcaption>Each dot is one year-pair (n=96). No visible relationship, and the regression confirms it: R&sup2; &asymp; 0.00003.</figcaption>
+
+    <p>The effect doesn't hide in a subsample either. Splitting the data in half at 1977: in 1929&ndash;1976, years after a positive rally averaged +5.47% vs. +5.05% after a negative one; in 1977&ndash;2024, +9.89% vs. +9.32%. Both halves show the same story as the full sample — a trivial, statistically meaningless gap, not a reversal, not a strengthening. This isn't a case where the pattern used to work and faded, the way some calendar effects in this series have turned out to be. It looks like it never worked as a forecast, in any era tested.</p>
+
+    <p>The two most recent complete observations make the point concretely. The rally window heading into 2024 was slightly negative (&minus;0.83%) — Hirsch's aphorism would call that bearish. The S&amp;P 500 returned <strong>+24.0%</strong> in 2024. The window heading into 2025 was also slightly negative (&minus;0.46%, per this dataset's December 19, 2025 vintage) — 2025 is running at roughly <strong>+16.4%</strong> through the same cutoff, with the year not yet over. Two data points prove nothing on their own; they're consistent with, not additional evidence for, the null result above.</p>
+
+    <h2>Bottom line</h2>
+    <ul>
+      <li><strong>The Santa Claus Rally window is real.</strong> The last 5 trading days of December plus the first 2 of January outperform a typical 7-day stretch by a wide, statistically significant margin (t = 5.26, p &lt; 0.0001), and the effect reproduces closely against the Almanac's own published 1950&ndash;2022 figures.</li>
+      <li><strong>The bearish omen is not.</strong> Whether that window is positive or negative has no detectable relationship with how the following calendar year performs — not in the full 96-year sample, and not in either half of it.</li>
+      <li>Both parts of the aphorism get repeated together every December. Only the first half has data behind it.</li>
+    </ul>
+
+    <h2>Limitations</h2>
+    <ul>
+      <li><strong>Price only, no total return.</strong> This tests index price levels, which is how Hirsch's original almanac indicator is defined and how it's commonly discussed — it does not include dividends, so it isn't a statement about what an actual buy-and-hold investor earned.</li>
+      <li><strong>The rolling 7-day baseline isn't fully independent.</strong> Adjacent rolling windows overlap heavily (each day's window shares 6 of 7 days with the next), so the 24,602-window baseline has far less than 24,602 independent observations. The t-test in Claim 1 likely understates its own p-value's uncertainty somewhat for that reason — though a gap this large (1.64% vs. 0.22% mean, 76% vs. 57% hit rate) is unlikely to be an artifact of that alone.</li>
+      <li><strong>96 year-pairs is not a large independent sample</strong> for the "does it predict the year" test, and calendar years aren't independent draws — a multi-year regime (the 1990s bull market, 2008&ndash;09) can dominate several of them from one underlying cause. That said, the null result here isn't a borderline call sitting near a significance threshold; it's a coefficient statistically indistinguishable from exactly zero, in the full sample and in both era-split halves.</li>
+      <li><strong>Data vintage.</strong> The underlying series runs through December 19, 2025 at the time of writing, so the most recent rally window (heading into 2025) and its "year" are necessarily incomplete and excluded from the statistical tests, reported only as an illustrative aside.</li>
+    </ul>
+
+    <div class="callout">
+      <b>Reproducing this:</b> Data is a daily U.S. market series maintained on GitHub at <a href="https://github.com/SteelCerberus/us-market-data" target="_blank" rel="noopener">SteelCerberus/us-market-data</a>, itself sourced from Robert Shiller's dataset, Yahoo Finance, and SPY ETF prices. The analysis is a ~150-line Node.js script — group trading days by December/January, take the last 5 and first 2, compute returns, run Welch's t-tests and a linear regression. Happy to share it if people want to check the work — reply on <a href="https://x.com/OnekAlpha" target="_blank" rel="noopener">X</a>.
+    </div>
+  </article>
+
+  <footer>
+    <p>This post is part of <b>1KAlpha</b>, a transparent, publicly logged AI trading simulation using virtual funds only. Nothing here is investment advice — it's a backtest of a widely repeated market aphorism, not a recommendation to trade around a calendar date. Past performance, simulated or real, does not indicate future results.</p>
+    <p><a href="../">← Back to 1KAlpha.com</a> &nbsp;·&nbsp; <a href="./">More posts</a></p>
+  </footer>
+
+</div>
+</body>
+</html>
