@@ -52,7 +52,28 @@ jobs:
           const https = require('https');
           const fs = require('fs');
 
-          const text = fs.readFileSync('pending-tweet.txt', 'utf8').trim();
+          let text = fs.readFileSync('pending-tweet.txt', 'utf8').trim();
+
+          /* X rejects a post carrying more than one cashtag outright — 403,
+             "Posts are limited to a maximum of one cashtag ($SYMBOL)". That
+             cost two posts on 2026-09-14 (LOG-073 and LOG-074), silently: the
+             job failed, the next check overwrote the file, and both tweets
+             were simply lost.
+
+             A drafting slip should cost the cashtag, not the post. Keep the
+             first, demote the rest to plain symbols. $ before a digit is a
+             price, not a cashtag, so figures are untouched. Repeats of the
+             same ticker are demoted too, since it is not documented whether X
+             counts them once or twice. */
+          {
+            let seen = 0;
+            const fixed = text.replace(/\$(?=[A-Za-z])/g, (m) => (++seen === 1 ? m : ''));
+            if (fixed !== text) {
+              console.log(`NOTE: demoted ${seen - 1} extra cashtag(s) to plain symbols; X allows one per post.`);
+              console.log('NOTE: posting:', fixed);
+              text = fixed;
+            }
+          }
 
           const oauth = OAuth({
             consumer: { key: process.env.X_CONSUMER_KEY, secret: process.env.X_CONSUMER_SECRET },

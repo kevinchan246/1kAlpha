@@ -221,17 +221,30 @@ Rules that follow from that:
   not all fourteen. The variation is itself the point: posts that do not all end
   the same way stop reading as a feed, and the large card, when it does appear,
   means something arrived.
-- **Cashtags for the tickers a post is actually about.** Write `$NVDA`, `$SPY`,
-  `$BTC` rather than the bare symbol. A cashtag is not a hashtag: X resolves it
-  to that ticker's page and the post surfaces for people browsing it, which is
-  one of the few distribution levers this account has that does not require
-  already having followers — and impressions, not clicks, are what is short.
-  Tag only what the post discusses. A post about oil and the SPY trigger is
-  `$SPY`, not a recital of the whole book; first mention only, since repeating
-  it buys nothing and reads as stuffing. Dollar figures are unaffected — X
-  reads `$` before letters as a cashtag and `$` before digits as text, so
-  `$102.59` stays a price. Tweet text only: `ALPHA_DATA` keeps tickers as
-  plain strings, identical across languages.
+- **Exactly one cashtag, and it replaces the inline mention.** `$NVDA`, `$SPY`,
+  `$BTC`. A cashtag is not a hashtag: X resolves it to that ticker's page and
+  the post surfaces for people browsing it, which is one of the few
+  distribution levers this account has that does not route through the follow
+  graph — and impressions, not clicks, are what is short.
+
+  **One is a hard limit, not a style preference.** X rejects a post carrying
+  two outright: `403`, *"Posts are limited to a maximum of one cashtag
+  ($SYMBOL)."* That cost two posts on 2026-09-14 — LOG-073 and LOG-074 both
+  failed, and because each check overwrites `pending-tweet.txt`, the first was
+  gone before anyone looked. A post about NVDA against the SPY trigger tags
+  whichever one it is actually about and writes the other plainly.
+
+  **Tag in place, never as a tail.** The cashtag *is* the first mention, inside
+  the sentence that discusses it — `$NVDA closed at $212.56`. Writing the
+  sentence with a bare `NVDA` and then appending `$NVDA $SPY` at the end is the
+  hashtag-tail shape this whole section exists to avoid, and it is exactly what
+  the first drafts under this rule produced.
+
+  Dollar figures are unaffected — X reads `$` before letters as a cashtag and
+  `$` before digits as text, so `$102.59` stays a price. Tweet text only:
+  `ALPHA_DATA` keeps tickers as plain strings, identical across languages. The
+  `Post pending tweet` workflow demotes any extra cashtag to a plain symbol
+  rather than lose the post, but that is a net, not a licence.
 - **No hashtags.** X ranks on the full text semantically; hashtags are not a
   ranking feature, and three or more trip spam classifiers. This account is
   already automated, formulaic and sometimes link-bearing, which is
