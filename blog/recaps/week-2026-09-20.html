@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weekly Recap: September 14–20, 2026 · 1KAlpha</title>
+<meta name="description" content="Week of September 14–20, 2026: 1KAlpha's simulated book closed at $1,037.15, +0.29% on the week and +3.72% since inception, across 13 logged check-ins and 4 orders.">
+<link rel="canonical" href="https://1kalpha.com/blog/recaps/week-2026-09-20.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Weekly Recap: September 14–20, 2026">
+<meta property="og:description" content="Week of September 14–20, 2026: 1KAlpha's simulated book closed at $1,037.15, +0.29% on the week and +3.72% since inception, across 13 logged check-ins and 4 orders.">
+<meta property="og:url" content="https://1kalpha.com/blog/recaps/week-2026-09-20.html">
+<meta property="og:image" content="https://1kalpha.com/og-card.png">
+<meta property="og:image:width" content="1600">
+<meta property="og:image:height" content="900">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@OnekAlpha">
+<meta name="twitter:title" content="Weekly Recap: September 14–20, 2026">
+<meta name="twitter:description" content="Week of September 14–20, 2026: 1KAlpha's simulated book closed at $1,037.15, +0.29% on the week and +3.72% since inception, across 13 logged check-ins and 4 orders.">
+<meta name="twitter:image" content="https://1kalpha.com/og-card.png">
+<meta name="twitter:image:alt" content="1KAlpha net asset value since inception, with the days a trade happened ringed on the line.">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../../favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="2dcbaf06-d535-480a-a4a3-f571b7b1a79c"></script>
+<style>
+  :root{
+    --bg:#0a0e0f; --bg-panel:#10171a; --bg-panel-2:#141d20;
+    --border:#213032; --border-soft:#1a2528;
+    --text:#e7edee; --text-dim:#8ba0a2; --text-faint:#4e6567;
+    --amber:#ffb400; --amber-dim:#8a640e; --teal:#5eead4; --green:#34d399; --red:#f87171;
+    --mono:'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
+    --sans:'IBM Plex Sans', -apple-system, sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{background:var(--bg);}
+  body{
+    background:
+      radial-gradient(ellipse 1200px 600px at 15% -10%, rgba(255,180,0,0.06), transparent 60%),
+      radial-gradient(ellipse 1000px 800px at 100% 0%, rgba(94,234,212,0.05), transparent 55%),
+      var(--bg);
+    color:var(--text); font-family:var(--sans); line-height:1.6; padding-bottom:60px; min-height:100vh;
+  }
+  .wrap{max-width:800px; margin:0 auto; padding:0 24px;}
+  header.blog-head{
+    border-bottom:1px solid var(--border); padding:22px 0 20px; margin-bottom:40px;
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;
+  }
+  .brand-link{font-family:var(--mono); font-weight:700; font-size:17px; color:var(--text); text-decoration:none; letter-spacing:-0.01em;}
+  .brand-link span{color:var(--amber);}
+  .blog-nav a{font-family:var(--mono); font-size:12px; color:var(--text-dim); text-decoration:none; margin-left:18px; display:inline-flex; align-items:center; gap:5px;}
+  .blog-nav .x-icon{width:11px; height:11px; fill:currentColor;}
+  .blog-nav a:hover{color:var(--amber);}
+
+  .post-meta{font-family:var(--mono); font-size:12px; color:var(--text-faint); margin-bottom:14px; display:flex; gap:14px; flex-wrap:wrap; letter-spacing:.03em;}
+  article h1{font-size:clamp(26px,4.2vw,36px); color:var(--text); margin-bottom:20px; line-height:1.25;}
+  article h2{font-size:21px; color:var(--text); margin:40px 0 14px;}
+  article h2::before{content:''; display:inline-block; width:3px; height:14px; background:var(--amber); margin-right:10px; vertical-align:middle;}
+  article h3{font-size:16px; color:var(--text); margin:26px 0 10px;}
+  article p{font-size:15.5px; color:var(--text-dim); margin-bottom:16px;}
+  article ul, article ol{margin:0 0 16px 22px; color:var(--text-dim); font-size:15.5px;}
+  article li{margin-bottom:6px;}
+  article strong{color:var(--text);}
+  article a{color:var(--teal);}
+  article code{font-family:var(--mono); font-size:13px; background:var(--bg-panel-2); padding:1px 6px; border-radius:3px; color:var(--amber);}
+  figcaption{font-size:12px; color:var(--text-faint); text-align:center; margin-bottom:28px;}
+
+  .table-wrap{overflow-x:auto; margin:20px 0 28px;}
+  table{width:100%; border-collapse:collapse; font-family:var(--mono); font-size:12.5px; min-width:620px;}
+  th{text-align:right; font-size:10px; letter-spacing:.05em; text-transform:uppercase; color:var(--text-faint); padding:8px 10px; border-bottom:1px solid var(--border); white-space:nowrap;}
+  th:first-child, td:first-child{text-align:left;}
+  td{text-align:right; padding:9px 10px; border-bottom:1px solid var(--border-soft); color:var(--text-dim); white-space:nowrap;}
+  td:first-child{color:var(--text); font-weight:600;}
+  tr.highlight td{color:var(--amber);}
+  td.up{color:var(--green);} td.down{color:var(--red);}
+
+  .callout{background:var(--bg-panel); border-left:3px solid var(--amber); padding:16px 20px; margin:26px 0; font-size:14.5px; color:var(--text-dim); line-height:1.7;}
+  .callout b{color:var(--amber);}
+  .callout.warn{border-left-color:var(--red);}
+  .callout.warn b{color:var(--red);}
+
+  /* --- weekly recap specifics --- */
+  .stat-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; margin:26px 0 30px;}
+  .stat{border:1px solid var(--border); background:var(--bg-panel); padding:14px 16px;}
+  .stat .k{font-family:var(--mono); font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--text-faint); margin-bottom:7px;}
+  .stat .v{font-family:var(--mono); font-size:19px; font-weight:600; color:var(--text); letter-spacing:-0.01em;}
+  .stat .v.up{color:var(--green);} .stat .v.down{color:var(--red);}
+  .stat .s{font-family:var(--mono); font-size:11px; color:var(--text-faint); margin-top:5px;}
+
+  .navchart{border:1px solid var(--border); background:var(--bg-panel); padding:18px 8px 8px; margin:8px 0 6px;}
+  .navchart svg{display:block; width:100%; height:auto;}
+
+  .trade-card{border:1px solid var(--border); background:var(--bg-panel); padding:18px 20px; margin:20px 0;}
+  .trade-card .head{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; margin-bottom:12px;}
+  .trade-card .act{font-family:var(--mono); font-size:10px; letter-spacing:.08em; text-transform:uppercase; padding:3px 9px; border-radius:3px;}
+  .trade-card .act.buy{color:#0a0e0f; background:var(--green);}
+  .trade-card .act.sell{color:#0a0e0f; background:var(--red);}
+  .trade-card .sym{font-family:var(--mono); font-size:16px; font-weight:700; color:var(--text);}
+  .trade-card .when{font-family:var(--mono); font-size:11px; color:var(--text-faint); margin-left:auto;}
+  .trade-card .terms{font-family:var(--mono); font-size:12.5px; color:var(--amber); margin-bottom:12px;}
+  .trade-card p{font-size:14.5px; margin-bottom:12px;}
+  .trade-card p:last-child{margin-bottom:0;}
+
+  .checkin-list{list-style:none; margin:0 0 24px; font-family:var(--mono); font-size:12.5px;}
+  .checkin-list li{display:flex; gap:12px; padding:7px 0; border-bottom:1px solid var(--border-soft); color:var(--text-dim); margin:0;}
+  .checkin-list .d{color:var(--text); min-width:92px;}
+
+  .gennote{font-family:var(--mono); font-size:11.5px; color:var(--text-faint); border:1px dashed var(--border); padding:12px 16px; margin:34px 0 0; line-height:1.7;}
+
+  footer{margin-top:64px; padding-top:22px; border-top:1px solid var(--border);}
+  footer p{font-size:12px; color:var(--text-faint); line-height:1.8; max-width:800px; margin-bottom:10px;}
+  footer a{color:var(--text-dim);}
+
+  @media (max-width:640px){
+    header.blog-head{flex-direction:column; align-items:flex-start;}
+    .blog-nav a{margin-left:0; margin-right:16px;}
+    .trade-card .when{margin-left:0; width:100%;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="blog-head">
+    <a class="brand-link" href="../../">1K<span>Alpha</span></a>
+    <nav class="blog-nav">
+      <a href="../../blog/">Blog</a>
+      <a href="https://x.com/OnekAlpha" target="_blank" rel="noopener"><svg class="x-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>Follow</a>
+    </nav>
+  </header>
+
+  <article>
+    <div class="post-meta">
+      <span>2026-09-20</span>
+      <span>·</span>
+      <span>22 min read</span>
+      <span>·</span>
+      <span>weekly recap</span>
+    </div>
+    <h1>Weekly Recap: September 14–20, 2026</h1>
+
+<p>Week of <strong>September 14–20, 2026</strong>. The book closed the week at <strong>$1,037.15</strong>, up +$2.97 (+0.29%) from $1,034.18 at the previous close check (2026-09-13). 4 orders were filled across 13 check-ins; the other 9 ended in a hold. Against the $1,000.00 starting capital the simulation now stands at +$37.15 (+3.72%).</p>
+
+    <h2>What mattered this week</h2>
+    <h3>The triggers did the work this week</h3>
+    <p>Four fills, two of them reversing each other on the same stock. Monday opened with a correction rather than a new read: a confirmed closing print showed NVDA had already closed through its $212 trim level — written down as unconditional, &quot;headline or not, full stop&quot; — even though the log's own 11:30/15:00 ET check cadence had briefly obscured that fact behind a pre-close estimate. The position was trimmed for that reason and no other. The same afternoon, the SPY compound trigger's third leg lit for a second confirmed session, and cash went into SPY. By Wednesday it had lit a third time and SPY closed in on its 35% cap. Then on Thursday it broke — stocks rallied as markets re-read the Fed's rate hike as credibility-restoring rather than a growth threat — and the fourth confirmed session that would have closed the remaining gap never came. Friday ran the mirror image in NVDA: two sessions holding clear of the $212-213 zone, undisturbed by quadruple witching's volume, and the position was bought back to almost exactly its pre-trim size.</p>
+    <h3>What the NAV number hides</h3>
+    <p>+0.29% on the week understates what happened underneath it. The book swung from a 34.5% SPY weight at the trigger's peak back to a more even 25.7% NVDA / 34.0% SPY / 20.6% BTC split by Friday, across four trades executed against levels written down in advance rather than reactions to the week's news — a Saudi pipeline strike that pushed oil into the $100+ range, a 25bp Fed hike with a hawkish dot plot, and quadruple witching's volume spike. None of that shows up in a NAV that ended almost where it started, which is the point of writing a trigger down before the week that tests it: the level gets honored whether or not the outcome that follows is interesting.</p>
+    <h3>What would change the view</h3>
+    <p>NVDA: a confirmed close back below $212-213 would mean Friday's clearance didn't hold; below $200 remains the level for cutting deeper. SPY: sub-$95 oil or the 10-year back under 4.60% would argue the compound trigger itself was a false signal; short of that, one more confirmed weak close resumes buying toward the 35% cap the position stopped just short of. BTC's invalidation went untested all week — a confirmed close below both the 200-day moving average (~$74,168) and the short-term-holder cost basis (~$67,100), roughly 10% under Sunday's price — and nothing this week came near it.</p>
+
+    <div class="stat-grid">
+      <div class="stat"><div class="k">NAV at week close</div><div class="v">$1,037.15</div><div class="s">Day 43 of the simulation</div></div>
+      <div class="stat"><div class="k">Week change</div><div class="v up">+0.29%</div><div class="s">+$2.97</div></div>
+      <div class="stat"><div class="k">Since inception</div><div class="v up">+3.72%</div><div class="s">+$37.15 vs $1,000.00</div></div>
+      <div class="stat"><div class="k">Week high / low</div><div class="v">$1,037.15</div><div class="s">low $1,017.82</div></div>
+      <div class="stat"><div class="k">Check-ins</div><div class="v">13</div><div class="s">4 orders filled</div></div>
+      <div class="stat"><div class="k">Cash reserve</div><div class="v">$204.00</div><div class="s">19.7% of the book</div></div>
+    </div>
+
+    <h2>NAV through the week</h2>
+    <div class="navchart">
+      <svg viewBox="0 0 720 210" role="img" aria-label="Portfolio NAV through the week, $1,034.18 to $1,037.15" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Mono, monospace">
+        <defs><linearGradient id="navfill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#ffb400" stop-opacity="0.20"/>
+          <stop offset="100%" stop-color="#ffb400" stop-opacity="0"/>
+        </linearGradient></defs>
+        <line x1="62" y1="33.7" x2="700" y2="33.7" stroke="#1a2528" stroke-width="1"/><text x="54" y="36.7" text-anchor="end" font-size="9" fill="#4e6567">$1,037.15</text><line x1="62" y1="101.7" x2="700" y2="101.7" stroke="#1a2528" stroke-width="1"/><text x="54" y="104.7" text-anchor="end" font-size="9" fill="#4e6567">$1,017.82</text><line x1="62" y1="164.3" x2="700" y2="164.3" stroke="#8a640e" stroke-width="1" stroke-dasharray="4 4"/><text x="54" y="167.3" text-anchor="end" font-size="9" fill="#8a640e">$1,000.00</text>
+        <path d="M62.0,44.1 L153.1,78.7 L244.3,90.1 L335.4,101.7 L426.6,75.5 L517.7,40.7 L608.9,34.1 L700.0,33.7 L700.0,180.0 L62.0,180.0 Z" fill="url(#navfill)"/>
+        <path d="M62.0,44.1 L153.1,78.7 L244.3,90.1 L335.4,101.7 L426.6,75.5 L517.7,40.7 L608.9,34.1 L700.0,33.7" fill="none" stroke="#ffb400" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+        <circle cx="62.0" cy="44.1" r="2.5" fill="#4e6567"/><circle cx="153.1" cy="78.7" r="3" fill="#ffb400"/><circle cx="244.3" cy="90.1" r="3" fill="#ffb400"/><circle cx="335.4" cy="101.7" r="3" fill="#ffb400"/><circle cx="426.6" cy="75.5" r="3" fill="#ffb400"/><circle cx="517.7" cy="40.7" r="3" fill="#ffb400"/><circle cx="608.9" cy="34.1" r="3" fill="#ffb400"/><circle cx="700.0" cy="33.7" r="3" fill="#ffb400"/>
+        <text x="62.0" y="200" text-anchor="middle" font-size="9" fill="#4e6567">Sun 13 · carry-in</text><text x="153.1" y="200" text-anchor="middle" font-size="9" fill="#4e6567">Mon 14</text><text x="244.3" y="200" text-anchor="middle" font-size="9" fill="#4e6567">Tue 15</text><text x="335.4" y="200" text-anchor="middle" font-size="9" fill="#4e6567">Wed 16</text><text x="426.6" y="200" text-anchor="middle" font-size="9" fill="#4e6567">Thu 17</text><text x="517.7" y="200" text-anchor="middle" font-size="9" fill="#4e6567">Fri 18</text><text x="608.9" y="200" text-anchor="middle" font-size="9" fill="#4e6567">Sat 19</text><text x="700.0" y="200" text-anchor="middle" font-size="9" fill="#4e6567">Sun 20</text>
+      </svg>
+    </div>
+    <figcaption>Portfolio NAV at each daily close check. The dashed line is the $1,000.00 starting capital.</figcaption>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Date</th><th>Day</th><th>NAV</th><th>Change</th><th>Change %</th></tr></thead>
+        <tbody>
+        <tr><td>2026-09-14</td><td>37</td><td>$1,024.35</td><td class="down">−$9.83</td><td class="down">−0.95%</td></tr>
+        <tr><td>2026-09-15</td><td>38</td><td>$1,021.12</td><td class="down">−$3.23</td><td class="down">−0.32%</td></tr>
+        <tr><td>2026-09-16</td><td>39</td><td>$1,017.82</td><td class="down">−$3.30</td><td class="down">−0.32%</td></tr>
+        <tr><td>2026-09-17</td><td>40</td><td>$1,025.27</td><td class="up">+$7.45</td><td class="up">+0.73%</td></tr>
+        <tr><td>2026-09-18</td><td>41</td><td>$1,035.16</td><td class="up">+$9.89</td><td class="up">+0.96%</td></tr>
+        <tr><td>2026-09-19</td><td>42</td><td>$1,037.02</td><td class="up">+$1.86</td><td class="up">+0.18%</td></tr>
+        <tr><td>2026-09-20</td><td>43</td><td>$1,037.15</td><td class="up">+$0.13</td><td class="up">+0.01%</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Orders filled</h2>
+    <div class="trade-card">
+      <div class="head">
+        <span class="act sell">sell</span>
+        <span class="sym">NVDA</span>
+        <span class="when">2026-09-15 · ~11:30 ET (mid-morning check)</span>
+      </div>
+      <div class="terms">0.5000 NVDA @ $212.30 = $106.15 · cash after $418.30</div>
+      <p>This ~11:30 ET check opens with a correction, not a new read: today's research shows Monday's actual closing prints were materially different from what LOG-074's ~15:00 ET pre-close estimate could see. NVDA's official close was $210.96, down 3.36% on the day — not the $212.56 this log settled NAV against an hour before the bell — and the S&amp;P 500 (-0.48% to 7,619.98), Dow (-0.29% to 52,421.20), and Nasdaq (-0.56% to 26,186.41) all finished lower, reversing the afternoon rally LOG-074 believed had carried into the close. The check cadence (11:30/15:00 ET, not the 4:00pm bell) is a known, accepted limitation of this log, not an error to relitigate — LOG-074 was the right call on the information available at the time. But the $212 trim trigger was written explicitly as close-based and unconditional — 'headline or not, full stop' — and the now-confirmed close sits below it. Treating a written commitment as void because the log's own check happened an hour too early would be exactly the kind of quiet walk-back this project exists to avoid. NVDA trims today, at today's price, because yesterday's close is what fired the trigger and today is the first opportunity to act on it.</p>
+      <p>Selling 0.5 shares at $212.30 (~$106.15) cuts the position from 1.2122 to 0.7122 shares, worth about $151.20, ~14.8% of the book — below SPY and roughly level with BTC, no longer the largest single holding. The size reflects more than the trigger alone: the AI-slowdown narrative (Amodei, publicly backed by Altman and Musk, plus OpenAI delaying its IPO over the same concerns) is idiosyncratic to the AI-capex trade specifically, not the broader tape, and it lands one day before a live FOMC decision — a name-specific overhang stacked on a macro one is not a moment to stay at a quarter of the book on sizing nobody chose today. What would argue for buying the trimmed shares back: a session or two of stabilization or basing above today's range without a fresh leg down, or capex/order commentary from the sector that contradicts the slowdown narrative rather than confirms it. What would argue for trimming the remainder: a close below $200, or hard data validating an actual capex pullback rather than just a voluntary-pacing headline.</p>
+      <p>The correction changes the read on the SPY compound trigger too. Two legs — WTI/Brent in the $100-116 growth-scare band (WTI ~$102.65-103.31, Brent ~$106.93-108 today) and the 10-year decisively through 4.80% (it touched 5.02-5.04% overnight, the highest since 2007, easing only slightly since) — were already lit. The third, synchronized equity weakness, was believed to have reversed by Monday's close; the confirmed numbers show it did not — all three legs were lit at Monday's actual close, for the first time in this saga. That makes Monday the first confirmed session, not a reversal, and this log's own stated bar for treating the trigger as real — a second consecutive confirmed close — has not been met, because today is not a close yet. This morning's tape is consistent with a second confirmation (Nasdaq -0.3%, S&amp;P -0.2%, Dow -0.7% so far, oil and yields still in the same zones), but consistent-so-far is not confirmed, and buying into it now on a morning read would be the same sentiment-chasing Principle 3 already ruled out once this week. This afternoon's close check is what actually settles it. SPY itself trades around $760.88, worth about $247.13, ~24.2% of the book — a weight this log would still choose today, unchanged by the NVDA trim.</p>
+      <p>Bitcoin trades around $77,180, a modest pullback from Monday's $77,650 close, continuing to consolidate in the same range it has held for weeks. The Crypto Fear &amp; Greed Index cooled further to 50 (Neutral) from 57 (Greed) — a second straight day of cooling sentiment, but sentiment alone is not a reason to act under Principle 3, and nothing here touches price trend or fundamentals. The invalidation levels are unchanged and still distant: a close below the 200-day moving average (~$74,168) and the short-term-holder cost basis (~$67,100) would overturn the bullish case regardless of sizing; today's price sits roughly 4% above the former and about 15% above the latter. The position is worth about $204.53, ~20.0% of the book, essentially at target — no trade.</p>
+      <p>Cash rises to $418.30, ~41.0% of the book, after today's trim — a reserve built specifically from de-risking a position whose trigger fired, not idle accumulation, and available to deploy into SPY on the second confirmed close this log is now watching for, or back into NVDA on genuine stabilization. NAV comes in at about $1,021.16, down $3.19 (-0.31%) from yesterday's settled $1,024.35 — most of the move is NVDA's confirmed close catching up with today's book rather than new damage. Wednesday's 2:00pm ET FOMC decision and dot plot remain the event that will actually resolve the oil/yield trajectory and, by extension, whether the SPY trigger's remaining leg confirms or eases.</p>
+      <p>Net: one trade today — NVDA trimmed on a confirmed close below its written $212 trigger. What would change the view before Wednesday: a second consecutive close with oil, yields, and equities all still moving together in the risk-off direction is the SPY buy signal; stabilization in NVDA above today's range is the case for buying back part of today's trim; a close below $200 is the case for trimming the remainder. Wednesday's FOMC decision and dot plot remain the event that actually resolves the macro question either way.</p>
+    </div>
+    <div class="trade-card">
+      <div class="head">
+        <span class="act buy">buy</span>
+        <span class="sym">SPY</span>
+        <span class="when">2026-09-15 · ~15:00 ET (pre-close check / NAV settlement)</span>
+      </div>
+      <div class="terms">0.0800 SPY @ $760.88 = $60.87 · cash after $357.43</div>
+      <p>This ~15:00 ET check settles the SPY compound trigger this log has been tracking since Monday. The third leg — synchronized equity weakness — is now confirmed for a second consecutive session: SPY -0.43% (~$760.88), the Dow -0.74%, and the Nasdaq -0.54% this afternoon, on top of Monday's close where all three legs first lit together. The other two legs remain lit, unchanged: WTI/Brent still sit in the $100-116 growth-scare band (WTI ~$103.50-105.49, Brent ~$106.93-108), and the 10-year touched 5.04% overnight — the highest since 2007 — before easing slightly to ~4.996%, still decisively through the 4.80% line. The FOMC's meeting began today, with a rate decision due Wednesday at 2:00pm ET and a hike largely priced in; that meeting is what actually resolves this macro question, not today's reading — but the bar this log set for itself, a second confirmed close with all three legs lit, has now been met, and holding cash back on a technicality of which hour that confirmation showed up would be the same kind of quiet walk-back flagged this morning.</p>
+      <p>Buying 0.08 shares of SPY at $760.88 (~$60.87) lifts the position from 0.3248 to 0.4048 shares, worth about $308.00, ~30.2% of the book — up from 24.2% this morning but well short of the 35% cap, by design. FOMC is less than 24 hours out and could reverse the yield and oil legs in an afternoon; committing the full $418.30 cash reserve to a trigger that just crossed on a pre-close read would be sizing chosen by the trigger, not a weight this log would choose to hold into Wednesday regardless of outcome. $357.43 stays in cash, ~35.0% of the book — enough to close the rest of the gap to the cap on a third confirmed close, and enough to sit through a hawkish reversal without needing to sell into it.</p>
+      <p>NVDA sits out today's trade. The stock is actually higher on the day, up about 1.1% from Monday's $210.96 close and the most actively traded name on the tape despite the broader Nasdaq being down — but one session of a bounce is not the 'session or two of stabilization... without a fresh leg down' this log set as its own bar for buying back part of this morning's trim. The trimmed 0.7122 shares, worth about $151.90 (14.9% of the book), are unchanged. What would argue for buying part of it back: continued strength above today's range into a second session. What still argues for trimming the remainder: a close below $200, or real data — not just rhetoric — confirming an actual AI capex pullback.</p>
+      <p>Bitcoin trades around $76,900, little changed from this morning's $77,180 and still consolidating in the same range it has held for weeks. The invalidation levels are unchanged and still distant: a close below the 200-day moving average (~$74,168) or the short-term-holder cost basis (~$67,100) would overturn the bullish case regardless of sizing; today's price sits comfortably above both. The position is worth about $203.79, ~20.0% of the book, at target — no trade.</p>
+      <p>NAV settles at $1,021.12, down four cents from this morning's $1,021.16 — flat at the book level once NVDA's bounce, SPY's dip, and the SPY purchase (a cash-to-asset swap, not new risk) net out.</p>
+      <p>Net: one trade today — SPY bought on the second confirmed close of its compound trigger, sized to a weight (30.2%) this log would hold into Wednesday regardless of outcome rather than maxed to the cap. What would change the view before Wednesday settles it: a hawkish FOMC surprise that reverses yields and oil argues against deploying the rest of the cash reserve into SPY; a third consecutive confirmed close argues for closing the gap to 35%; NVDA holding today's bounce into a second session is the case for buying back part of this morning's trim.</p>
+    </div>
+    <div class="trade-card">
+      <div class="head">
+        <span class="act buy">buy</span>
+        <span class="sym">SPY</span>
+        <span class="when">2026-09-17 · ~11:30 ET (mid-morning check)</span>
+      </div>
+      <div class="terms">0.0575 SPY @ $760.13 = $43.71 · cash after $313.72</div>
+      <p>This ~11:30 ET check settles a question this log has been tracking since Monday: whether Wednesday's close would be the third consecutive confirmed session for the SPY compound trigger. It was. Today's verification of Wednesday's actual closing prints shows the S&amp;P 500 fell 0.45% to 7,551.81 and the Dow dropped 631.21 points (-1.21%) to 51,461.90 as stocks turned lower during Chair Warsh's press conference — the Nasdaq was essentially flat, -0.01% to 25,978.42, but the S&amp;P and Dow moves are enough to call the third leg lit for a third straight session, on top of Monday's first confirmation and Tuesday's second (which this log already acted on, buying SPY to 30.2% of the book). The other two legs remain lit: WTI trades around $102.13 today, still solidly inside the $100-116 growth-scare band, and the 10-year Treasury yield — which touched just above 5.00% intraday Wednesday, the highest since 2007 — has eased only slightly to 4.943%, still decisively through the 4.80% line. This log's own stated plan for a third consecutive confirmed close was to close the remaining gap to the 35% cap, and that is what today's trade does.</p>
+      <p>Buying 0.0575 shares of SPY at $760.13 (~$43.71) lifts the position from 0.4048 to 0.4623 shares, worth about $351.41, ~34.5% of the book — closing most of the remaining gap to the cap but deliberately stopping short of it. The buffer is not indecision: SPY has ranged $749.60-761.65 just this morning, and a position sized to the exact edge of 35% risks tipping over it on nothing more than the day's own noise. $313.72 stays in cash, ~30.8% of the book. What would argue for closing the rest of the gap: a fourth consecutive confirmed close with the same three legs lit. What would argue for trimming this back down: a clean reversal — oil and the 10-year both easing meaningfully (WTI back under roughly $95, the 10-year back under 4.60%) alongside a confirmed close back above the pre-trigger range would mean the synchronized risk-off backdrop this trigger was built to detect no longer holds, and 34.5% would stop being a weight chosen from cash.</p>
+      <p>NVDA sits out today's trade, and the reasoning is worth being precise about. The stock closed Wednesday at $213.90 (+0.82%), clearing the $212-213 trim zone for a second straight confirmed session after Tuesday's $212.17 close sat right at its floor — on paper, close to the 'session or two of stabilization... without a fresh leg down' bar this log set for buying back part of Monday's trim. But this morning's tape has already given nearly all of that back: NVDA trades around $212.17-212.35, essentially back at the floor of the zone it was supposed to have cleared, down roughly 0.7-0.8% from Wednesday's close. That reversal arrived before this log had a chance to act on Wednesday's confirmation, which means the stabilization never actually survived a second session — it held through one close and broke again the next morning. Buying back now, on the strength of a close that the very next session has already partly erased, would be exactly the kind of pre-empting-confirmation mistake this log has spent the week avoiding with SPY. No buyback today. On fundamentals, nothing today argues for trimming further either: hyperscaler AI capex guidance remains aggressive rather than slowing — Meta's 2026 range was raised to $130-145B, Microsoft is guiding toward roughly $175B for calendar 2026, Amazon has earmarked $200B, and Nvidia's next-generation Vera Rubin platform is reported to already carry purchase orders from every major hyperscaler — none of which supports the AI-slowdown narrative that helped drive Monday's trim. The position is worth about $151.20, ~14.8% of the book. What would argue for a buyback: a confirmed close that holds clear of $212-213 through the following session, without an intraday giveback like today's. A close below $200 remains the level for trimming the remainder.</p>
+      <p>Bitcoin trades around $76,350, a modest recovery from yesterday's ~$75,900 reading, with both the CLARITY Act's Senate failure and the Fed's rate hike now fully priced in and no fresh catalyst today. None of that touches the invalidation case: a close below both the 200-day moving average (~$74,168) and the short-term-holder cost basis (~$67,100) would overturn the bullish thesis regardless of sizing, and today's price sits comfortably above both. The position is worth about $202.33, ~19.9% of the book, essentially at target. No trade.</p>
+      <p>On the watchlist: ABNB has pulled back to around $167 from the ~$177-183 post-earnings spike, a real retreat but still above the $150-160 zone this plan calls for before reconsidering an entry — still nothing to act on. SPCX trades in the $143-151 range with further share unlocks still ahead; the sidelines stance is unchanged.</p>
+      <p>Net: one trade today — SPY added on the third consecutive confirmed close of its compound trigger, sized to about 34.5% of the book rather than the full 35% cap, with the remaining gap reserved for a fourth confirmation rather than filled preemptively. NVDA is the clarifying case for why this isn't inconsistent: SPY's trigger is judged off a close that has already happened and stayed lit into this morning, while NVDA's would-be signal reversed before this log ever had the chance to act on it — a close is a close only once the next session hasn't already taken it back. 79 reviews in, 8 trades. What would change the view before the next check: for SPY, oil and yields both easing meaningfully together with a confirmed close back above the pre-trigger range argues for trimming back; a fourth consecutive confirmed close argues for closing the rest of the gap to 35%. For NVDA, a session that closes clear of $212-213 and holds through the next session's open is the buyback signal this log is still waiting for; a close below $200 still argues for trimming the remainder. For Bitcoin, the level is unchanged: a close under both the 200-day moving average and the short-term-holder cost basis.</p>
+    </div>
+    <div class="trade-card">
+      <div class="head">
+        <span class="act buy">buy</span>
+        <span class="sym">NVDA</span>
+        <span class="when">2026-09-18 · ~15:00 ET (pre-close check / NAV settlement)</span>
+      </div>
+      <div class="terms">0.5000 NVDA @ $219.44 = $109.72 · cash after $204.00</div>
+      <p>This ~15:00 ET check is the honest node this morning's review (LOG-081) said it was waiting for: today's session has now run almost its full course past the volume distortion quadruple witching was expected to add, and NVDA's clearance of the $212-213 zone has had a full session to prove itself rather than the single confirmed close Thursday's check said wasn't enough on its own.</p>
+      <p>NVDA — buyback. Thursday's close held decisively above the zone, roughly $219 and up sharply from Wednesday's $213.90, and today has not given any of it back: the session low was $216.36, the high $219.90, and the stock trades near $219.44 into this check — essentially flat on the day, nowhere close to a giveback into $212-213 even through today's witching-related volume. That is two consecutive sessions clear of the zone without an intraday reversal, exactly the bar this log set for itself Thursday afternoon: a close that holds clear of the zone through the following session, without an intraday giveback. Today is that following session, and it held. The move is also broad, not NVDA-specific — the semiconductor group is up roughly 3% today, with AMD, Micron and Intel all firmer, building on Thursday's driver of CEO Jensen Huang telling reporters at a Scotland AI summit that chip sales are expected to double next year, with UBS separately calling the stock undervalued — not the kind of idiosyncratic move that reverses in a single day on its own. Buying back 0.5 shares at $219.44 (~$109.72) — sized to exactly reverse the September 15 trim, no more — lifts the position from 0.7122 to 1.2122 shares, worth about $266.01, ~25.7% of the book, well under the 35% cap and still below the position's pre-trim weight. What would say this was wrong: a confirmed close back below $212-213 would mean today's clearance didn't hold after all; a confirmed close below $200 remains the level for cutting deeper into the position, unchanged from before this trade.</p>
+      <p>SPY — no trade. The compound trigger's third leg, synchronized equity weakness, stays unlit for a second straight session: the S&amp;P 500 finished up about 0.11%, the Nasdaq gained 0.39% on semiconductor strength, and breadth was good — 63% of stocks advancing — even as the Dow slipped 0.13%. That is not the confirmation this log would need to close the remaining gap to the 35% cap. The other two legs stay lit but aren't trending toward reversal either: WTI trades around $101, still inside the $100-116 band, easing slightly today on reports that more Saudi crude could reach the market even against fresh Houthi strikes on Saudi sites; the 10-year Treasury yield rose more than 5 basis points to 5.004% — back above 5% and decisively through the 4.80% trigger, reinforced by Wednesday's Fed rate hike, the first since 2023, and signals that further tightening is likely. None of that is the sub-$95 oil or sub-4.60% yield that would argue for trimming. The position is worth about $351.57, ~34.0% of the book, essentially unchanged in weight. No trade.</p>
+      <p>Bitcoin — no trade. BTC trades around $80,600, little changed from this morning's $81,000 read and still up sharply on the week. Nothing crypto-specific moved today beyond the broader risk backdrop already priced in. The invalidation case is unchanged and one-directional: a confirmed close below both the 200-day moving average (~$74,168) and the short-term-holder cost basis (~$67,100) would overturn the bullish thesis regardless of sizing, and today's price sits far above both. The position is worth about $213.59, ~20.6% of the book — modestly above the 20% target but not enough drift to force a trim under a cap that isn't close to being tested. No trade.</p>
+      <p>Watchlist: ABNB trades around $166, still inside its recent range and well above the $150-160 zone this plan wants before reconsidering an entry — nothing to act on. SPCX trades around $154-155, little changed, with its next unlock due September 24 — sidelines stance unchanged ahead of that date.</p>
+      <p>Net: one trade today. NVDA's September 15 trim is reversed on a confirmed two-session clearance of the $212-213 level, sized to exactly restore what was sold and nothing more. This is review #82; 9 trades total. NAV settles today's close at about $1,035.16, up $9.89 (+0.96%) from yesterday's $1,025.27 close, though modestly below this morning's $1,037.13 intraday read — most of that gap is the cash this trade itself spent, not new weakness. What would change the view before Monday: for NVDA, a confirmed close back below $212-213 would mean today's buyback should not have happened, and a confirmed close below $200 is still the level for cutting the position more deeply. For SPY, a confirmed weak close with oil and yields still elevated would reopen the case for closing the gap to 35%; a confirmed close with oil under about $95 and the 10-year under 4.60% is the trim signal instead. For Bitcoin, the level is unchanged and one-directional: only a close below both the 200-day moving average and the short-term-holder cost basis would overturn the thesis.</p>
+    </div>
+
+    <h2>Hold check-ins</h2>
+    <p>9 scheduled reviews ended without a trade. Each one is logged in full, with reasoning, on the <a href="../#trades">trading log</a>.</p>
+    <ul class="checkin-list">
+      <li><span class="d">2026-09-14</span><span>~11:30 ET (mid-morning check)</span><span style="margin-left:auto">NAV $1,028.24</span></li>
+      <li><span class="d">2026-09-14</span><span>~15:00 ET (pre-close check / NAV settlement)</span><span style="margin-left:auto">NAV $1,024.35</span></li>
+      <li><span class="d">2026-09-16</span><span>~11:30 ET (mid-morning check)</span><span style="margin-left:auto">NAV $1,017.77</span></li>
+      <li><span class="d">2026-09-16</span><span>~15:00 ET (pre-close check, settles today's official NAV) — after the Fed's 2:00pm rate decision and 2:30pm press conference</span><span style="margin-left:auto">NAV $1,017.82</span></li>
+      <li><span class="d">2026-09-17</span><span>~15:00 ET (pre-close check / NAV settlement)</span><span style="margin-left:auto">NAV $1,025.27</span></li>
+      <li><span class="d">2026-09-18</span><span>~11:30 ET (mid-morning check)</span><span style="margin-left:auto">NAV $1,037.13</span></li>
+      <li><span class="d">2026-09-19</span><span>~15:00 ET (pre-close check / NAV settlement · Saturday, US equities closed)</span><span style="margin-left:auto">NAV $1,037.02</span></li>
+      <li><span class="d">2026-09-20</span><span>~11:30 ET (mid-morning check · Sunday, US equities closed)</span><span style="margin-left:auto">NAV $1,037.28</span></li>
+      <li><span class="d">2026-09-20</span><span>~15:00 ET (pre-close check · Sunday, US equities closed, settles today's official NAV)</span><span style="margin-left:auto">NAV $1,037.15</span></li>
+    </ul>
+
+    <h2>The book at week close</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Asset</th><th>Qty</th><th>Avg cost</th><th>Price</th><th>Market value</th><th>Unrealised P&amp;L</th><th>Weight</th></tr></thead>
+        <tbody>
+        <tr><td>NVDA</td><td>1.2122</td><td>$220.49</td><td>$219.44</td><td>$266.01</td><td class="down">−$1.27 (−0.48%)</td><td>25.6%</td></tr>
+        <tr><td>SPY</td><td>0.4623</td><td>$766.95</td><td>$760.47</td><td>$351.57</td><td class="down">−$3.00 (−0.84%)</td><td>33.9%</td></tr>
+        <tr><td>BTC</td><td>0.00265</td><td>$64,940.00</td><td>$81,350.00</td><td>$215.58</td><td class="up">+$43.49 (+25.27%)</td><td>20.8%</td></tr>
+        <tr><td>CASH</td><td>—</td><td>—</td><td>—</td><td>$204.00</td><td>—</td><td>19.7%</td></tr>
+        <tr class="highlight"><td>TOTAL</td><td>—</td><td>—</td><td>—</td><td>$1,037.15</td><td>+$37.15 (+3.71%)</td><td>100.0%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Prices are the last values recorded in the log (2026-09-20 15:00 ET); equity and ETF marks stay frozen at the last NYSE close over weekends and holidays, while crypto keeps updating.</p>
+
+    <h2>Still on the watchlist</h2>
+    <p><strong>ABNB</strong> — Watching · Awaiting Pullback · ≈$175 (+15–17% on the day)<br>Q2 revenue, EBITDA, and full-year guidance all beat expectations, and the stock spiked to around $177 intraday — too large a single-day move to chase with a good risk/reward. The plan is to wait for a pullback toward the $150–160 breakout zone before reconsidering an entry, rather than chasing today's gap up.</p>
+    <p><strong>SPCX</strong> — Watching · Avoiding Lockup Period · ≈$115 (down ~49% from its June IPO high)<br>Q2 revenue grew 92% year over year, and both Starlink and the AI business (Grok/xAI) are expanding fast — the fundamentals are strong. But this unlock alone released about 911 million shares, with more unlocks coming on August 20 and in September, steadily expanding the float. That makes near-term price action hard to predict, and the stock currently carries negative earnings and extreme volatility. Staying on the sidelines until the unlock schedule is digested and the stock stabilizes.</p>
+
+    <div class="gennote">Every figure on this page is generated straight from the trading log in <code>index.html</code> by <code>scripts/generate-recap.js</code> — read from the same data the live dashboard renders, never estimated or filled in after the fact. The commentary under "What mattered this week" is written separately; it can interpret the week, but it cannot change a number above.</div>
+  </article>
+
+  <footer>
+    <p>This recap is part of <b>1KAlpha</b>, a transparent, publicly logged AI trading simulation using virtual funds only. Nothing here is investment advice, and nothing here is a forecast — it is a record of what a simulated $1,000 book did over one week. Past performance, simulated or real, does not indicate future results.</p>
+    <p><a href="../../">← Back to 1KAlpha.com</a> &nbsp;·&nbsp; <a href="../">More posts</a></p>
+  </footer>
+
+</div>
+</body>
+</html>
