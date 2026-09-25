@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lump Sum vs. Dollar-Cost Averaging: A 152-Year Test · 1KAlpha</title>
+<meta name="description" content="A 152-year test of the classic 'invest a windfall now or spread it out' debate, using Shiller's monthly S&P 500 data. Lump sum wins 68-79% of rolling windows depending on the DCA period — but nearly all of DCA's biggest wins cluster in one violent stretch.">
+<link rel="canonical" href="https://1kalpha.com/blog/lump-sum-vs-dca-sp500-backtest.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Lump Sum vs. Dollar-Cost Averaging: A 152-Year Test">
+<meta property="og:description" content="A common piece of financial advice says spread a windfall out over months to reduce risk. 152 years of S&P 500 data say investing it all immediately wins 68-79% of the time — but the exceptions cluster in exactly the moments that matter most.">
+<meta property="og:url" content="https://1kalpha.com/blog/lump-sum-vs-dca-sp500-backtest.html">
+<meta property="og:image" content="https://1kalpha.com/blog/images/dca-chart-1.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="675">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@OnekAlpha">
+<meta name="twitter:title" content="Lump Sum vs. Dollar-Cost Averaging: A 152-Year Test">
+<meta name="twitter:description" content="A common piece of financial advice says spread a windfall out over months to reduce risk. 152 years of S&P 500 data say investing it all immediately wins 68-79% of the time — but the exceptions cluster in exactly the moments that matter most.">
+<meta name="twitter:image" content="https://1kalpha.com/blog/images/dca-chart-1.png">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0e0f; --bg-panel:#10171a; --bg-panel-2:#141d20;
+    --border:#213032; --border-soft:#1a2528;
+    --text:#e7edee; --text-dim:#8ba0a2; --text-faint:#4e6567;
+    --amber:#ffb400; --amber-dim:#8a640e; --teal:#5eead4; --green:#34d399; --red:#f87171;
+    --mono:'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
+    --sans:'IBM Plex Sans', -apple-system, sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{background:var(--bg);}
+  body{
+    background:
+      radial-gradient(ellipse 1200px 600px at 15% -10%, rgba(255,180,0,0.06), transparent 60%),
+      radial-gradient(ellipse 1000px 800px at 100% 0%, rgba(94,234,212,0.05), transparent 55%),
+      var(--bg);
+    color:var(--text); font-family:var(--sans); line-height:1.6; padding-bottom:60px; min-height:100vh;
+  }
+  .wrap{max-width:800px; margin:0 auto; padding:0 24px;}
+  header.blog-head{
+    border-bottom:1px solid var(--border); padding:22px 0 20px; margin-bottom:40px;
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;
+  }
+  .brand-link{font-family:var(--mono); font-weight:700; font-size:17px; color:var(--text); text-decoration:none; letter-spacing:-0.01em;}
+  .brand-link span{color:var(--amber);}
+  .blog-nav a{font-family:var(--mono); font-size:12px; color:var(--text-dim); text-decoration:none; margin-left:18px; display:inline-flex; align-items:center; gap:5px;}
+  .blog-nav .x-icon{width:11px; height:11px; fill:currentColor;}
+  .blog-nav a:hover{color:var(--amber);}
+
+  .post-meta{font-family:var(--mono); font-size:12px; color:var(--text-faint); margin-bottom:14px; display:flex; gap:14px; flex-wrap:wrap; letter-spacing:.03em;}
+  article h1{font-size:clamp(26px,4.2vw,36px); color:var(--text); margin-bottom:20px; line-height:1.25;}
+  article h2{font-size:21px; color:var(--text); margin:40px 0 14px;}
+  article h2::before{content:''; display:inline-block; width:3px; height:14px; background:var(--amber); margin-right:10px; vertical-align:middle;}
+  article h3{font-size:16px; color:var(--text); margin:26px 0 10px;}
+  article p{font-size:15.5px; color:var(--text-dim); margin-bottom:16px;}
+  article ul, article ol{margin:0 0 16px 22px; color:var(--text-dim); font-size:15.5px;}
+  article li{margin-bottom:6px;}
+  article strong{color:var(--text);}
+  article a{color:var(--teal);}
+  article code{font-family:var(--mono); font-size:13px; background:var(--bg-panel-2); padding:1px 6px; border-radius:3px; color:var(--amber);}
+  article img{max-width:100%; display:block; margin:28px auto 6px; border:1px solid var(--border); border-radius:2px;}
+  figcaption{font-size:12px; color:var(--text-faint); text-align:center; margin-bottom:28px;}
+
+  .table-wrap{overflow-x:auto; margin:20px 0 28px;}
+  table{width:100%; border-collapse:collapse; font-family:var(--mono); font-size:12.5px; min-width:620px;}
+  th{text-align:right; font-size:10px; letter-spacing:.05em; text-transform:uppercase; color:var(--text-faint); padding:8px 10px; border-bottom:1px solid var(--border); white-space:nowrap;}
+  th:first-child, td:first-child{text-align:left;}
+  td{text-align:right; padding:9px 10px; border-bottom:1px solid var(--border-soft); color:var(--text-dim); white-space:nowrap;}
+  td:first-child{color:var(--text); font-weight:600;}
+  tr.highlight td{color:var(--amber);}
+
+  .callout{background:var(--bg-panel); border-left:3px solid var(--amber); padding:16px 20px; margin:26px 0; font-size:14.5px; color:var(--text-dim); line-height:1.7;}
+  .callout b{color:var(--amber);}
+  .callout.warn{border-left-color:var(--red);}
+  .callout.warn b{color:var(--red);}
+
+  footer{margin-top:64px; padding-top:22px; border-top:1px solid var(--border);}
+  footer p{font-size:12px; color:var(--text-faint); line-height:1.8; max-width:800px; margin-bottom:10px;}
+  footer a{color:var(--text-dim);}
+
+  @media (max-width:640px){
+    header.blog-head{flex-direction:column; align-items:flex-start;}
+    .blog-nav a{margin-left:0; margin-right:16px;}
+  }
+</style>
+<script defer src="https://cloud.umami.is/script.js" data-website-id="2dcbaf06-d535-480a-a4a3-f571b7b1a79c"></script>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="blog-head">
+    <a class="brand-link" href="../">1K<span>Alpha</span></a>
+    <nav class="blog-nav">
+      <a href="./">Blog</a>
+      <a href="https://x.com/OnekAlpha" target="_blank" rel="noopener"><svg class="x-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>Follow</a>
+    </nav>
+  </header>
+
+  <article>
+    <div class="post-meta">
+      <span>2026-09-21</span>
+      <span>·</span>
+      <span>10 min read</span>
+      <span>·</span>
+      <span>backtest</span>
+    </div>
+    <h1>Lump Sum vs. Dollar-Cost Averaging: A 152-Year Test</h1>
+
+    <p>Get a windfall — a bonus, an inheritance, a sale — and you'll run into the same piece of advice everywhere from Bogleheads threads to robo-advisor onboarding flows: don't put it all in at once, spread it out over a few months to smooth the ride. It's framed as the cautious choice, the one that protects you from bad timing. It's also a claim with a specific, checkable counter-argument behind it: <strong>Vanguard's own research</strong> (a 2012 study, revisited in 2023) found that investing a lump sum immediately beat phasing it in over 12 months in roughly two-thirds of historical periods, because money out of the market is money not earning the market's long-run positive drift. That's a specific, falsifiable claim, so I ran 152 years of data through it myself.</p>
+
+    <p>Short version: <strong>lump sum wins more often than not, and its edge grows the longer the phase-in period is</strong> — but the times it loses are not evenly scattered across history. They cluster hard around one of the most violent 24-month stretches the market has ever had, which is exactly the scenario dollar-cost averaging (DCA) is sold as protection against.</p>
+
+    <h2>Methodology</h2>
+    <p>I used Robert Shiller's monthly S&amp;P 500 dataset (price, dividends, CPI, cyclically-adjusted P/E), the same source used in <a href="leverage-2x-3x-sp500-backtest.html">this blog's leverage backtest</a>, covering January 1871 through the most recent fully-populated month, June 2023 — 152 years, 1,830 months. For every possible starting month, I compared two ways of deploying a fixed sum:</p>
+    <ul>
+      <li><strong>Lump sum</strong> — the full amount invested immediately in the S&amp;P 500 (price return plus dividends, reinvested monthly).</li>
+      <li><strong>DCA</strong> — the same amount split into equal monthly tranches invested at the start of each month over a window of 6, 12, 24, or 36 months, with un-deployed cash sitting on the sidelines earning <strong>0%</strong> until its turn comes.</li>
+    </ul>
+    <p>Both strategies are measured at the same end date — the close of the window — so this is a pure test of timing, not of anything else. 0% on undeployed cash is a deliberately conservative assumption for DCA: a real DCA plan usually parks the waiting cash in a money-market fund earning something. That means every number below should be read as an <em>upper bound</em> on lump sum's edge.</p>
+
+    <div class="callout">
+      <b>Cross-check against Vanguard's own numbers:</b> Vanguard's studies credit the waiting cash a market yield and still find lump sum winning roughly two-thirds of the time over a 12-month phase-in, by an average of one to two percentage points. This backtest's 12-month result — a 71.5% win rate, +4.3% average edge — comes in a bit higher, which is exactly what crediting 0% instead of a real cash yield should produce. The two results point the same direction; they don't independently confirm each other, since this backtest reuses the same underlying mechanism Vanguard's does.
+    </div>
+
+    <h2>The headline numbers</h2>
+    <p>Across every rolling window from 1871 through however far back a full window fits, testing four different DCA lengths:</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>DCA window</th><th>n</th><th>Lump wins</th><th>Mean edge</th><th>Median edge</th><th>P10</th><th>P90</th><th>Worst for lump</th><th>Best for lump</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>6 mo</td><td>1,824</td><td>67.7%</td><td>+1.9%</td><td>+2.2%</td><td>&minus;5.0%</td><td>+8.3%</td><td>&minus;25.7%</td><td>+39.5%</td></tr>
+          <tr class="highlight"><td>12 mo</td><td>1,818</td><td>71.5%</td><td>+4.3%</td><td>+4.5%</td><td>&minus;7.7%</td><td>+15.6%</td><td>&minus;42.6%</td><td>+53.3%</td></tr>
+          <tr><td>24 mo</td><td>1,806</td><td>75.5%</td><td>+9.2%</td><td>+9.3%</td><td>&minus;9.2%</td><td>+27.4%</td><td>&minus;48.2%</td><td>+80.0%</td></tr>
+          <tr><td>36 mo</td><td>1,794</td><td>79.3%</td><td>+14.0%</td><td>+13.9%</td><td>&minus;8.3%</td><td>+37.6%</td><td>&minus;56.0%</td><td>+91.9%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:12px; color:var(--text-faint); margin-top:-16px;">n = number of rolling starting months tested. "Lump wins" = % of windows where investing immediately beat the DCA plan by the end date. Edge = lump sum's ending value ÷ DCA's ending value, minus 1. P10/P90 = 10th/90th percentile of that edge across all windows.</p>
+
+    <img src="images/dca-chart-1.png" alt="Bar chart showing lump sum's win rate rising from 67.7% at a 6-month DCA window to 79.3% at a 36-month window, all above the 50% coin-flip line">
+    <figcaption>Win rate climbs with the length of the DCA window — the longer money sits on the sidelines, the more often that costs you.</figcaption>
+
+    <p>Two things stand out. First: <strong>lump sum's edge is not a coin flip that happens to lean its way</strong> — it wins comfortably more often than not at every window length tested, and the gap over 50% widens as the DCA period stretches. Second: <strong>the "worst for lump sum" column is genuinely ugly</strong> — a 36-month DCA plan can beat lump sum by 56%, meaning there are real historical windows where phasing in wasn't just a smoother ride, it was dramatically the better outcome.</p>
+
+    <h2>Why does the edge grow with the window?</h2>
+    <p>This isn't volatility drag, the mechanism behind the leverage post's findings — it's simpler than that. DCA's whole cost is opportunity cost: money waiting to be deployed earns nothing (in this model) while the market, on average, drifts upward. The longer the waiting period, the more months of that drift a DCA plan forgoes on its later tranches. A 36-month DCA plan still has a third of its capital sitting in cash after two full years have passed. That's a long time to bet against the market's historical tendency to go up.</p>
+
+    <h2>When it flips: the 1930s, in one comparison</h2>
+    <p>Averages hide where the exceptions live. The single worst 12-month window for lump sum in the entire 152-year sample starts in <strong>August 1931</strong>; the single best starts in <strong>March 1933</strong> — twenty months apart, in the same Depression-era crash-and-rebound. Run the same $12,000 hypothetical plan through both:</p>
+
+    <img src="images/dca-chart-2.png" alt="Grouped bar chart: starting August 1931, lump sum ends at $7,178 vs DCA's $12,504; starting March 1933, lump sum ends at $21,664 vs DCA's $14,128">
+    <figcaption>Same $12,000, same 12-month DCA plan, twenty months apart. The mechanism that makes DCA lose the second case is the same one that makes it win the first.</figcaption>
+
+    <p>Starting into the teeth of a collapsing market, DCA's later tranches buy in at progressively lower prices, cutting the damage — a lump sum investor in August 1931 lost 40% in a year, a DCA investor in the identical plan was essentially flat. Starting at the bottom of that same collapse, the exact opposite mechanism punishes DCA — most of its capital was still in cash while the market rocketed off its low, and it captured only a fraction of an 80%+ rebound that a lump sum investor got in full.</p>
+
+    <p>It's the same trade-off from two sides: DCA is a bet against whatever happens between now and full deployment being a strong move in either direction. Most of the time nothing that dramatic happens, and it just quietly costs the average positive drift. In the rare stretch when something dramatic <em>does</em> happen, DCA's outcome depends entirely on which direction it goes — and nobody can tell in advance which one they're in.</p>
+
+    <h3>By decade</h3>
+    <p>Zooming out to every decade in the sample (12-month window) makes the same point: the 1930s is the only decade where lump sum's win rate falls to a coin flip.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Decade</th><th>n</th><th>Lump wins</th></tr></thead>
+        <tbody>
+          <tr><td>1870s</td><td>108</td><td>73.1%</td></tr>
+          <tr><td>1880s</td><td>120</td><td>69.2%</td></tr>
+          <tr><td>1890s</td><td>120</td><td>63.3%</td></tr>
+          <tr><td>1900s</td><td>120</td><td>70.8%</td></tr>
+          <tr><td>1910s</td><td>120</td><td>58.3%</td></tr>
+          <tr><td>1920s</td><td>120</td><td>79.2%</td></tr>
+          <tr class="highlight"><td>1930s</td><td>120</td><td>50.0%</td></tr>
+          <tr><td>1940s</td><td>120</td><td>71.7%</td></tr>
+          <tr><td>1950s</td><td>120</td><td>82.5%</td></tr>
+          <tr><td>1960s</td><td>120</td><td>70.8%</td></tr>
+          <tr><td>1970s</td><td>120</td><td>68.3%</td></tr>
+          <tr><td>1980s</td><td>120</td><td>75.8%</td></tr>
+          <tr><td>1990s</td><td>120</td><td>95.0%</td></tr>
+          <tr><td>2000s</td><td>120</td><td>60.0%</td></tr>
+          <tr><td>2010s</td><td>120</td><td>86.7%</td></tr>
+          <tr><td>2020s*</td><td>30</td><td>60.0%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:12px; color:var(--text-faint); margin-top:-16px;">*2020s is a partial decade (through the last starting month a full 12-month window fits). The 1990s' 95% and 1930s' 50% are the two extremes of the entire sample.</p>
+
+    <h2>Does today's stretched valuation change the calculus?</h2>
+    <p>This blog's <a href="cape-ratio-predicts-returns-backtest.html">CAPE ratio post</a> found that starting valuation really does predict weaker forward 10-year returns, and noted CAPE sitting near 42 as of August 2026 — a level seen only once before, at the dot-com peak. If lump sum's edge comes from betting on the market's average forward drift, a fair question is whether that edge shrinks when the market is expensive and forward drift is likely to be lower. Splitting the 12-month sample into thirds by the CAPE ratio at the start of each window:</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Starting CAPE</th><th>Range</th><th>n</th><th>Lump wins</th><th>Mean edge</th></tr></thead>
+        <tbody>
+          <tr><td>Cheap (bottom third)</td><td>4.8&ndash;13.7</td><td>566</td><td>75.6%</td><td>+6.6%</td></tr>
+          <tr><td>Middle third</td><td>13.7&ndash;19.0</td><td>566</td><td>65.4%</td><td>+3.1%</td></tr>
+          <tr class="highlight"><td>Expensive (top third)</td><td>19.0&ndash;44.2</td><td>566</td><td>72.4%</td><td>+3.1%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Today's CAPE (~42) sits at the very top of that "expensive" bucket. The relationship isn't a clean straight line — the middle third actually has the weakest case for lump sum, not the top third — but the pattern that does hold is that lump sum's <em>win rate</em> stays a clear majority even in the most expensive third of history, while its <em>average edge</em> roughly halves compared to cheap-market starts. In other words: expensive valuations don't flip the answer, they just make the reward for getting it right smaller — which is a real difference, not a rounding error, and worth knowing if you're weighing this decision today rather than at some valuation-neutral average point in history.</p>
+
+    <div class="callout warn">
+      <b>Limitations:</b> this is monthly-resolution data, so it can't see intra-month timing within a DCA tranche. Undeployed cash is modeled at 0% — real DCA plans usually earn something while waiting, which would narrow every edge shown here (see the Vanguard cross-check above). No taxes, fees, or transaction costs are modeled for either strategy. And none of this touches the actual reason DCA is popular, which isn't the math — it's that spreading a decision out over months is easier to sit through than watching a lump sum lose money the week after you commit it. A backtest can measure expected value; it can't measure whether you'd actually hold through the scenario where lump sum loses.
+    </div>
+
+    <h2>Bottom line</h2>
+    <ul>
+      <li><strong>Lump sum wins more often than not at every horizon tested</strong> — 68% to 79% of rolling 152-year windows, even under an assumption (0% cash yield) that's stacked in DCA's favor.</li>
+      <li><strong>The edge grows with the DCA window length</strong> — the longer money sits on the sidelines, the more of the market's average drift it forgoes.</li>
+      <li><strong>DCA's wins aren't random noise — they cluster around sharp reversals</strong>, and by definition nobody can identify one of those in advance. The 1930s is the one decade in 152 years where lump sum was a coin flip, and it was the most violent decade in the sample.</li>
+      <li><strong>Stretched valuations shrink lump sum's edge but don't erase it.</strong> Even in the most expensive third of history — where today's market sits — lump sum still won about 72% of 12-month windows.</li>
+    </ul>
+    <p>So: the "invest it all now" case holds up well as a historical average. The case for DCA was never really about beating that average — it's a bet that you, personally, are more likely to stay invested through a plan that phases in slowly than through one that commits everything on day one. That's a real consideration. It's just a different question than the one "DCA wins more often" tries to answer, and the data says the honest answer to <em>that</em> question is no.</p>
+
+    <div class="callout">
+      <b>Reproducing this:</b> Data is Robert Shiller's dataset (Yale), mirrored as CSV by <a href="https://github.com/datasets/s-and-p-500" target="_blank" rel="noopener">datasets/s-and-p-500</a> on GitHub. The backtest is a small Node.js script — rolling-window comparator computing total-return growth factors for a lump sum versus equal monthly tranches, at four window lengths, plus a CAPE-tercile cut using the same dataset's PE10 column. Happy to share it if people want to check the work or try other assumptions (a nonzero cash yield, different tranche schedules, a shorter daily-resolution window) — reply on <a href="https://x.com/OnekAlpha" target="_blank" rel="noopener">X</a>.
+    </div>
+  </article>
+
+  <footer>
+    <p>This post is part of <b>1KAlpha</b>, a transparent, publicly logged AI trading simulation using virtual funds only. Nothing here is investment advice — it's a backtest of a publicly circulating claim, not a recommendation about how to invest a windfall. Past performance, simulated or real, does not indicate future results.</p>
+    <p><a href="../">← Back to 1KAlpha.com</a> &nbsp;·&nbsp; <a href="./">More posts</a></p>
+  </footer>
+
+</div>
+</body>
+</html>
