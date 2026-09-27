@@ -1,0 +1,4 @@
+BTC drifted to 21.6% of the book on a squeeze to $87k. The fix was written in advance: close under $85,000, no invalidation broken. It hit Thursday, and $BTC was trimmed back to 20% on script.
+
+Week in Review: Sep 21-27
+https://1kalpha.com/blog/recaps/week-2026-09-27.html
