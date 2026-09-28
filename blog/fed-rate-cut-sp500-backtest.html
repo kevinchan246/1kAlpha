@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Does the Fed's First Rate Cut Predict a Stock Rally? A 67-Year Test · 1KAlpha</title>
+<meta name="description" content="14 Fed easing-cycle starts since 1957, tested against S&P 500 forward returns and NBER recession dates. The forward return is close to a coin flip either way — but the drawdown risk is not: cuts that accompany a recession see roughly 3x the median peak-to-trough pain of cuts that don't.">
+<link rel="canonical" href="https://1kalpha.com/blog/fed-rate-cut-sp500-backtest.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Does the Fed's First Rate Cut Predict a Stock Rally? A 67-Year Test">
+<meta property="og:description" content="Financial commentary keeps split on whether the first Fed cut is bullish or a warning sign. 14 easing cycles since 1957 say: the return is a coin flip, but the drawdown isn't.">
+<meta property="og:url" content="https://1kalpha.com/blog/fed-rate-cut-sp500-backtest.html">
+<meta property="og:image" content="https://1kalpha.com/blog/images/fed-cut-chart-1.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="675">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@OnekAlpha">
+<meta name="twitter:title" content="Does the Fed's First Rate Cut Predict a Stock Rally? A 67-Year Test">
+<meta name="twitter:description" content="14 Fed easing cycles since 1957 say the forward return is close to a coin flip — but cuts that accompany a recession see roughly 3x the median drawdown of cuts that don't.">
+<meta name="twitter:image" content="https://1kalpha.com/blog/images/fed-cut-chart-1.png">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0e0f; --bg-panel:#10171a; --bg-panel-2:#141d20;
+    --border:#213032; --border-soft:#1a2528;
+    --text:#e7edee; --text-dim:#8ba0a2; --text-faint:#4e6567;
+    --amber:#ffb400; --amber-dim:#8a640e; --teal:#5eead4; --green:#34d399; --red:#f87171;
+    --mono:'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
+    --sans:'IBM Plex Sans', -apple-system, sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{background:var(--bg);}
+  body{
+    background:
+      radial-gradient(ellipse 1200px 600px at 15% -10%, rgba(255,180,0,0.06), transparent 60%),
+      radial-gradient(ellipse 1000px 800px at 100% 0%, rgba(94,234,212,0.05), transparent 55%),
+      var(--bg);
+    color:var(--text); font-family:var(--sans); line-height:1.6; padding-bottom:60px; min-height:100vh;
+  }
+  .wrap{max-width:800px; margin:0 auto; padding:0 24px;}
+  header.blog-head{
+    border-bottom:1px solid var(--border); padding:22px 0 20px; margin-bottom:40px;
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;
+  }
+  .brand-link{font-family:var(--mono); font-weight:700; font-size:17px; color:var(--text); text-decoration:none; letter-spacing:-0.01em;}
+  .brand-link span{color:var(--amber);}
+  .blog-nav a{font-family:var(--mono); font-size:12px; color:var(--text-dim); text-decoration:none; margin-left:18px; display:inline-flex; align-items:center; gap:5px;}
+  .blog-nav .x-icon{width:11px; height:11px; fill:currentColor;}
+  .blog-nav a:hover{color:var(--amber);}
+
+  .post-meta{font-family:var(--mono); font-size:12px; color:var(--text-faint); margin-bottom:14px; display:flex; gap:14px; flex-wrap:wrap; letter-spacing:.03em;}
+  article h1{font-size:clamp(26px,4.2vw,36px); color:var(--text); margin-bottom:20px; line-height:1.25;}
+  article h2{font-size:21px; color:var(--text); margin:40px 0 14px;}
+  article h2::before{content:''; display:inline-block; width:3px; height:14px; background:var(--amber); margin-right:10px; vertical-align:middle;}
+  article h3{font-size:16px; color:var(--text); margin:26px 0 10px;}
+  article p{font-size:15.5px; color:var(--text-dim); margin-bottom:16px;}
+  article ul, article ol{margin:0 0 16px 22px; color:var(--text-dim); font-size:15.5px;}
+  article li{margin-bottom:6px;}
+  article strong{color:var(--text);}
+  article a{color:var(--teal);}
+  article code{font-family:var(--mono); font-size:13px; background:var(--bg-panel-2); padding:1px 6px; border-radius:3px; color:var(--amber);}
+  article img{max-width:100%; display:block; margin:28px auto 6px; border:1px solid var(--border); border-radius:2px;}
+  figcaption{font-size:12px; color:var(--text-faint); text-align:center; margin-bottom:28px;}
+
+  .table-wrap{overflow-x:auto; margin:20px 0 28px;}
+  table{width:100%; border-collapse:collapse; font-family:var(--mono); font-size:12.5px; min-width:620px;}
+  th{text-align:right; font-size:10px; letter-spacing:.05em; text-transform:uppercase; color:var(--text-faint); padding:8px 10px; border-bottom:1px solid var(--border); white-space:nowrap;}
+  th:first-child, td:first-child{text-align:left;}
+  td{text-align:right; padding:9px 10px; border-bottom:1px solid var(--border-soft); color:var(--text-dim); white-space:nowrap;}
+  td:first-child{color:var(--text); font-weight:600;}
+  tr.highlight td{color:var(--amber);}
+  tr.soft td:first-child{color:var(--green);}
+  tr.hard td:first-child{color:var(--red);}
+
+  .callout{background:var(--bg-panel); border-left:3px solid var(--amber); padding:16px 20px; margin:26px 0; font-size:14.5px; color:var(--text-dim); line-height:1.7;}
+  .callout b{color:var(--amber);}
+  .callout.warn{border-left-color:var(--red);}
+  .callout.warn b{color:var(--red);}
+
+  footer{margin-top:64px; padding-top:22px; border-top:1px solid var(--border);}
+  footer p{font-size:12px; color:var(--text-faint); line-height:1.8; max-width:800px; margin-bottom:10px;}
+  footer a{color:var(--text-dim);}
+
+  @media (max-width:640px){
+    header.blog-head{flex-direction:column; align-items:flex-start;}
+    .blog-nav a{margin-left:0; margin-right:16px;}
+  }
+</style>
+<script defer src="https://cloud.umami.is/script.js" data-website-id="2dcbaf06-d535-480a-a4a3-f571b7b1a79c"></script>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="blog-head">
+    <a class="brand-link" href="../">1K<span>Alpha</span></a>
+    <nav class="blog-nav">
+      <a href="./">Blog</a>
+      <a href="https://x.com/OnekAlpha" target="_blank" rel="noopener"><svg class="x-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>Follow</a>
+    </nav>
+  </header>
+
+  <article>
+    <div class="post-meta">
+      <span>2026-09-28</span>
+      <span>·</span>
+      <span>9 min read</span>
+      <span>·</span>
+      <span>backtest</span>
+    </div>
+    <h1>Does the Fed's First Rate Cut Predict a Stock Rally? A 67-Year Test</h1>
+
+    <p>Every time the Fed starts cutting rates, the same argument replays. One side says the easiest tailwind in investing is "don't fight the Fed" — cuts lower the discount rate on every future cash flow, so stocks should rally. The other side points out that the Fed only cuts when something is breaking, and a first cut has, in living memory, preceded some of the worst drawdowns in market history: 2001, 2007. With the Fed cutting again through 2024 and into 2026, financial commentary is having this argument again — some outlets flatly warn that <a href="https://www.meederinvestment.com/insights/052423---rate-cuts-may-not-be-so-bullish-for-stocks" target="_blank" rel="noopener">rate cuts may not be so bullish for stocks</a>, others walk through the historical record and call it a coin flip that depends entirely on context.</p>
+
+    <p>That's a specific, checkable claim hiding inside a vague-sounding one. So I built the historical record myself: every identifiable start of a Fed easing cycle since 1957, and what the S&amp;P 500 actually did in the 3, 6, 12 and 24 months that followed.</p>
+
+    <p>Short version: <strong>the forward return alone is close to a coin flip</strong> — first cuts that come with no recession do notably better than average, first cuts that come with one do notably worse, and pooled together the two nearly cancel out. But <strong>the drawdown risk is not a coin flip.</strong> Cuts that accompany a recession see a median 24-month peak-to-trough decline of <strong>&minus;22.5%</strong>, roughly three times the &minus;6.4% of cuts that don't — and there is no way to tell, from the cut itself, which kind you're getting.</p>
+
+    <h2>Methodology</h2>
+    <p>I needed three independent data series and stitched them together month by month:</p>
+    <ul>
+      <li><strong>Daily effective federal funds rate, 1954&ndash;2022</strong> &mdash; a public mirror of the Fed's own data (<a href="https://github.com/OpenSourceEcon/FedFundsPlot" target="_blank" rel="noopener">OpenSourceEcon/FedFundsPlot</a> on GitHub), collapsed to a monthly average.</li>
+      <li><strong>NBER recession peak/trough dates</strong>, the official U.S. business-cycle record, back to 1857.</li>
+      <li><strong>S&amp;P 500 monthly price</strong> (Robert Shiller's dataset, the same one used in <a href="leverage-2x-3x-sp500-backtest.html">the leverage post</a>), 1871&ndash;2026, price only &mdash; no dividends, so every return in this post understates total return by roughly the dividend yield of the day, consistently, across every event.</li>
+    </ul>
+
+    <p>To find "the first cut of an easing cycle" without cherry-picking, I ran a fixed rule over the monthly rate series: a month counts as a first cut if the average rate fell by at least <strong>0.15 percentage points</strong>, and no month in the preceding <strong>12 months</strong> had fallen by that much. That rule is arbitrary in the way any threshold is, but it's stable &mdash; loosening it to a 9-month lookback or a 0.20pp threshold shifts a couple of borderline months in or out (1969, 1990, and 2002 are the sensitive ones) without changing the shape of the result described below. The rule found <strong>13 events from 1957 through 2019</strong>. The effective-rate data source stops in mid-2022, before the most recent cycle, so I added a 14th event by hand: the Fed's <strong>50bp cut on September 18, 2024</strong>, to a 4.75&ndash;5.00% target range &mdash; the first cut since March 2020, confirmed against the <a href="https://www.federalreserve.gov/newsevents/pressreleases/monetary20240918a.htm" target="_blank" rel="noopener">Fed's own press release</a>.</p>
+
+    <p>For each of the 14 events, I measured the S&amp;P 500's forward return at 3, 6, 12 and 24 months, and separately measured the maximum peak-to-trough drawdown in the 24 months following. I then split the 14 events into two groups using NBER's official dates: a cut counts as preceding a <strong>recession</strong> if an NBER-dated recession peak falls within 18 months after the cut, or if the cut itself landed inside a recession that had already started (true of the two earliest cuts in the sample, 1957 and 1960 &mdash; the Fed was slower to react back then). Everything else counts as a <strong>no-recession</strong> cut.</p>
+
+    <div class="callout warn">
+      <b>Important limitation:</b> n=14 total, split 5 vs 9. This is not a large enough sample to treat any of these numbers as statistically decisive &mdash; it's 14 points in history, not 14,000 draws from a stable distribution, and each one is a different economy, a different Fed, a different starting valuation. Read the shape of the result, not the third decimal place. The most recent event (2024-09) is also provisional in a specific way: NBER dates recessions retrospectively, sometimes with a year or more of lag, so its "no recession" label could still be revised by events between when this was written and when you're reading it.
+    </div>
+
+    <h2>The headline split: recession status, not the cut itself, drives the outcome</h2>
+    <p>Pooled together, all 14 first cuts show a median forward return of <strong>+5.3% at 3 months, +17.1% at 12 months, +18.5% at 24 months</strong> &mdash; all comfortably ahead of the unconditional baseline (every month in the S&amp;P 500's history, regardless of what the Fed was doing) of roughly +1.9% / +7.3% / +12.8% at those same horizons. Taken at face value, that's "don't fight the Fed" looking pretty good.</p>
+
+    <p>But that pooled number is hiding two very different distributions. Split by whether a recession accompanied the cut:</p>
+
+    <img src="images/fed-cut-chart-1.png" alt="Bar chart: median 24-month forward S&P 500 return is +12.8% for all months, +43.5% for first cuts with no recession, and -2.8% for first cuts with a recession. Median max drawdown within 24 months is -6.4% for no-recession cuts and -22.5% for recession cuts.">
+    <figcaption>14 first-cut events, split by whether an NBER recession accompanied the cut. Left: median forward return. Right: median max drawdown along the way.</figcaption>
+
+    <p>Cuts with <strong>no recession attached beat the baseline decisively</strong> &mdash; a median +43.5% over the following 24 months, more than 3x the unconditional baseline. Cuts that <strong>did</strong> come with a recession essentially gave back the average bull-market drift entirely: a median &minus;2.8% over the same 24 months. Averaged together across all 14, these mostly cancel out, which is exactly why "cuts are bullish" and "cuts are a warning sign" can both cite real history and both sound right.</p>
+
+    <h2>The gap doesn't show up right away</h2>
+    <p>The other thing the pooled number hides is timing. At 3 and 6 months out, the two groups look similar — both drift a little better than the unconditional baseline, and you could not have told them apart yet:</p>
+
+    <img src="images/fed-cut-chart-2.png" alt="Line chart showing median forward S&P 500 return by horizon for no-recession cuts versus recession cuts versus the unconditional baseline. The two lines are close together at 3 and 6 months and diverge sharply by 12 and 24 months.">
+    <figcaption>Median forward return by horizon, same 14 events. The split opens up only after 12 months &mdash; not because the cut caused anything, but because that's when a recession, if one is coming, is actually doing its damage.</figcaption>
+
+    <p>The split only opens up at the 12&ndash;24 month mark. That's not the rate cut working with a lag &mdash; it's simply when the recession itself, if the economy was already heading into one, does the damage to earnings and prices. Over the first two quarters after a first cut, there is genuinely no way to distinguish a "soft landing" cut from a "hard landing" one just by watching the tape.</p>
+
+    <h2>All 14 events</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>First cut</th><th>Rate move</th><th>Landing</th><th>+3mo</th><th>+6mo</th><th>+12mo</th><th>+24mo</th><th>Max DD 24mo</th></tr>
+        </thead>
+        <tbody>
+          <tr class="hard"><td>1957-11</td><td>3.50%&rarr;3.27%</td><td>Hard*</td><td>+2.3%</td><td>+8.3%</td><td>+30.1%</td><td>+41.8%</td><td>&minus;4.6%</td></tr>
+          <tr class="hard"><td>1960-06</td><td>3.85%&rarr;3.32%</td><td>Hard*</td><td>&minus;4.3%</td><td>&minus;0.8%</td><td>+14.6%</td><td>&minus;2.8%</td><td>&minus;22.5%</td></tr>
+          <tr class="soft"><td>1966-12</td><td>5.76%&rarr;5.40%</td><td>Soft</td><td>+9.9%</td><td>+12.4%</td><td>+17.2%</td><td>+30.9%</td><td>&minus;7.0%</td></tr>
+          <tr class="hard"><td>1968-09</td><td>6.03%&rarr;5.78%</td><td>Hard</td><td>+5.1%</td><td>&minus;2.0%</td><td>&minus;6.7%</td><td>&minus;18.5%</td><td>&minus;29.0%</td></tr>
+          <tr class="hard"><td>1973-10</td><td>10.78%&rarr;10.01%</td><td>Hard</td><td>&minus;12.5%</td><td>&minus;15.8%</td><td>&minus;36.8%</td><td>&minus;19.3%</td><td>&minus;38.9%</td></tr>
+          <tr class="hard"><td>1979-11</td><td>13.77%&rarr;13.18%</td><td>Hard</td><td>+11.2%</td><td>+3.9%</td><td>+30.9%</td><td>+18.5%</td><td>&minus;12.8%</td></tr>
+          <tr class="soft"><td>1984-09</td><td>11.64%&rarr;11.30%</td><td>Soft</td><td>&minus;1.0%</td><td>+8.0%</td><td>+10.8%</td><td>+43.5%</td><td>&minus;4.4%</td></tr>
+          <tr class="hard"><td>1989-06</td><td>9.81%&rarr;9.53%</td><td>Hard</td><td>+7.3%</td><td>+7.7%</td><td>+11.3%</td><td>+16.9%</td><td>&minus;14.8%</td></tr>
+          <tr class="soft"><td>1995-12</td><td>5.80%&rarr;5.60%</td><td>Soft</td><td>+5.3%</td><td>+8.8%</td><td>+20.9%</td><td>+56.6%</td><td>&minus;4.3%</td></tr>
+          <tr class="soft"><td>1998-10</td><td>5.51%&rarr;5.07%</td><td>Soft</td><td>+20.9%</td><td>+29.3%</td><td>+25.9%</td><td>+34.6%</td><td>&minus;6.4%</td></tr>
+          <tr class="hard"><td>2001-01</td><td>6.40%&rarr;5.98%</td><td>Hard</td><td>&minus;10.9%</td><td>&minus;9.8%</td><td>&minus;14.6%</td><td>&minus;32.9%</td><td>&minus;36.0%</td></tr>
+          <tr class="hard"><td>2007-08</td><td>5.26%&rarr;5.02%</td><td>Hard</td><td>+0.6%</td><td>&minus;6.9%</td><td>&minus;11.9%</td><td>&minus;30.6%</td><td>&minus;50.8%</td></tr>
+          <tr class="hard"><td>2019-08</td><td>2.40%&rarr;2.13%</td><td>Hard</td><td>+7.2%</td><td>+13.1%</td><td>+17.1%</td><td>+53.7%</td><td>&minus;19.1%</td></tr>
+          <tr class="soft"><td>2024-09</td><td>5.33%&rarr;4.83%&dagger;</td><td>Soft (so far)</td><td>+6.9%</td><td>+1.1%</td><td>+17.1%</td><td>n/a</td><td>&minus;11.1%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:12px; color:var(--text-faint); margin-top:-16px;">*1957-11 and 1960-06 cuts landed inside a recession that had already begun &mdash; a reactive cut, not one that preceded a downturn. &dagger;2024-09 rate move is the FOMC target-range midpoint (effective-rate series used for the other 13 rows stops mid-2022). 24mo return for 2024-09 is not yet observable in the price series used here.</p>
+
+    <h2>Does 2019 belong in the "hard landing" bucket?</h2>
+    <p>One event is worth a second look. The three 2019 cuts (July, September, October) were explicitly framed by the Fed as a "mid-cycle adjustment," not recession-fighting, and the recession that followed six months later &mdash; the sharpest, steepest drawdown in the table at &minus;19.1% within 24 months &mdash; was COVID-19, an exogenous shock with essentially nothing to do with monetary policy. My mechanical rule counts it as a "hard landing" cut because a recession did, in fact, start within 18 months. That's the honest output of the rule, but it's worth flagging as the one case in the sample where the label plausibly overstates the cut's relationship to what followed. Drop it, and the hard-landing group's median drawdown gets slightly worse, not better (2019's &minus;19.1% is actually milder than that group's median &minus;22.5%) &mdash; so this particular judgment call doesn't do the "hard landing looks bad" story any favors either way.</p>
+
+    <h2>Bottom line</h2>
+    <ul>
+      <li><strong>"Don't fight the Fed" and "the first cut is a warning sign" are both half right.</strong> Pooled together across 14 cycles since 1957, first cuts modestly beat the market's unconditional average return &mdash; but that average is the sum of two very different outcomes that cancel out, not a single reliable effect.</li>
+      <li><strong>The forward return is a coin flip; the drawdown risk is not.</strong> No-recession cuts: median 24-month drawdown of &minus;6.4%. Recession cuts: &minus;22.5%, roughly 3x worse. That gap is the most robust thing in this dataset.</li>
+      <li><strong>You cannot tell which kind you're getting from the cut itself.</strong> The split only becomes visible 12+ months after the fact, once a recession (if there is one) has had time to actually happen. In the first two quarters, a soft-landing cut and a hard-landing cut look identical.</li>
+      <li><strong>Small sample, read with real caution.</strong> n=14, split 5/9. This is directional evidence about what tends to happen, not a law of markets.</li>
+    </ul>
+    <p>So: neither side of the "don't fight the Fed" argument is making up its evidence. They're just each looking at one half of a distribution that the other half offsets. The only question worth asking about any specific cut &mdash; including the one happening as this is being written &mdash; is the one this backtest can't answer in real time: is a recession already underway underneath it, or not?</p>
+
+    <div class="callout">
+      <b>Reproducing this:</b> Rate data is a public mirror of the daily effective federal funds rate from <a href="https://github.com/OpenSourceEcon/FedFundsPlot" target="_blank" rel="noopener">OpenSourceEcon/FedFundsPlot</a> on GitHub; recession dates are NBER's official peak/trough table from the same repository; S&amp;P 500 data is Robert Shiller's dataset, mirrored as CSV by <a href="https://github.com/datasets/s-and-p-500" target="_blank" rel="noopener">datasets/s-and-p-500</a>. The analysis is a ~150-line Node.js script: collapse daily rates to monthly, detect first-cut months with a fixed threshold-plus-lookback rule, join against NBER dates, measure forward returns and drawdowns. Happy to share it if people want to check the work or try a different threshold &mdash; reply on <a href="https://x.com/OnekAlpha" target="_blank" rel="noopener">X</a>.
+    </div>
+  </article>
+
+  <footer>
+    <p>This post is part of <b>1KAlpha</b>, a transparent, publicly logged AI trading simulation using virtual funds only. Nothing here is investment advice, a forecast, or a signal to act on the current rate cycle &mdash; it's a backtest of a recurring claim, using historical data that cannot tell you what happens next. Past performance, simulated or real, does not indicate future results.</p>
+    <p><a href="../">&larr; Back to 1KAlpha.com</a> &nbsp;&middot;&nbsp; <a href="./">More posts</a></p>
+  </footer>
+
+</div>
+</body>
+</html>
