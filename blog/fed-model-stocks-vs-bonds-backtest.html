@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Does a Negative "Fed Model" Spread Predict Weak Stock Returns? A 152-Year Test · 1KAlpha</title>
+<meta name="description" content="2026 commentary keeps flagging that the S&P 500's earnings yield has fallen close to the 10-year Treasury yield, a 'negative equity risk premium' the Fed Model treats as bearish. 152 years of Shiller data say that signal has no real predictive power, and the modern-era relationship is statistically indistinguishable from zero.">
+<link rel="canonical" href="https://1kalpha.com/blog/fed-model-stocks-vs-bonds-backtest.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Does a Negative &quot;Fed Model&quot; Spread Predict Weak Stock Returns? A 152-Year Test">
+<meta property="og:description" content="2026 commentary warns the equity risk premium has nearly vanished. 152 years of data say the Fed Model spread has no real predictive power &mdash; and in the modern era, the relationship is statistically indistinguishable from zero.">
+<meta property="og:url" content="https://1kalpha.com/blog/fed-model-stocks-vs-bonds-backtest.html">
+<meta property="og:image" content="https://1kalpha.com/blog/images/fed-model-chart-1.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="675">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@OnekAlpha">
+<meta name="twitter:title" content="Does a Negative &quot;Fed Model&quot; Spread Predict Weak Stock Returns? A 152-Year Test">
+<meta name="twitter:description" content="2026 commentary warns the equity risk premium has nearly vanished. 152 years of data say the Fed Model spread has no real predictive power &mdash; and in the modern era, the relationship is statistically indistinguishable from zero.">
+<meta name="twitter:image" content="https://1kalpha.com/blog/images/fed-model-chart-1.png">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0e0f; --bg-panel:#10171a; --bg-panel-2:#141d20;
+    --border:#213032; --border-soft:#1a2528;
+    --text:#e7edee; --text-dim:#8ba0a2; --text-faint:#4e6567;
+    --amber:#ffb400; --amber-dim:#8a640e; --teal:#5eead4; --green:#34d399; --red:#f87171;
+    --mono:'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
+    --sans:'IBM Plex Sans', -apple-system, sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{background:var(--bg);}
+  body{
+    background:
+      radial-gradient(ellipse 1200px 600px at 15% -10%, rgba(255,180,0,0.06), transparent 60%),
+      radial-gradient(ellipse 1000px 800px at 100% 0%, rgba(94,234,212,0.05), transparent 55%),
+      var(--bg);
+    color:var(--text); font-family:var(--sans); line-height:1.6; padding-bottom:60px; min-height:100vh;
+  }
+  .wrap{max-width:800px; margin:0 auto; padding:0 24px;}
+  header.blog-head{
+    border-bottom:1px solid var(--border); padding:22px 0 20px; margin-bottom:40px;
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;
+  }
+  .brand-link{font-family:var(--mono); font-weight:700; font-size:17px; color:var(--text); text-decoration:none; letter-spacing:-0.01em;}
+  .brand-link span{color:var(--amber);}
+  .blog-nav a{font-family:var(--mono); font-size:12px; color:var(--text-dim); text-decoration:none; margin-left:18px; display:inline-flex; align-items:center; gap:5px;}
+  .blog-nav .x-icon{width:11px; height:11px; fill:currentColor;}
+  .blog-nav a:hover{color:var(--amber);}
+
+  .post-meta{font-family:var(--mono); font-size:12px; color:var(--text-faint); margin-bottom:14px; display:flex; gap:14px; flex-wrap:wrap; letter-spacing:.03em;}
+  article h1{font-size:clamp(26px,4.2vw,36px); color:var(--text); margin-bottom:20px; line-height:1.25;}
+  article h2{font-size:21px; color:var(--text); margin:40px 0 14px;}
+  article h2::before{content:''; display:inline-block; width:3px; height:14px; background:var(--amber); margin-right:10px; vertical-align:middle;}
+  article h3{font-size:16px; color:var(--text); margin:26px 0 10px;}
+  article p{font-size:15.5px; color:var(--text-dim); margin-bottom:16px;}
+  article ul, article ol{margin:0 0 16px 22px; color:var(--text-dim); font-size:15.5px;}
+  article li{margin-bottom:6px;}
+  article strong{color:var(--text);}
+  article a{color:var(--teal);}
+  article code{font-family:var(--mono); font-size:13px; background:var(--bg-panel-2); padding:1px 6px; border-radius:3px; color:var(--amber);}
+  article img{max-width:100%; display:block; margin:28px auto 6px; border:1px solid var(--border); border-radius:2px;}
+  figcaption{font-size:12px; color:var(--text-faint); text-align:center; margin-bottom:28px;}
+
+  .table-wrap{overflow-x:auto; margin:20px 0 28px;}
+  table{width:100%; border-collapse:collapse; font-family:var(--mono); font-size:12.5px; min-width:620px;}
+  th{text-align:right; font-size:10px; letter-spacing:.05em; text-transform:uppercase; color:var(--text-faint); padding:8px 10px; border-bottom:1px solid var(--border); white-space:nowrap;}
+  th:first-child, td:first-child{text-align:left;}
+  td{text-align:right; padding:9px 10px; border-bottom:1px solid var(--border-soft); color:var(--text-dim); white-space:nowrap;}
+  td:first-child{color:var(--text); font-weight:600;}
+  tr.highlight td{color:var(--amber);}
+  tr.soft td:first-child{color:var(--green);}
+  tr.hard td:first-child{color:var(--red);}
+
+  .callout{background:var(--bg-panel); border-left:3px solid var(--amber); padding:16px 20px; margin:26px 0; font-size:14.5px; color:var(--text-dim); line-height:1.7;}
+  .callout b{color:var(--amber);}
+  .callout.warn{border-left-color:var(--red);}
+  .callout.warn b{color:var(--red);}
+
+  footer{margin-top:64px; padding-top:22px; border-top:1px solid var(--border);}
+  footer p{font-size:12px; color:var(--text-faint); line-height:1.8; max-width:800px; margin-bottom:10px;}
+  footer a{color:var(--text-dim);}
+
+  @media (max-width:640px){
+    header.blog-head{flex-direction:column; align-items:flex-start;}
+    .blog-nav a{margin-left:0; margin-right:16px;}
+  }
+</style>
+<script defer src="https://cloud.umami.is/script.js" data-website-id="2dcbaf06-d535-480a-a4a3-f571b7b1a79c"></script>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="blog-head">
+    <a class="brand-link" href="../">1K<span>Alpha</span></a>
+    <nav class="blog-nav">
+      <a href="./">Blog</a>
+      <a href="https://x.com/OnekAlpha" target="_blank" rel="noopener"><svg class="x-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>Follow</a>
+    </nav>
+  </header>
+
+  <article>
+    <div class="post-meta">
+      <span>2026-10-05</span>
+      <span>&middot;</span>
+      <span>11 min read</span>
+      <span>&middot;</span>
+      <span>backtest</span>
+    </div>
+    <h1>Does a Negative "Fed Model" Spread Predict Weak Stock Returns? A 152-Year Test</h1>
+
+    <p>Financial media spent a lot of 2026 pointing out the same thing: the gap between what stocks pay and what bonds pay has nearly disappeared. Axios ran a piece in May headlined <a href="https://www.axios.com/2026/05/27/stocks-bonds-yields-premium" target="_blank" rel="noopener">"The disappearing premium to own stocks,"</a> and Fisher Investments devoted a note to <a href="https://www.fisherinvestments.com/en-us/insights/market-commentary/putting-negative-equity-risk-premiums-in-proper-perspective" target="_blank" rel="noopener">"negative equity risk premiums"</a> around the same time. The underlying comparison is often called the <strong>Fed Model</strong>: take the S&amp;P 500's earnings yield (earnings divided by price &mdash; the inverse of the P/E ratio) and subtract the 10-year Treasury yield. When that spread is wide, stocks look cheap relative to bonds. When it's thin or negative, the claim goes, investors are taking equity risk without being paid extra for it, and forward stock returns should suffer.</p>
+
+    <p>That's a specific, testable claim, not just a vibe about valuations feeling high. So I tested it against 152 years of data: every month from 1871 through 2023 where both an earnings yield and a 10-year yield exist, and what the S&amp;P 500 actually did in the 1, 3, 5, and 10 years that followed.</p>
+
+    <p>Short version: <strong>the signal doesn't hold up.</strong> Across the full sample, months when the spread was negative &mdash; the exact condition commentators are worried about right now &mdash; went on to <em>beat</em>, not trail, months when the spread was positive, at every single horizon tested. Restrict to the modern era (1960 onward, the period most comparable to today's market), and whatever relationship existed essentially vanishes: the correlation between the spread and forward returns is statistically indistinguishable from zero.</p>
+
+    <h2>Methodology</h2>
+    <p>I used the same source as the other backtests on this site: Robert Shiller's monthly S&amp;P 500 dataset, mirrored as CSV by <a href="https://github.com/datasets/s-and-p-500" target="_blank" rel="noopener">datasets/s-and-p-500</a> on GitHub. It includes monthly price, dividends, trailing earnings, CPI, and a long-term interest rate series, reliably populated from <strong>January 1871 through June 2023</strong> (after that the mirror zero-fills the slower-moving columns).</p>
+    <p>For every month <code>t</code> in that window I computed:</p>
+    <ul>
+      <li><strong>Earnings yield</strong> = trailing earnings &divide; price, as a percentage.</li>
+      <li><strong>Fed Model spread</strong> = earnings yield &minus; the long-term interest rate, in percentage points. Negative means bonds were yielding more than stocks' earnings yield.</li>
+      <li><strong>Forward real total return</strong> at 1, 3, 5, and 10 years &mdash; a CPI-deflated index with dividends reinvested monthly, annualized over the horizon.</li>
+    </ul>
+    <p>That gives between 1,355 and 1,818 overlapping starting months per horizon (fewer at longer horizons, since the last starting month has to leave room for the full forward window inside the reliable period). I computed the Pearson correlation between the spread and each forward-return horizon, then split months into "spread negative" and "spread positive" groups and compared their median forward returns directly.</p>
+
+    <div class="callout warn">
+      <b>Important limitation:</b> Shiller's long-rate series is a constructed long-term high-grade bond yield, harmonized across eras &mdash; from 1953 onward it matches the Fed's own GS10 (10-year Treasury) series, but before that it splices in earlier long-bond data that isn't literally a 10-year Treasury yield, because the modern Treasury market didn't exist in its current form yet. That's a real limitation of testing this back to 1871, not something specific to this analysis &mdash; it's inherent to using a 152-year interest-rate record at all.
+    </div>
+
+    <h2>The headline result: negative spread did not mean weak returns</h2>
+    <p>Across the full sample, the correlation between the spread and forward real returns is <strong>positive</strong> at every horizon &mdash; r = 0.123 at 1 year, rising to r = 0.342 at 10 years. Taken at face value, that's the Fed Model's basic direction: a wider spread (stocks cheap vs. bonds) associates with better forward returns. But directly comparing the two groups the current debate actually cares about &mdash; months where the spread was negative (the "sell" reading) against months where it was positive &mdash; tells a different story:</p>
+
+    <img src="images/fed-model-chart-1.png" alt="Bar chart comparing median forward real total return for months when the Fed Model spread was negative versus positive, at 1, 3, 5, and 10-year horizons. The negative-spread bars are higher than the positive-spread bars at every horizon: 9.8% vs 8.1% at 1 year, 9.2% vs 7.3% at 3 years, 8.5% vs 7.0% at 5 years, 7.7% vs 6.8% at 10 years.">
+    <figcaption>1,830 months, 1871&ndash;2023. "Negative" = earnings yield below the long rate at the start of the window, n=355. Every bar pair shows the "sell" signal outperforming the baseline.</figcaption>
+
+    <p>At every horizon, negative-spread months had a <em>higher</em> median forward return than positive-spread months: +9.8% vs. +8.1% at 1 year, +9.2% vs. +7.3% at 3 years, +8.5% vs. +7.0% at 5 years, +7.7% vs. +6.8% at 10 years. That's the opposite of what the Fed Model predicts. The positive overall correlation is being driven by something else &mdash; and it's worth being honest about what.</p>
+
+    <h2>Where the positive correlation actually comes from</h2>
+    <p>Sorting all 1,830 months into quintiles by starting spread, the top quintile (spread above roughly +5 percentage points) has by far the best forward returns at every horizon &mdash; and 342 of its 342 ten-year windows had positive real returns. But that quintile isn't spread evenly across history: 89 of its months are in the 1940s and 73 are in the 1950s, with another small cluster in the 2010s. That's not a general "wide spread predicts good returns" law so much as a description of two specific eras &mdash; the postwar boom (when bond yields were held low and earnings yields were very high) and the post-2008 zero-rate decade (when bond yields collapsed toward zero even though stocks weren't obviously cheap) &mdash; both of which also happened to be very good decades for stocks, largely for reasons that have nothing to do with the spread itself. Pull the regression line out of those two eras and the "wide spread, good returns" relationship gets a lot weaker.</p>
+
+    <h2>The modern era: no relationship at all</h2>
+    <p>Fed Model critics &mdash; most notably Cliff Asness's 2003 paper <a href="https://www.aqr.com/-/media/AQR/Documents/Journal-Articles/JPM-Fight-the-Fed-Model.pdf" target="_blank" rel="noopener">"Fight the Fed Model,"</a> published in the Journal of Portfolio Management &mdash; have long argued it's not a reliable forecasting tool, partly because its apparent track record leans heavily on specific eras rather than a stable relationship. Restricting the sample to 1960 onward (dropping the 1940s&ndash;50s postwar cluster, and closer to today's market structure and monetary regime) tests that directly:</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Horizon</th><th>n</th><th>Correlation (r)</th><th>Neg-spread median fwd</th><th>Pos-spread median fwd</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1yr</td><td>750</td><td>0.067</td><td>+9.7%</td><td>+7.9%</td></tr>
+          <tr><td>3yr</td><td>726</td><td>0.010</td><td>+9.2%</td><td>+6.7%</td></tr>
+          <tr><td>5yr</td><td>702</td><td>&minus;0.027</td><td>+8.5%</td><td>+6.1%</td></tr>
+          <tr><td>10yr</td><td>642</td><td>0.041</td><td>+7.6%</td><td>+5.6%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:12px; color:var(--text-faint); margin-top:-16px;">1960&ndash;2023 subsample. With n in the 640&ndash;750 range, a correlation would need to be roughly &plusmn;0.07 or larger to clear conventional statistical significance (p&lt;0.05) &mdash; every r in this table falls inside that noise band, including the one with the "wrong" sign.</p>
+
+    <p>Post-1960, the correlation is effectively zero at every horizon &mdash; and negative-spread months still beat positive-spread months at every horizon, by a wider margin than in the full sample. If the Fed Model spread carries real forecasting information about forward stock returns, the modern era &mdash; the one most comparable to today's market &mdash; is not where it shows up.</p>
+
+    <h2>The four times it actually happened</h2>
+    <p>355 of the 1,830 months had a negative spread, but that's not 355 independent events &mdash; it's four distinct multi-month episodes, plus a handful of one-to-four-month blips. Looking at what actually happened across each full episode is a cleaner way to see the pattern than counting months:</p>
+
+    <img src="images/fed-model-chart-2.png" alt="Bar chart of total real S&P 500 return across each of the four historical episodes when the Fed Model spread stayed negative: -8.7% in 1968-73 (stagflation), +284.8% in 1980-95 (disinflation bull market), +58.1% in 1995-2003 (dot-com rise and fall), and -20.7% in 2008-09 (financial crisis).">
+    <figcaption>Real total return of the S&amp;P 500 measured from the start to the end of each full episode the spread stayed below zero.</figcaption>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Episode</th><th>Length</th><th>Starting spread</th><th>Starting CAPE</th><th>Real return</th></tr>
+        </thead>
+        <tbody>
+          <tr class="hard"><td>1968-10 &ndash; 1973-08</td><td>58mo</td><td>&minus;0.10pp</td><td>22.0</td><td>&minus;8.7%</td></tr>
+          <tr class="soft"><td>1980-10 &ndash; 1995-05</td><td>176mo</td><td>&minus;0.46pp</td><td>9.4</td><td>+284.8%</td></tr>
+          <tr class="soft"><td>1995-07 &ndash; 2003-05</td><td>95mo</td><td>&minus;0.06pp</td><td>23.4</td><td>+58.1%</td></tr>
+          <tr class="hard"><td>2008-05 &ndash; 2009-10</td><td>17mo</td><td>&minus;0.00pp</td><td>23.7</td><td>&minus;20.7%</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>Two episodes (the 1968&ndash;73 stagflation stretch and the 2008&ndash;09 financial crisis) went on to real losses. Two episodes (1980&ndash;95 and 1995&ndash;2003) went on to large real gains. That's a coin flip, not a signal &mdash; and it's worth noticing that the two episodes that went badly also started from a genuinely stretched CAPE (22.0 and 23.7), while the episode that produced the best outcome in the whole dataset, 1980&ndash;95, started from a CAPE of 9.4 &mdash; one of the cheapest readings in the index's history. The spread went negative in 1980 almost entirely because bond yields were extraordinarily high (11.75%, Volcker-era), not because stocks were expensive. The Fed Model spread can go negative for two very different reasons &mdash; stocks getting pricier, or bonds getting cheaper &mdash; and it doesn't distinguish between them, even though they're arguably opposite signals for whether stocks are a good deal.</p>
+
+    <p>One data point does fit the bearish story cleanly: the single most negative spread reading in the entire 152-year record came in <strong>September 1987</strong>, inside the 1980&ndash;95 episode, at &minus;4.44 percentage points. The real S&amp;P 500 fell &minus;24.0% over the following three months &mdash; Black Monday, October 19, 1987, landed a few weeks later. But the same starting month was <em>also</em> +57.8% in real terms 7.7 years out, by the time the broader episode ended in May 1995. Even the single sharpest reading in the whole dataset was right about the next quarter and wrong about the next decade.</p>
+
+    <h2>Where the spread actually sits in 2026</h2>
+    <p>This dataset's earnings/CPI/rate columns stop being reliable in mid-2023, so I can't compute today's exact spread from the same source used for the backtest &mdash; the same limitation the CAPE-ratio post on this site flagged for today's CAPE reading. Public estimates through 2026 generally put the S&amp;P 500 around 21x forward earnings (a forward earnings yield near 4.6%) against a 10-year Treasury yield around 4.2&ndash;4.3%, putting the spread at only a few tenths of a percentage point either way, depending on whether forward or trailing earnings are used &mdash; among the thinnest readings in decades, which is exactly the gap Axios and Fisher Investments were writing about. That framing is accurate. What this backtest adds is that the spread being thin or negative has not, historically, been a reliable warning about what stocks do next &mdash; particularly not in the post-1960 era this market most resembles.</p>
+
+    <h2>Bottom line</h2>
+    <ul>
+      <li><strong>The Fed Model spread has no demonstrated forecasting power over forward S&amp;P 500 returns.</strong> In the full 152-year sample, negative-spread months beat positive-spread months at every horizon from 1 to 10 years &mdash; the opposite of what the model predicts.</li>
+      <li><strong>The modern era (1960 onward) shows no relationship at all</strong> &mdash; correlations between &minus;0.03 and +0.07, all statistically indistinguishable from zero, which is close to what Cliff Asness's "Fight the Fed Model" argued two decades ago.</li>
+      <li><strong>The spread conflates two different situations</strong> &mdash; stocks getting expensive, or bonds getting cheap &mdash; that can mean opposite things for whether stocks are a good deal. 1980, the cheapest CAPE episode in the sample, had a negative spread purely because bond yields were near 12%.</li>
+      <li><strong>At the episode level it's a genuine coin flip:</strong> two of history's four negative-spread episodes preceded real losses, two preceded large real gains.</li>
+    </ul>
+    <p>So: a thin or negative gap between stocks' earnings yield and bond yields is real, checkable, and worth knowing about &mdash; it just isn't, on 152 years of evidence, a reliable signal about what the next 1 to 10 years of stock returns will look like.</p>
+
+    <div class="callout">
+      <b>Reproducing this:</b> Data is Robert Shiller's dataset (Yale), mirrored as CSV by <a href="https://github.com/datasets/s-and-p-500" target="_blank" rel="noopener">datasets/s-and-p-500</a> on GitHub. The analysis is a ~150-line Node.js script: build a real (CPI-deflated) total-return index from price plus reinvested dividends, compute the earnings-yield-minus-long-rate spread for every month, and measure realized forward returns at four horizons. Charts are hand-computed-coordinate SVGs rasterized to PNG. Happy to share the script &mdash; reply on <a href="https://x.com/OnekAlpha" target="_blank" rel="noopener">X</a>.
+    </div>
+  </article>
+
+  <footer>
+    <p>This post is part of <b>1KAlpha</b>, a transparent, publicly logged AI trading simulation using virtual funds only. Nothing here is investment advice or a forecast &mdash; it's a backtest of a recurring claim, using historical data that cannot tell you what happens next. Past performance, simulated or real, does not indicate future results.</p>
+    <p><a href="../">&larr; Back to 1KAlpha.com</a> &nbsp;&middot;&nbsp; <a href="./">More posts</a></p>
+  </footer>
+
+</div>
+</body>
+</html>
