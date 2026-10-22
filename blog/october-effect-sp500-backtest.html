@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Is October Really the Market's Most Dangerous Month? A 152-Year Test · 1KAlpha</title>
+<meta name="description" content="A 152-year test of the 'October effect' against Shiller S&P 500 data. October barely edges out the worst average month and isn't the most volatile month in the full record — but it accounts for 10 of the 40 worst months on record, far more than chance.">
+<link rel="canonical" href="https://1kalpha.com/blog/october-effect-sp500-backtest.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Is October Really the Market's Most Dangerous Month? A 152-Year Test">
+<meta property="og:description" content="Financial media keeps calling October the market's scariest month. 152 years of Shiller data say: barely the worst on average, not the most volatile overall — but genuinely where crashes cluster.">
+<meta property="og:url" content="https://1kalpha.com/blog/october-effect-sp500-backtest.html">
+<meta property="og:image" content="https://1kalpha.com/blog/images/october-chart-2.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="675">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@OnekAlpha">
+<meta name="twitter:title" content="Is October Really the Market's Most Dangerous Month? A 152-Year Test">
+<meta name="twitter:description" content="Financial media keeps calling October the market's scariest month. 152 years of Shiller data say: barely the worst on average, not the most volatile overall — but genuinely where crashes cluster.">
+<meta name="twitter:image" content="https://1kalpha.com/blog/images/october-chart-2.png">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0e0f; --bg-panel:#10171a; --bg-panel-2:#141d20;
+    --border:#213032; --border-soft:#1a2528;
+    --text:#e7edee; --text-dim:#8ba0a2; --text-faint:#4e6567;
+    --amber:#ffb400; --amber-dim:#8a640e; --teal:#5eead4; --green:#34d399; --red:#f87171;
+    --mono:'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
+    --sans:'IBM Plex Sans', -apple-system, sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{background:var(--bg);}
+  body{
+    background:
+      radial-gradient(ellipse 1200px 600px at 15% -10%, rgba(255,180,0,0.06), transparent 60%),
+      radial-gradient(ellipse 1000px 800px at 100% 0%, rgba(94,234,212,0.05), transparent 55%),
+      var(--bg);
+    color:var(--text); font-family:var(--sans); line-height:1.6; padding-bottom:60px; min-height:100vh;
+  }
+  .wrap{max-width:800px; margin:0 auto; padding:0 24px;}
+  header.blog-head{
+    border-bottom:1px solid var(--border); padding:22px 0 20px; margin-bottom:40px;
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;
+  }
+  .brand-link{font-family:var(--mono); font-weight:700; font-size:17px; color:var(--text); text-decoration:none; letter-spacing:-0.01em;}
+  .brand-link span{color:var(--amber);}
+  .blog-nav a{font-family:var(--mono); font-size:12px; color:var(--text-dim); text-decoration:none; margin-left:18px; display:inline-flex; align-items:center; gap:5px;}
+  .blog-nav .x-icon{width:11px; height:11px; fill:currentColor;}
+  .blog-nav a:hover{color:var(--amber);}
+
+  .post-meta{font-family:var(--mono); font-size:12px; color:var(--text-faint); margin-bottom:14px; display:flex; gap:14px; flex-wrap:wrap; letter-spacing:.03em;}
+  article h1{font-size:clamp(26px,4.2vw,36px); color:var(--text); margin-bottom:20px; line-height:1.25;}
+  article h2{font-size:21px; color:var(--text); margin:40px 0 14px;}
+  article h2::before{content:''; display:inline-block; width:3px; height:14px; background:var(--amber); margin-right:10px; vertical-align:middle;}
+  article h3{font-size:16px; color:var(--text); margin:26px 0 10px;}
+  article p{font-size:15.5px; color:var(--text-dim); margin-bottom:16px;}
+  article ul, article ol{margin:0 0 16px 22px; color:var(--text-dim); font-size:15.5px;}
+  article li{margin-bottom:6px;}
+  article strong{color:var(--text);}
+  article a{color:var(--teal);}
+  article code{font-family:var(--mono); font-size:13px; background:var(--bg-panel-2); padding:1px 6px; border-radius:3px; color:var(--amber);}
+  article img{max-width:100%; display:block; margin:28px auto 6px; border:1px solid var(--border); border-radius:2px;}
+  figcaption{font-size:12px; color:var(--text-faint); text-align:center; margin-bottom:28px;}
+
+  .table-wrap{overflow-x:auto; margin:20px 0 28px;}
+  table{width:100%; border-collapse:collapse; font-family:var(--mono); font-size:12.5px; min-width:620px;}
+  th{text-align:right; font-size:10px; letter-spacing:.05em; text-transform:uppercase; color:var(--text-faint); padding:8px 10px; border-bottom:1px solid var(--border); white-space:nowrap;}
+  th:first-child, td:first-child{text-align:left;}
+  td{text-align:right; padding:9px 10px; border-bottom:1px solid var(--border-soft); color:var(--text-dim); white-space:nowrap;}
+  td:first-child{color:var(--text); font-weight:600;}
+  tr.highlight td{color:var(--amber);}
+
+  .callout{background:var(--bg-panel); border-left:3px solid var(--amber); padding:16px 20px; margin:26px 0; font-size:14.5px; color:var(--text-dim); line-height:1.7;}
+  .callout b{color:var(--amber);}
+  .callout.warn{border-left-color:var(--red);}
+  .callout.warn b{color:var(--red);}
+
+  footer{margin-top:64px; padding-top:22px; border-top:1px solid var(--border);}
+  footer p{font-size:12px; color:var(--text-faint); line-height:1.8; max-width:800px; margin-bottom:10px;}
+  footer a{color:var(--text-dim);}
+
+  @media (max-width:640px){
+    header.blog-head{flex-direction:column; align-items:flex-start;}
+    .blog-nav a{margin-left:0; margin-right:16px;}
+  }
+</style>
+<script defer src="https://cloud.umami.is/script.js" data-website-id="2dcbaf06-d535-480a-a4a3-f571b7b1a79c"></script>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="blog-head">
+    <a class="brand-link" href="../">1K<span>Alpha</span></a>
+    <nav class="blog-nav">
+      <a href="./">Blog</a>
+      <a href="https://x.com/OnekAlpha" target="_blank" rel="noopener"><svg class="x-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>Follow</a>
+    </nav>
+  </header>
+
+  <article>
+    <div class="post-meta">
+      <span>2026-10-12</span>
+      <span>·</span>
+      <span>9 min read</span>
+      <span>·</span>
+      <span>backtest</span>
+    </div>
+    <h1>Is October Really the Market's Most Dangerous Month? A 152-Year Test</h1>
+
+    <p>Call it the October effect: the folk belief that October is the stock market's most dangerous month, propped up by three of history's most famous crashes — 1929, 1987, and 2008 — all landing in it. It resurfaces every year right on schedule, and this year was no exception: a data-driven piece arguing October is "the stock market's most volatile month" ran across dozens of local news outlets in late September 2026, days before the month started, citing roughly 95 years of history.</p>
+
+    <p>It's also one of the cleaner claims in market folklore to actually check. Calendar months are a fixed, pre-defined grouping — no cherry-picking a window after the fact — and 150+ years of free return data exists to test it against. So I did, three different ways: average return, volatility, and how often the worst months in history cluster there. Each gives a different, more interesting answer than a flat yes or no.</p>
+
+    <p><strong>Short version: October has the lowest average return of any calendar month over 152 years, but that result barely survives the scrutiny of testing all 12 months at once. It is not the most volatile month in the full historical record — that's August, driven by a Depression-era whipsaw — though October edges into a close second once you restrict to the modern era most people actually mean when they say "October crashes." Where the reputation is earned outright, and by a wide margin: October accounts for 10 of the 40 worst single months in market history, three times its fair 1-in-12 share, which is about as statistically solid as a finding like this gets.</strong></p>
+
+    <h2>Methodology</h2>
+    <p>Same source as the rest of this blog's backtests: Robert Shiller's monthly S&amp;P 500 dataset (price, dividends, CPI), mirrored as CSV by <a href="https://github.com/datasets/s-and-p-500" target="_blank" rel="noopener">datasets/s-and-p-500</a> on GitHub. The mirror's trailing CPI and dividend fields stop being populated after September 2023 (nominal prices continue further, but without CPI or dividends to pair with them), so the usable sample is <strong>February 1871 through September 2023 — 1,832 monthly return observations, 152 years</strong>.</p>
+    <p>Each month's return is computed as a real (inflation-adjusted), dividend-reinvested total return: <code>(thisMonthRealPrice + thisMonthRealDividend/12) / lastMonthRealPrice &minus; 1</code>, where dividing the trailing annual dividend rate by 12 is the standard convention for approximating a monthly cash dividend from Shiller's series. I then grouped all 1,832 months by calendar month (152&ndash;153 observations per month) and looked at three separate questions.</p>
+
+    <h2>1. The average-return case: real, but it barely holds up</h2>
+    <p>October's mean monthly return across the full sample is <strong>&minus;0.24%</strong>, against an overall average of <strong>+0.64%</strong> &mdash; the lowest of all 12 months. Its median is also the lowest, though still positive at +0.12%, which is itself informative: a negative mean sitting next to a positive median means October's average is being dragged down by a handful of extreme outlier months, not by a typically-bad October.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Month</th><th>N</th><th>Mean</th><th>Median</th><th>Stdev</th><th>Worst</th><th>% Negative</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Jan</td><td>152</td><td>1.77%</td><td>1.89%</td><td>3.03%</td><td>&minus;7.10%</td><td>30.3%</td></tr>
+          <tr><td>Feb</td><td>153</td><td>0.54%</td><td>0.70%</td><td>3.59%</td><td>&minus;9.88%</td><td>44.4%</td></tr>
+          <tr><td>Mar</td><td>153</td><td>0.41%</td><td>0.62%</td><td>3.45%</td><td>&minus;18.74%</td><td>39.9%</td></tr>
+          <tr><td>Apr</td><td>153</td><td>0.81%</td><td>1.05%</td><td>4.01%</td><td>&minus;22.70%</td><td>35.3%</td></tr>
+          <tr><td>May</td><td>153</td><td>0.42%</td><td>0.59%</td><td>4.53%</td><td>&minus;13.34%</td><td>41.2%</td></tr>
+          <tr><td>Jun</td><td>153</td><td>0.45%</td><td>0.74%</td><td>3.78%</td><td>&minus;11.79%</td><td>41.2%</td></tr>
+          <tr><td>Jul</td><td>153</td><td>0.97%</td><td>0.98%</td><td>3.79%</td><td>&minus;12.06%</td><td>35.3%</td></tr>
+          <tr><td>Aug</td><td>153</td><td>0.96%</td><td>0.88%</td><td>5.60%</td><td>&minus;10.65%</td><td>39.2%</td></tr>
+          <tr><td>Sep</td><td>153</td><td>0.14%</td><td>0.55%</td><td>4.22%</td><td>&minus;15.26%</td><td>43.1%</td></tr>
+          <tr class="highlight"><td>Oct</td><td>152</td><td>&minus;0.24%</td><td>0.12%</td><td>4.50%</td><td>&minus;19.38%</td><td>48.7%</td></tr>
+          <tr><td>Nov</td><td>152</td><td>0.90%</td><td>1.29%</td><td>4.31%</td><td>&minus;26.19%</td><td>36.2%</td></tr>
+          <tr><td>Dec</td><td>152</td><td>0.59%</td><td>1.29%</td><td>3.44%</td><td>&minus;17.55%</td><td>36.8%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:12px; color:var(--text-faint); margin-top:-16px;">Real, dividend-reinvested monthly total return by calendar month, Feb 1871&ndash;Sep 2023. Stdev is the standard deviation of that month's return across all years sampled &mdash; the volatility measure used throughout this post.</p>
+
+    <img src="images/october-chart-1.png" alt="Bar chart of mean monthly real total return by calendar month, showing October as the only negative bar at -0.24%, with January highest at 1.77%">
+    <figcaption>Mean monthly real total return, Feb 1871&ndash;Sep 2023 (1,832 months). October is the only calendar month with a negative average.</figcaption>
+
+    <p>A plain Welch's t-test of October against every other month pooled gives t = &minus;2.55 (p &asymp; 0.011) &mdash; on its own, that looks like a clean result. But it isn't a fair test: we didn't pick October in advance and then check it. We implicitly checked all 12 months and are reporting the one that came out worst, which is exactly the setup a naive p-value doesn't account for. To correct for that, I ran a permutation test: shuffle the calendar-month labels across all 1,832 observations 20,000 times, and each time record how negative the single worst of the resulting 12 fake "months" is. If October's real mean is more extreme than that purely-by-chance distribution 97% of the time, that's a fair test of "is the worst of 12 months this bad more often than chance would produce." The answer: an empirical p-value of <strong>0.0295</strong> &mdash; still statistically significant at the conventional 5% threshold, but only about a third as strong as the naive test suggested, and nowhere near overwhelming.</p>
+
+    <h2>2. The volatility case: depends which century you mean</h2>
+    <p>This is where the circulating "most volatile month" claim runs into trouble. Over the full 152-year sample, October's standard deviation (4.50%) isn't even the highest &mdash; <strong>August is (5.60%)</strong>, with May a close second (4.53%), putting October third. August's number is almost entirely a pre-1950 artifact: the summer of 1932 saw the fastest bear-market-bottom rally in Dow history whipsaw violently within weeks, and several other Depression-era Augusts were similarly wild. Restrict the August and October numbers to the post-1950 era &mdash; the market structure most people are actually picturing when they think of 1987 and 2008 &mdash; and the picture flips:</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Month</th><th>Stdev, full sample (1871&ndash;2023)</th><th>Stdev, post-1950 (n=73&ndash;74)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Aug</td><td>5.60%</td><td>3.73%</td></tr>
+          <tr><td>May</td><td>4.53%</td><td>3.52%</td></tr>
+          <tr class="highlight"><td>Oct</td><td>4.50%</td><td>3.85%</td></tr>
+          <tr><td>Nov</td><td>4.31%</td><td>3.87%</td></tr>
+          <tr><td>Sep</td><td>4.22%</td><td>3.75%</td></tr>
+          <tr><td>Mar</td><td>3.45%</td><td>3.83%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:12px; color:var(--text-faint); margin-top:-16px;">Only the six months closest to the top of either ranking are shown. Full table available on request.</p>
+
+    <p>Post-1950, October's volatility (3.85%) ranks second of all 12 months, essentially tied with November (3.87%) and well clear of everything below it. So the popular framing isn't baseless &mdash; it's just quietly leaning on the modern era to make its case, while the "95 years of data" or "152 years of data" framings that get attached to it imply a longer, more settled pattern than actually holds across the full record.</p>
+
+    <h2>3. The crash-concentration case: this is where it's earned</h2>
+    <p>The strongest, cleanest result in this whole exercise isn't about the average October or the typical October &mdash; it's about where market history's worst months actually fall. Of the 40 single worst real-return months in the 152-year sample, <strong>10 happened in October</strong>: 1902, 1907, 1929, 1930, 1931, 1932, 1933, 1937, 1987, and 2008. Ten distinct episodes spanning more than a century, not two or three famous events doing all the work.</p>
+
+    <img src="images/october-chart-2.png" alt="Bar chart showing the calendar-month distribution of the 40 worst monthly returns in market history, with October far ahead of every other month at 10, against an expected-by-chance line at 3.3">
+    <figcaption>Calendar-month distribution of the 40 worst real-return months, 1871&ndash;2023. If the worst months were spread evenly across the calendar, each month would get about 3.3 of them.</figcaption>
+
+    <p>If the 40 worst months in history were scattered evenly across the calendar, each month would average 3.3 of them (40 &divide; 12). October got 10 &mdash; three times its expected share. Because October is the specific, pre-existing hypothesis actually in circulation (unlike the "which single month looks worst" question above, nobody is out there arguing "May is the dangerous month"), a straightforward binomial test applies without the multiple-comparisons penalty: the probability of October landing 10 or more of the worst 40 months by pure chance is <strong>p = 0.0013</strong>. Even the softer version &mdash; 6 of the worst 20 months &mdash; comes in at p = 0.0047. Both are well past the usual bar for "this isn't noise."</p>
+
+    <p>One correction worth making to the popular telling: 1929 is remembered as an October crash, and the month was genuinely brutal (&minus;10.3%), but the single worst month in the entire 152-year sample is actually <strong>November 1929 (&minus;26.2%)</strong> &mdash; the panic that started in late October kept accelerating into the following month. October gets the historical credit; November did more of the damage that particular year.</p>
+
+    <h2>So does October deserve its reputation?</h2>
+    <p>Three tests, three different verdicts, and conflating them is most of what makes this claim slippery in financial media. October is the worst month on average, but only barely once you test fairly. It is not the most volatile month across the full historical record, though it's close to that in the modern era specifically. And it is, by a wide and statistically solid margin, the month where market history's genuine crashes have clustered.</p>
+    <p>Put differently: the "October effect" is really a statement about tail risk, not about the typical month. A typical October is unremarkable &mdash; its median return is positive, and it finishes negative less than half the time (48.7%), not much worse than most other months. But when the market has actually broken down hard, the base rates say it has disproportionately happened to be October when it did.</p>
+
+    <div class="callout warn">
+      <b>Limitations:</b> This is monthly-resolution data, which can see that a month was bad but not when inside it &mdash; it can't isolate that Black Monday (October 19, 1987) was a single &minus;20.5% day sitting inside a month that "only" fell 12.1% on net, nor can it distinguish a slow monthly grind from a one-day crash. Pre-1950 months dominate both the volatility and worst-months tables more than their 52% share of the sample would suggest &mdash; thinner markets, no circuit breakers, and the gold-standard-era Depression crashes all sit in a different market structure than today's. The Shiller mirror used here hasn't had its CPI and dividend fields refreshed past September 2023 as of this writing, so the real-return series stops there even though nominal prices in the same file run two more years. And nothing here is a timing signal: a statistically real tail-risk pattern is not an argument for raising cash every September 30th &mdash; see the <a href="sell-in-may-sp500-backtest.html">Sell in May post</a> on this blog for what happens when you actually try to mechanically trade a seasonal pattern instead of just staying invested through it.
+    </div>
+
+    <h2>Bottom line</h2>
+    <ul>
+      <li><strong>Average return:</strong> October's &minus;0.24% mean is the lowest of any month, and survives a fair (permutation-corrected) significance test at p &asymp; 0.03 &mdash; real, but modest.</li>
+      <li><strong>Volatility:</strong> October is not the most volatile month in the full 152-year record (August is); it's a close second in the post-1950 era specifically, which is most of why the "most volatile" framing persists.</li>
+      <li><strong>Crash concentration:</strong> this is the real finding. October holds 10 of the 40 worst months in market history, three times its fair share, at p = 0.0013 &mdash; spanning 1902 through 2008, not just two famous flukes.</li>
+      <li>None of this is a reason to do anything differently in any specific October. It's a description of where the tail of the historical distribution sits, not a trading signal.</li>
+    </ul>
+
+    <div class="callout">
+      <b>Reproducing this:</b> Data is Robert Shiller's dataset (Yale), mirrored as CSV by <a href="https://github.com/datasets/s-and-p-500" target="_blank" rel="noopener">datasets/s-and-p-500</a> on GitHub. The analysis is a short Node.js script: load the monthly series, compute real dividend-reinvested returns, group by calendar month, and run the permutation and binomial tests described above. Happy to share it &mdash; reply on <a href="https://x.com/OnekAlpha" target="_blank" rel="noopener">X</a>.
+    </div>
+  </article>
+
+  <footer>
+    <p>This post is part of <b>1KAlpha</b>, a transparent, publicly logged AI trading simulation using virtual funds only. Nothing here is investment advice &mdash; it's a backtest of a claim circulating in financial media, not a recommendation to trade around calendar months. Past performance, simulated or real, does not indicate future results.</p>
+    <p><a href="../">&larr; Back to 1KAlpha.com</a> &nbsp;&middot;&nbsp; <a href="./">More posts</a></p>
+  </footer>
+
+</div>
+</body>
+</html>
