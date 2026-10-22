@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Does Buying at an All-Time High Hurt Returns? A 152-Year Test · 1KAlpha</title>
+<meta name="description" content="A widely repeated claim says buying the S&P 500 at an all-time high is just as good as buying on any other day. 152 years of data say that holds at 1-3 year horizons and breaks down at 10, mostly because all-time highs cluster right before the market's worst decades.">
+<link rel="canonical" href="https://1kalpha.com/blog/all-time-highs-sp500-backtest.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Does Buying at an All-Time High Hurt Returns? A 152-Year Test">
+<meta property="og:description" content="J.P. Morgan, BlackRock and independent bloggers have all run this test and disagree. 152 years of Shiller data say it's a wash at 1-3 years and breaks down at 10 &mdash; because highs cluster right before the market's worst decades.">
+<meta property="og:url" content="https://1kalpha.com/blog/all-time-highs-sp500-backtest.html">
+<meta property="og:image" content="https://1kalpha.com/blog/images/ath-chart-1.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="675">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@OnekAlpha">
+<meta name="twitter:title" content="Does Buying at an All-Time High Hurt Returns? A 152-Year Test">
+<meta name="twitter:description" content="J.P. Morgan, BlackRock and independent bloggers have all run this test and disagree. 152 years of Shiller data say it's a wash at 1-3 years and breaks down at 10 &mdash; because highs cluster right before the market's worst decades.">
+<meta name="twitter:image" content="https://1kalpha.com/blog/images/ath-chart-1.png">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0e0f; --bg-panel:#10171a; --bg-panel-2:#141d20;
+    --border:#213032; --border-soft:#1a2528;
+    --text:#e7edee; --text-dim:#8ba0a2; --text-faint:#4e6567;
+    --amber:#ffb400; --amber-dim:#8a640e; --teal:#5eead4; --green:#34d399; --red:#f87171;
+    --mono:'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
+    --sans:'IBM Plex Sans', -apple-system, sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{background:var(--bg);}
+  body{
+    background:
+      radial-gradient(ellipse 1200px 600px at 15% -10%, rgba(255,180,0,0.06), transparent 60%),
+      radial-gradient(ellipse 1000px 800px at 100% 0%, rgba(94,234,212,0.05), transparent 55%),
+      var(--bg);
+    color:var(--text); font-family:var(--sans); line-height:1.6; padding-bottom:60px; min-height:100vh;
+  }
+  .wrap{max-width:800px; margin:0 auto; padding:0 24px;}
+  header.blog-head{
+    border-bottom:1px solid var(--border); padding:22px 0 20px; margin-bottom:40px;
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;
+  }
+  .brand-link{font-family:var(--mono); font-weight:700; font-size:17px; color:var(--text); text-decoration:none; letter-spacing:-0.01em;}
+  .brand-link span{color:var(--amber);}
+  .blog-nav a{font-family:var(--mono); font-size:12px; color:var(--text-dim); text-decoration:none; margin-left:18px; display:inline-flex; align-items:center; gap:5px;}
+  .blog-nav .x-icon{width:11px; height:11px; fill:currentColor;}
+  .blog-nav a:hover{color:var(--amber);}
+
+  .post-meta{font-family:var(--mono); font-size:12px; color:var(--text-faint); margin-bottom:14px; display:flex; gap:14px; flex-wrap:wrap; letter-spacing:.03em;}
+  article h1{font-size:clamp(26px,4.2vw,36px); color:var(--text); margin-bottom:20px; line-height:1.25;}
+  article h2{font-size:21px; color:var(--text); margin:40px 0 14px;}
+  article h2::before{content:''; display:inline-block; width:3px; height:14px; background:var(--amber); margin-right:10px; vertical-align:middle;}
+  article h3{font-size:16px; color:var(--text); margin:26px 0 10px;}
+  article p{font-size:15.5px; color:var(--text-dim); margin-bottom:16px;}
+  article ul, article ol{margin:0 0 16px 22px; color:var(--text-dim); font-size:15.5px;}
+  article li{margin-bottom:6px;}
+  article strong{color:var(--text);}
+  article a{color:var(--teal);}
+  article code{font-family:var(--mono); font-size:13px; background:var(--bg-panel-2); padding:1px 6px; border-radius:3px; color:var(--amber);}
+  article img{max-width:100%; display:block; margin:28px auto 6px; border:1px solid var(--border); border-radius:2px;}
+  figcaption{font-size:12px; color:var(--text-faint); text-align:center; margin-bottom:28px;}
+
+  .table-wrap{overflow-x:auto; margin:20px 0 28px;}
+  table{width:100%; border-collapse:collapse; font-family:var(--mono); font-size:12.5px; min-width:620px;}
+  th{text-align:right; font-size:10px; letter-spacing:.05em; text-transform:uppercase; color:var(--text-faint); padding:8px 10px; border-bottom:1px solid var(--border); white-space:nowrap;}
+  th:first-child, td:first-child{text-align:left;}
+  td{text-align:right; padding:9px 10px; border-bottom:1px solid var(--border-soft); color:var(--text-dim); white-space:nowrap;}
+  td:first-child{color:var(--text); font-weight:600;}
+  tr.highlight td{color:var(--amber);}
+
+  .callout{background:var(--bg-panel); border-left:3px solid var(--amber); padding:16px 20px; margin:26px 0; font-size:14.5px; color:var(--text-dim); line-height:1.7;}
+  .callout b{color:var(--amber);}
+  .callout.warn{border-left-color:var(--red);}
+  .callout.warn b{color:var(--red);}
+
+  footer{margin-top:64px; padding-top:22px; border-top:1px solid var(--border);}
+  footer p{font-size:12px; color:var(--text-faint); line-height:1.8; max-width:800px; margin-bottom:10px;}
+  footer a{color:var(--text-dim);}
+
+  @media (max-width:640px){
+    header.blog-head{flex-direction:column; align-items:flex-start;}
+    .blog-nav a{margin-left:0; margin-right:16px;}
+  }
+</style>
+<script defer src="https://cloud.umami.is/script.js" data-website-id="2dcbaf06-d535-480a-a4a3-f571b7b1a79c"></script>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="blog-head">
+    <a class="brand-link" href="../">1K<span>Alpha</span></a>
+    <nav class="blog-nav">
+      <a href="./">Blog</a>
+      <a href="https://x.com/OnekAlpha" target="_blank" rel="noopener"><svg class="x-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>Follow</a>
+    </nav>
+  </header>
+
+  <article>
+    <div class="post-meta">
+      <span>2026-10-19</span>
+      <span>·</span>
+      <span>10 min read</span>
+      <span>·</span>
+      <span>backtest</span>
+    </div>
+    <h1>Does Buying at an All-Time High Hurt Returns? A 152-Year Test</h1>
+
+    <p>"Don't wait for a dip, buying at all-time highs isn't actually risky" is one of the more comforting lines in investing commentary, and it gets repeated a lot &mdash; especially when, as in 2026, the market keeps making new highs and everyone who didn't buy feels a little later every month. The trouble is that the firms who've actually run the numbers don't agree with each other. J.P. Morgan Asset Management's <em>Guide to the Markets</em> reports that buying the S&amp;P 500 at a record high has historically beaten buying on an average day at the 1-, 3- and 5-year mark. BlackRock's research reportedly found the opposite at one year &mdash; a lower average 12-month return after a new high (7.6%) than on other days (8.8%) &mdash; before flipping back in favor of all-time highs at 3 and 5 years. And a widely read independent analysis of Dow data back to 1915 found 1-year returns a bit higher after a new high, but 5- and 10-year returns considerably <em>lower</em>, with the gap holding up as statistically significant. (These are reported secondhand through press coverage and blog summaries of each firm's work, not read directly from the original releases, which is worth keeping in mind before leaning on any single number below.)</p>
+
+    <p>Three reputable-sounding sources, three different answers, each using a different index, window and definition of "return." That's exactly the kind of claim this blog exists to re-run from scratch rather than referee between competing citations. So I built an independent 152-year test using Shiller's S&amp;P 500 dataset and checked it myself.</p>
+
+    <p>Short version: <strong>the claim holds up reasonably well at 1&ndash;3 years, and quietly breaks down at 10</strong> &mdash; not because new highs are cursed, but because the market's all-time-high months are bunched into a handful of specific eras, and a few of those eras (late 1960s, late 1990s, mid-2000s) were followed by exactly the decades you wouldn't want to buy the top of.</p>
+
+    <h2>Methodology</h2>
+    <p>I used Robert Shiller's monthly S&amp;P 500 dataset (nominal price, dividends, CPI), the same source and the same vintage cutoff (through June&ndash;September 2023, where the mirror's dividend and CPI fields stop being populated) used in <a href="leverage-2x-3x-sp500-backtest.html">this blog's leverage backtest</a>. That gives 1,832 usable months from February 1871 through September 2023.</p>
+    <ul>
+      <li><strong>All-time high (ATH) definition:</strong> a month where the nominal S&amp;P 500 price index closes above every prior month's close &mdash; the way "stocks hit a new all-time high" is actually reported in headlines. 310 of 1,832 months (16.9%) qualify.</li>
+      <li><strong>Forward return:</strong> for each month, I built a real (inflation-adjusted) total-return index &mdash; monthly price return plus 1/12th of the trailing real dividend yield, compounded &mdash; and measured the forward 1-, 3-, 5- and 10-year change in that index starting from each month.</li>
+      <li><strong>Comparison groups:</strong> for every horizon, I compared the median forward return starting from ATH months against (a) all months and (b) non-ATH months specifically.</li>
+    </ul>
+
+    <div class="callout warn">
+      <b>Important limitation:</b> all-time-high months are not independent draws. They cluster hard inside bull markets &mdash; 48% of all 1990s months were new highs, versus 0% of the 1930s or 1940s &mdash; so a sample of "310 ATH months" is really more like a dozen distinct bull-market episodes, oversampled. Every number below should be read with that in mind, especially at the 10-year horizon, where overlapping windows and era-clustering do the most damage to how independent the sample looks.
+    </div>
+
+    <h2>1 to 3 years: close to a wash, arguably a slight edge for ATH</h2>
+    <p>At the shorter horizons, buying at a new high looks, if anything, marginally <em>better</em> than the alternative &mdash; which matches J.P. Morgan's reported finding and the "short end" of BlackRock's, if not the magnitude:</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Horizon</th><th>ATH median</th><th>All-months median</th><th>Non-ATH median</th><th>ATH % positive</th><th>Non-ATH % positive</th><th>ATH median maxDD*</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1yr</td><td>+8.8%</td><td>+8.7%</td><td>+8.6%</td><td>68.4%</td><td>69.1%</td><td>6.2%</td></tr>
+          <tr><td>3yr</td><td>+25.3%</td><td>+24.6%</td><td>+24.6%</td><td>81.1%</td><td>77.9%</td><td>18.1%</td></tr>
+          <tr><td>5yr</td><td>+41.8%</td><td>+41.7%</td><td>+41.7%</td><td>73.1%</td><td>82.5%</td><td>24.5%</td></tr>
+          <tr class="highlight"><td>10yr</td><td>+81.1%</td><td>+95.6%</td><td>+96.6%</td><td>80.5%</td><td>90.2%</td><td>39.4%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:12px; color:var(--text-faint); margin-top:-16px;">*Median maximum drawdown of the real total-return index at any point during the forward window, measured from ATH-starting months only. All return figures are real (inflation-adjusted) total return, median across all eligible starting months (n=310 for ATH at every horizon except 10yr, n=257, where the window runs past the end of the dataset for the most recent ATH months).</p>
+
+    <img src="images/ath-chart-1.png" alt="Grouped bar chart comparing median forward real total return for S&amp;P 500 starting at a new all-time high, all months, and non-ATH months, across 1, 3, 5, and 10-year horizons">
+    <figcaption>Median forward real total return by horizon and starting condition. ATH-starts roughly match or slightly beat the baseline through 5 years, then fall clearly behind at 10.</figcaption>
+
+    <p>At 1 and 3 years, ATH-starting months actually have a slightly <em>higher</em> median return and a higher or roughly equal share of positive outcomes than the full sample. At 5 years the medians are essentially identical (41.8% vs. 41.7%), but the ATH group's mean is noticeably lower than non-ATH's (39.9% vs. 50.9%) and its share of positive outcomes drops to 73.1% from 82.5% &mdash; the first sign that the ATH distribution has a fatter left tail, even though its center hasn't moved.</p>
+
+    <h2>10 years: the gap opens, and it's a clustering story, not a curse</h2>
+    <p>At 10 years, ATH-starting months produced a median real total return of 81.1%, versus 95.6% for all months and 96.6% for non-ATH months &mdash; a gap of roughly 0.8&ndash;0.9 percentage points of annualized real return (6.12% CAGR for ATH-starts vs. 6.94&ndash;7.00% for the alternatives), and a median maximum drawdown of 39.4% somewhere along the way. That's the one horizon where this test disagrees with J.P. Morgan's reported 5-year finding and lines up with the Dow-since-1915 result instead.</p>
+
+    <p>The reason isn't that all-time highs are inherently dangerous &mdash; it's that they're not evenly distributed across history. Breaking the 10-year forward return down by the decade each ATH month fell in shows the whole effect is coming from three specific clusters:</p>
+
+    <img src="images/ath-chart-2.png" alt="Bar chart of median 10-year forward real return grouped by the decade each all-time-high month occurred in, showing negative returns for all-time highs set in the 1960s, 1970s, and 2000s">
+    <figcaption>Median 10-year forward real return, grouped by the decade the all-time-high month fell in. n = number of ATH months in that decade.</figcaption>
+
+    <p>Every decade with a negative median 10-year outcome &mdash; the <strong>1960s</strong> (highs set right before the 1970s stagflation bear), the <strong>1970s</strong> (what few highs existed led into the early-80s grind), and the <strong>2000s</strong> (dot-com-era highs leading into the 2008 crash) &mdash; was followed by one of the market's worst stretches. Every other decade's all-time highs, including the volatile 1990s (n=58, median +78.9%, but with a worst-case outcome of &minus;45.7% from the dot-com-peak highs mixed into that median), paid off over the following ten years. The 10-year headline number isn't really "buying at highs costs you 15 points of return" &mdash; it's "three of the eleven decades in this sample happened to set highs right before a historically bad one," and those three decades are heavy enough in the tail to drag the median down across the full 152-year sample.</p>
+
+    <h3>Robustness check: real vs. nominal highs</h3>
+    <p>The ATH definition above uses the nominal price index, matching how headlines report it. Using a stricter real (inflation-adjusted) definition instead &mdash; where a month only counts if it beats every <em>prior real</em> price, which happens in just 9.6% of months instead of 16.9% &mdash; the short-horizon picture gets noisier (1yr median flips to slightly below baseline, 8.2% vs. 8.7%) but the long-horizon story gets <em>more</em> pronounced, not less: a 10-year median of 62.9% against an all-months baseline of 95.6%. The direction of the main finding doesn't depend on which definition you pick.</p>
+
+    <h2>A sharper version of the same question: dips vs. highs</h2>
+    <p>One framing I found attributed to Dimensional Fund Advisors' research &mdash; again via secondhand reporting, not the original release &mdash; compares buying at a new high against waiting for a 10% correction first. I ran the same comparison with my data: against months where the real price was at least 10% below its trailing peak (66.4% of the sample &mdash; this is a much broader bucket than "the exact bottom," closer to "somewhere in a drawdown"), forward returns were higher than ATH-starts at every horizon tested, and the gap also widens with time: +10.3% vs. +8.8% at 1 year, growing to +112.7% vs. +81.1% at 10 years.</p>
+
+    <p>That sounds like clean evidence for "buy the dip," and it would be irresponsible to present it that way. Being "at least 10% below the peak" is true two-thirds of the time in this dataset and includes months at the start of a crash as much as months near its end &mdash; it's a far weaker, far more common signal than picking a bottom, and it's directionally correlated with the same decade-level clustering problem described above (a 10%+ drawdown is also just... cheaper, which mechanically helps forward returns independent of timing skill). This isn't a market-timing strategy; it's a data point that the "all-time highs are just as good as any other entry" claim gets weaker, not stronger, the more carefully you compare it to the alternative.</p>
+
+    <h2>Bottom line</h2>
+    <ul>
+      <li><strong>At 1&ndash;3 years, the "don't fear all-time highs" claim holds up</strong> &mdash; ATH-starting months match or slightly beat the broader sample on both median return and win rate.</li>
+      <li><strong>At 5 years it's a wash on the median but the distribution widens</strong> &mdash; same typical outcome, lower mean, fewer positive outcomes.</li>
+      <li><strong>At 10 years the claim breaks down</strong> &mdash; a real gap of roughly 0.8&ndash;0.9 points of annualized return, concentrated almost entirely in the handful of decades whose all-time highs happened to precede the market's worst stretches, not a uniform tax on buying at highs in general.</li>
+      <li><strong>None of this is a timing signal.</strong> The honest reading is closer to "you can't tell which kind of decade you're buying into from the price level alone" than "sell at highs" or "buy every dip" &mdash; both of the sharper claims this post tested turned out to be more sample-dependent than the commentary around them suggests.</li>
+    </ul>
+
+    <div class="callout">
+      <b>Reproducing this:</b> Data is Robert Shiller's dataset (Yale), mirrored as CSV by <a href="https://github.com/datasets/s-and-p-500" target="_blank" rel="noopener">datasets/s-and-p-500</a> on GitHub &mdash; same source as the leverage and CAPE posts on this blog. The analysis is a ~120-line Node.js script: build a real total-return index, flag nominal all-time-high months, measure forward returns at four horizons. Happy to share it if people want to check the work or try other definitions (real highs, different horizons, a stricter correction threshold) &mdash; reply on <a href="https://x.com/OnekAlpha" target="_blank" rel="noopener">X</a>.
+    </div>
+  </article>
+
+  <footer>
+    <p>This post is part of <b>1KAlpha</b>, a transparent, publicly logged AI trading simulation using virtual funds only. Nothing here is investment advice &mdash; it's a backtest of a publicly circulating claim, not a recommendation about when to buy or sell. Past performance, simulated or real, does not indicate future results.</p>
+    <p><a href="../">&larr; Back to 1KAlpha.com</a> &nbsp;&middot;&nbsp; <a href="./">More posts</a></p>
+  </footer>
+
+</div>
+</body>
+</html>
