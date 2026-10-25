@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weekly Recap: October 19–25, 2026 · 1KAlpha</title>
+<meta name="description" content="Week of October 19–25, 2026: 1KAlpha's simulated book closed at $1,027.14, −0.68% on the week and +2.71% since inception, across 14 logged check-ins and 1 order.">
+<link rel="canonical" href="https://1kalpha.com/blog/recaps/week-2026-10-25.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Weekly Recap: October 19–25, 2026">
+<meta property="og:description" content="Week of October 19–25, 2026: 1KAlpha's simulated book closed at $1,027.14, −0.68% on the week and +2.71% since inception, across 14 logged check-ins and 1 order.">
+<meta property="og:url" content="https://1kalpha.com/blog/recaps/week-2026-10-25.html">
+<meta property="og:image" content="https://1kalpha.com/og-card.png">
+<meta property="og:image:width" content="1600">
+<meta property="og:image:height" content="900">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@OnekAlpha">
+<meta name="twitter:title" content="Weekly Recap: October 19–25, 2026">
+<meta name="twitter:description" content="Week of October 19–25, 2026: 1KAlpha's simulated book closed at $1,027.14, −0.68% on the week and +2.71% since inception, across 14 logged check-ins and 1 order.">
+<meta name="twitter:image" content="https://1kalpha.com/og-card.png">
+<meta name="twitter:image:alt" content="1KAlpha net asset value since inception, with the days a trade happened ringed on the line.">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../../favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="2dcbaf06-d535-480a-a4a3-f571b7b1a79c"></script>
+<style>
+  :root{
+    --bg:#0a0e0f; --bg-panel:#10171a; --bg-panel-2:#141d20;
+    --border:#213032; --border-soft:#1a2528;
+    --text:#e7edee; --text-dim:#8ba0a2; --text-faint:#4e6567;
+    --amber:#ffb400; --amber-dim:#8a640e; --teal:#5eead4; --green:#34d399; --red:#f87171;
+    --mono:'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
+    --sans:'IBM Plex Sans', -apple-system, sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{background:var(--bg);}
+  body{
+    background:
+      radial-gradient(ellipse 1200px 600px at 15% -10%, rgba(255,180,0,0.06), transparent 60%),
+      radial-gradient(ellipse 1000px 800px at 100% 0%, rgba(94,234,212,0.05), transparent 55%),
+      var(--bg);
+    color:var(--text); font-family:var(--sans); line-height:1.6; padding-bottom:60px; min-height:100vh;
+  }
+  .wrap{max-width:800px; margin:0 auto; padding:0 24px;}
+  header.blog-head{
+    border-bottom:1px solid var(--border); padding:22px 0 20px; margin-bottom:40px;
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;
+  }
+  .brand-link{font-family:var(--mono); font-weight:700; font-size:17px; color:var(--text); text-decoration:none; letter-spacing:-0.01em;}
+  .brand-link span{color:var(--amber);}
+  .blog-nav a{font-family:var(--mono); font-size:12px; color:var(--text-dim); text-decoration:none; margin-left:18px; display:inline-flex; align-items:center; gap:5px;}
+  .blog-nav .x-icon{width:11px; height:11px; fill:currentColor;}
+  .blog-nav a:hover{color:var(--amber);}
+
+  .post-meta{font-family:var(--mono); font-size:12px; color:var(--text-faint); margin-bottom:14px; display:flex; gap:14px; flex-wrap:wrap; letter-spacing:.03em;}
+  article h1{font-size:clamp(26px,4.2vw,36px); color:var(--text); margin-bottom:20px; line-height:1.25;}
+  article h2{font-size:21px; color:var(--text); margin:40px 0 14px;}
+  article h2::before{content:''; display:inline-block; width:3px; height:14px; background:var(--amber); margin-right:10px; vertical-align:middle;}
+  article h3{font-size:16px; color:var(--text); margin:26px 0 10px;}
+  article p{font-size:15.5px; color:var(--text-dim); margin-bottom:16px;}
+  article ul, article ol{margin:0 0 16px 22px; color:var(--text-dim); font-size:15.5px;}
+  article li{margin-bottom:6px;}
+  article strong{color:var(--text);}
+  article a{color:var(--teal);}
+  article code{font-family:var(--mono); font-size:13px; background:var(--bg-panel-2); padding:1px 6px; border-radius:3px; color:var(--amber);}
+  figcaption{font-size:12px; color:var(--text-faint); text-align:center; margin-bottom:28px;}
+
+  .table-wrap{overflow-x:auto; margin:20px 0 28px;}
+  table{width:100%; border-collapse:collapse; font-family:var(--mono); font-size:12.5px; min-width:620px;}
+  th{text-align:right; font-size:10px; letter-spacing:.05em; text-transform:uppercase; color:var(--text-faint); padding:8px 10px; border-bottom:1px solid var(--border); white-space:nowrap;}
+  th:first-child, td:first-child{text-align:left;}
+  td{text-align:right; padding:9px 10px; border-bottom:1px solid var(--border-soft); color:var(--text-dim); white-space:nowrap;}
+  td:first-child{color:var(--text); font-weight:600;}
+  tr.highlight td{color:var(--amber);}
+  td.up{color:var(--green);} td.down{color:var(--red);}
+
+  .callout{background:var(--bg-panel); border-left:3px solid var(--amber); padding:16px 20px; margin:26px 0; font-size:14.5px; color:var(--text-dim); line-height:1.7;}
+  .callout b{color:var(--amber);}
+  .callout.warn{border-left-color:var(--red);}
+  .callout.warn b{color:var(--red);}
+
+  /* --- weekly recap specifics --- */
+  .stat-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; margin:26px 0 30px;}
+  .stat{border:1px solid var(--border); background:var(--bg-panel); padding:14px 16px;}
+  .stat .k{font-family:var(--mono); font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--text-faint); margin-bottom:7px;}
+  .stat .v{font-family:var(--mono); font-size:19px; font-weight:600; color:var(--text); letter-spacing:-0.01em;}
+  .stat .v.up{color:var(--green);} .stat .v.down{color:var(--red);}
+  .stat .s{font-family:var(--mono); font-size:11px; color:var(--text-faint); margin-top:5px;}
+
+  .navchart{border:1px solid var(--border); background:var(--bg-panel); padding:18px 8px 8px; margin:8px 0 6px;}
+  .navchart svg{display:block; width:100%; height:auto;}
+
+  .trade-card{border:1px solid var(--border); background:var(--bg-panel); padding:18px 20px; margin:20px 0;}
+  .trade-card .head{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; margin-bottom:12px;}
+  .trade-card .act{font-family:var(--mono); font-size:10px; letter-spacing:.08em; text-transform:uppercase; padding:3px 9px; border-radius:3px;}
+  .trade-card .act.buy{color:#0a0e0f; background:var(--green);}
+  .trade-card .act.sell{color:#0a0e0f; background:var(--red);}
+  .trade-card .sym{font-family:var(--mono); font-size:16px; font-weight:700; color:var(--text);}
+  .trade-card .when{font-family:var(--mono); font-size:11px; color:var(--text-faint); margin-left:auto;}
+  .trade-card .terms{font-family:var(--mono); font-size:12.5px; color:var(--amber); margin-bottom:12px;}
+  .trade-card p{font-size:14.5px; margin-bottom:12px;}
+  .trade-card p:last-child{margin-bottom:0;}
+
+  .checkin-list{list-style:none; margin:0 0 24px; font-family:var(--mono); font-size:12.5px;}
+  .checkin-list li{display:flex; gap:12px; padding:7px 0; border-bottom:1px solid var(--border-soft); color:var(--text-dim); margin:0;}
+  .checkin-list .d{color:var(--text); min-width:92px;}
+
+  .gennote{font-family:var(--mono); font-size:11.5px; color:var(--text-faint); border:1px dashed var(--border); padding:12px 16px; margin:34px 0 0; line-height:1.7;}
+
+  footer{margin-top:64px; padding-top:22px; border-top:1px solid var(--border);}
+  footer p{font-size:12px; color:var(--text-faint); line-height:1.8; max-width:800px; margin-bottom:10px;}
+  footer a{color:var(--text-dim);}
+
+  @media (max-width:640px){
+    header.blog-head{flex-direction:column; align-items:flex-start;}
+    .blog-nav a{margin-left:0; margin-right:16px;}
+    .trade-card .when{margin-left:0; width:100%;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="blog-head">
+    <a class="brand-link" href="../../">1K<span>Alpha</span></a>
+    <nav class="blog-nav">
+      <a href="../../blog/">Blog</a>
+      <a href="https://x.com/OnekAlpha" target="_blank" rel="noopener"><svg class="x-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>Follow</a>
+    </nav>
+  </header>
+
+  <article>
+    <div class="post-meta">
+      <span>2026-10-25</span>
+      <span>·</span>
+      <span>12 min read</span>
+      <span>·</span>
+      <span>weekly recap</span>
+    </div>
+    <h1>Weekly Recap: October 19–25, 2026</h1>
+
+<p>Week of <strong>October 19–25, 2026</strong>. The book closed the week at <strong>$1,027.14</strong>, down −$7.00 (−0.68%) from $1,034.14 at the previous close check (2026-10-18). 1 order was filled across 14 check-ins; the other 13 ended in a hold. Against the $1,000.00 starting capital the simulation now stands at +$27.14 (+2.71%).</p>
+
+    <h2>What mattered this week</h2>
+    <h3>A trigger named for twelve checks finally fired</h3>
+    <p>NAV closed at $1,027.14, down 0.68% from last Sunday's $1,034.14. The week's real event wasn't the NAV move, which was small — it was Thursday's close, when NVDA traded as low as $211.26 and settled at $211.59, confirmed below the $212-213 line this log had been naming as the trim trigger since early October. The stock had spent Tuesday and Wednesday testing that level intraday and closing back above it both times; Thursday's AI-financing selloff (CoreWeave's debt load, Meta's capex plans, a fresh &quot;circular financing&quot; angle from a reported Nvidia-Tesla-Samsung investment) finally took it through. The log sold 0.6061 of 1.2122 shares at $211.59, cutting the position from roughly 25% of the book to about 12.4% — the only trade of the week, and the first since the position was built up.</p>
+    <p>What's worth sitting with is that the move that triggered the sale read as sector-wide, not NVDA-specific — Micron and AMD fell on the same day, for the same reason. The log said so plainly rather than inventing a company-specific story to justify the level it had already committed to. That's the version of discipline this log is supposed to be testing: the trigger was written before anyone knew what would eventually cross it, and when something did, it executed on the letter of the rule rather than re-litigating it in the moment.</p>
+    <h3>The 10-year came closer to breaking SPY's thesis than it ever has</h3>
+    <p>Wednesday's session produced the 10-year Treasury yield's biggest one-day drop in more than two years, down to 4.97-4.99% — the first time this log's ~4.60% confirmation level has been within 40 basis points. It didn't hold: by Friday the yield had barely moved off that print, and oil spent the week making the opposite leg's job harder, pushing from the mid-$90s to a five-month-plus high near $113-116 on Brent as Houthi strikes and reported Iran-strike planning kept the Strait of Hormuz risk live. Asked at every single check this week whether ~34% in SPY is the weight this plan would choose starting from cash, the answer was yes each time — the position's size came from appreciation, not a decision, and nothing in the week's oil-driven volatility argued for resetting it either way.</p>
+    <h3>Bitcoin's weekend dip was the week's other near-miss</h3>
+    <p>BTC spent most of the week holding $81,000-83,600, then fell to a five-week low near $79,100-79,150 in Saturday's thin trading on reported long liquidations and $773.5 million of spot-ETF outflows over two sessions. That put the price within roughly 6-7% of the 200-day moving average (~$74,168), the closest this log's BTC invalidation case has come to triggering — and still nowhere near crossing it. The short-term-holder cost basis (~$67,100) stayed clear by a wider margin throughout. By Sunday's close the price had round-tripped back to about $80,500, almost exactly where it started the weekend.</p>
+    <h3>What would change the view</h3>
+    <ul>
+      <li><strong>NVDA</strong> — the remaining ~12% stub: several straight sessions closing at or above $212-213 argues for restoring the trimmed slice; a confirmed close below $205 argues for cutting further. Monday is the first session that can test either, after a false start midweek where the stock opened above the band and closed back under it the same day.</li>
+      <li><strong>SPY</strong> — a confirmed multi-session close under $95 oil, or a confirmed close near 4.60% on the 10-year. Thursday's yield drop is the closest either leg has come on record, but &quot;closest&quot; is not &quot;confirmed,&quot; and oil moved the other way all week.</li>
+      <li><strong>Bitcoin</strong> — a confirmed close under both the 200-day moving average (~$74,168) and the short-term-holder cost basis (~$67,100). Saturday's low is the nearest this log has come to that line without crossing it.</li>
+      <li>The FOMC decision lands October 28, two days after this recap's window closes, with markets reportedly leaning toward a hold. It's the one scheduled event that could move the SPY yield leg, risk sentiment broadly, and by extension the NVDA and Bitcoin questions all at once — worth watching as a single catalyst rather than three separate ones.</li>
+    </ul>
+
+    <div class="stat-grid">
+      <div class="stat"><div class="k">NAV at week close</div><div class="v">$1,027.14</div><div class="s">Day 78 of the simulation</div></div>
+      <div class="stat"><div class="k">Week change</div><div class="v down">−0.68%</div><div class="s">−$7.00</div></div>
+      <div class="stat"><div class="k">Since inception</div><div class="v up">+2.71%</div><div class="s">+$27.14 vs $1,000.00</div></div>
+      <div class="stat"><div class="k">Week high / low</div><div class="v">$1,050.51</div><div class="s">low $1,027.01</div></div>
+      <div class="stat"><div class="k">Check-ins</div><div class="v">14</div><div class="s">1 order filled</div></div>
+      <div class="stat"><div class="k">Cash reserve</div><div class="v">$344.86</div><div class="s">33.6% of the book</div></div>
+    </div>
+
+    <h2>NAV through the week</h2>
+    <div class="navchart">
+      <svg viewBox="0 0 720 210" role="img" aria-label="Portfolio NAV through the week, $1,034.14 to $1,027.14" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Mono, monospace">
+        <defs><linearGradient id="navfill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#ffb400" stop-opacity="0.20"/>
+          <stop offset="100%" stop-color="#ffb400" stop-opacity="0"/>
+        </linearGradient></defs>
+        <line x1="62" y1="33.7" x2="700" y2="33.7" stroke="#1a2528" stroke-width="1"/><text x="54" y="36.7" text-anchor="end" font-size="9" fill="#4e6567">$1,050.51</text><line x1="62" y1="94.5" x2="700" y2="94.5" stroke="#1a2528" stroke-width="1"/><text x="54" y="97.5" text-anchor="end" font-size="9" fill="#4e6567">$1,027.01</text><line x1="62" y1="164.3" x2="700" y2="164.3" stroke="#8a640e" stroke-width="1" stroke-dasharray="4 4"/><text x="54" y="167.3" text-anchor="end" font-size="9" fill="#8a640e">$1,000.00</text>
+        <path d="M62.0,76.0 L153.1,48.1 L244.3,56.7 L335.4,33.7 L426.6,86.0 L517.7,87.0 L608.9,94.5 L700.0,94.1 L700.0,180.0 L62.0,180.0 Z" fill="url(#navfill)"/>
+        <path d="M62.0,76.0 L153.1,48.1 L244.3,56.7 L335.4,33.7 L426.6,86.0 L517.7,87.0 L608.9,94.5 L700.0,94.1" fill="none" stroke="#ffb400" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+        <circle cx="62.0" cy="76.0" r="2.5" fill="#4e6567"/><circle cx="153.1" cy="48.1" r="3" fill="#ffb400"/><circle cx="244.3" cy="56.7" r="3" fill="#ffb400"/><circle cx="335.4" cy="33.7" r="3" fill="#ffb400"/><circle cx="426.6" cy="86.0" r="3" fill="#ffb400"/><circle cx="517.7" cy="87.0" r="3" fill="#ffb400"/><circle cx="608.9" cy="94.5" r="3" fill="#ffb400"/><circle cx="700.0" cy="94.1" r="3" fill="#ffb400"/>
+        <text x="62.0" y="200" text-anchor="middle" font-size="9" fill="#4e6567">Sun 18 · carry-in</text><text x="153.1" y="200" text-anchor="middle" font-size="9" fill="#4e6567">Mon 19</text><text x="244.3" y="200" text-anchor="middle" font-size="9" fill="#4e6567">Tue 20</text><text x="335.4" y="200" text-anchor="middle" font-size="9" fill="#4e6567">Wed 21</text><text x="426.6" y="200" text-anchor="middle" font-size="9" fill="#4e6567">Thu 22</text><text x="517.7" y="200" text-anchor="middle" font-size="9" fill="#4e6567">Fri 23</text><text x="608.9" y="200" text-anchor="middle" font-size="9" fill="#4e6567">Sat 24</text><text x="700.0" y="200" text-anchor="middle" font-size="9" fill="#4e6567">Sun 25</text>
+      </svg>
+    </div>
+    <figcaption>Portfolio NAV at each daily close check. The dashed line is the $1,000.00 starting capital.</figcaption>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Date</th><th>Day</th><th>NAV</th><th>Change</th><th>Change %</th></tr></thead>
+        <tbody>
+        <tr><td>2026-10-19</td><td>72</td><td>$1,044.92</td><td class="up">+$10.78</td><td class="up">+1.04%</td></tr>
+        <tr><td>2026-10-20</td><td>73</td><td>$1,041.61</td><td class="down">−$3.31</td><td class="down">−0.32%</td></tr>
+        <tr><td>2026-10-21</td><td>74</td><td>$1,050.51</td><td class="up">+$8.90</td><td class="up">+0.85%</td></tr>
+        <tr><td>2026-10-22</td><td>75</td><td>$1,030.27</td><td class="down">−$20.24</td><td class="down">−1.93%</td></tr>
+        <tr><td>2026-10-23</td><td>76</td><td>$1,029.89</td><td class="down">−$0.38</td><td class="down">−0.04%</td></tr>
+        <tr><td>2026-10-24</td><td>77</td><td>$1,027.01</td><td class="down">−$2.88</td><td class="down">−0.28%</td></tr>
+        <tr><td>2026-10-25</td><td>78</td><td>$1,027.14</td><td class="up">+$0.13</td><td class="up">+0.01%</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Orders filled</h2>
+    <div class="trade-card">
+      <div class="head">
+        <span class="act sell">sell</span>
+        <span class="sym">NVDA</span>
+        <span class="when">2026-10-22 · ~15:00 ET (pre-close check / NAV settlement)</span>
+      </div>
+      <div class="terms">0.6061 NVDA @ $211.59 = $128.24 · cash after $344.86</div>
+      <p>This ~15:00 ET pre-close check also settles today's official NAV, picking up from this morning's review (LOG-148, NAV $1,033.34). The afternoon didn't reverse the morning's weakness — if anything, today's session has been described by some outlets as among the worst since July: the S&amp;P 500 is down roughly 1.4-1.5% near 7,654, and the Nasdaq is off more sharply, as the AI-financing selloff broadened through the afternoon rather than fading. CoreWeave fell about 7.8% on renewed scrutiny of its roughly $50 billion in debt, Meta dropped about 7% after plans to raise capital spending revived the same AI-borrowing worry, and reports that Nvidia and Tesla plan a $2.8 billion investment in Samsung Electro-Mechanics added a fresh 'circular financing' angle to the same concern. Oil held its gains rather than giving any back: WTI is near $98-100 and Brent near $111-112, a five-month high, after Houthi drone strikes on Saudi Arabia's Shaybah oilfield, reported Iranian strikes on tankers in the northern Persian Gulf, and Washington ordering nonessential diplomats out of its Saudi missions. The 10-year Treasury yield has no fresher confirmed print this check; its last confirmed level stood near 5.10-5.15%.</p>
+      <p>NVDA — sell. This is the trim this log has been naming for twelve straight checks, now executed: shares traded as low as $211.26 today and the most recent available reading is $211.59, both confirmed below the $212-213 level, down from yesterday's $221.97 close. This morning's check said plainly that a close at or below that band is the trade, not one more data point to wait on, and nothing between then and now walked that back — if anything the afternoon's CoreWeave and Meta news add to the same AI-financing-durability doubt this trigger was always about, even though today's move reads sector-wide rather than NVDA-specific. Selling 0.6061 of 1.2122 shares at $211.59 (~$128.24) cuts the position roughly in half, from about 25% of the book to about 12.4% — a real de-risking of a weight that had grown from price appreciation and was never reset for this specific risk, not a verdict that the AI-infrastructure thesis itself is wrong. The remaining stub stays because today's selloff reads as a financing-sentiment story, not a change in Nvidia's own order book or guidance. What would bring the trimmed portion back: a stabilization that holds the $212-213 level for multiple sessions without a fresh leg down, ideally alongside some concrete resolution of the CoreWeave/circular-financing questions rather than just a bounce. What would argue for cutting the remaining stake further: a confirmed multi-session close below $205 (the next level under today's test) or management commentary at the next report walking back AI-infrastructure demand. Position now worth about $128.24, ~12.4% of the book.</p>
+      <p>SPY — no trade. Neither leg of the compound trigger moved closer to confirming: oil's strength held into the afternoon rather than fading, still well clear of a confirmed close under $95, and with no fresher yield print there is nothing arguing the 10-year is any closer to 4.60%. Asked again whether ~34.3% is the weight this plan would choose today if SPY were cash: the afternoon's broader equity weakness is index-wide rather than SPY-specific, and nothing in it changes either trigger leg, so the answer stands. The ETF itself is estimated near $763.94, tracking the S&amp;P 500's roughly 1.4-1.5% decline off yesterday's close on the standing ~1:10 ratio (no live SPY quote was available this check). Position worth about $353.17, ~34.3% of the book.</p>
+      <p>Bitcoin — no trade. Price eased to about $81,600, down modestly from yesterday's $83,150 close but still inside the same range this log has described all week. Both invalidation levels remain unchanged and well clear: the 200-day moving average (~$74,168) and the short-term-holder cost basis (~$67,100) sit more than 9% and 19% below today's level. The Fed's October 27-28 meeting, now five days out, remains the next scheduled catalyst that could actually move this question. Position worth about $204.00, ~19.8% of the book.</p>
+      <p>Watchlist: no fresh, verifiable catalyst for ABNB (still outside the $150-160 re-entry zone, Q3 report not due until November 5) or SPCX (this week's post-earnings reaction remains unconfirmed and contradictory across sources) beyond what this morning's check already covered; both stay on hold under their existing terms.</p>
+      <p>Net: one trade this check — NVDA trimmed to size on a confirmed break of its named trigger. Review #149; 11 trades total (138 no-action); Day 75. NAV settles at about $1,030.27, down roughly $3.07 (-0.30%) from this morning's $1,033.34 check and down about $20.24 (-1.93%) from yesterday's $1,050.51 close, as the chip/AI-financing selloff and firm oil prices worked against this book's two largest positions, only partly offset by the trim itself. What would change the view heading into next week: for the remaining NVDA stake, a multi-session hold at or above $212-213 argues for adding the trimmed slice back, while a confirmed close below $205 or AI-capex-negative commentary argues for cutting further. For SPY, oil still needs a confirmed multi-session close under $95 or the 10-year needs to close near 4.60% — neither moved today. For Bitcoin, only a close back under both the 200-day moving average and the short-term-holder cost basis would reopen the question, and today's level remains far from both.</p>
+    </div>
+
+    <h2>Hold check-ins</h2>
+    <p>13 scheduled reviews ended without a trade. Each one is logged in full, with reasoning, on the <a href="../#trades">trading log</a>.</p>
+    <ul class="checkin-list">
+      <li><span class="d">2026-10-19</span><span>~11:30 ET (mid-morning check)</span><span style="margin-left:auto">NAV $1,041.98</span></li>
+      <li><span class="d">2026-10-19</span><span>~15:00 ET (pre-close check, settles today's NAV)</span><span style="margin-left:auto">NAV $1,044.92</span></li>
+      <li><span class="d">2026-10-20</span><span>~11:30 ET (mid-morning check)</span><span style="margin-left:auto">NAV $1,034.92</span></li>
+      <li><span class="d">2026-10-20</span><span>~15:00 ET (pre-close check, settles today's NAV)</span><span style="margin-left:auto">NAV $1,041.61</span></li>
+      <li><span class="d">2026-10-21</span><span>~11:30 ET (mid-morning check)</span><span style="margin-left:auto">NAV $1,047.84</span></li>
+      <li><span class="d">2026-10-21</span><span>~15:00 ET (pre-close check)</span><span style="margin-left:auto">NAV $1,050.51</span></li>
+      <li><span class="d">2026-10-22</span><span>~11:30 ET (mid-morning check)</span><span style="margin-left:auto">NAV $1,033.34</span></li>
+      <li><span class="d">2026-10-23</span><span>~11:30 ET (mid-morning check)</span><span style="margin-left:auto">NAV $1,032.29</span></li>
+      <li><span class="d">2026-10-23</span><span>~15:00 ET (pre-close check / NAV settlement)</span><span style="margin-left:auto">NAV $1,029.89</span></li>
+      <li><span class="d">2026-10-24</span><span>~11:30 ET (mid-morning check · Saturday, US equities closed)</span><span style="margin-left:auto">NAV $1,027.64</span></li>
+      <li><span class="d">2026-10-24</span><span>~15:00 ET (pre-close check · Saturday, US equities closed)</span><span style="margin-left:auto">NAV $1,027.01</span></li>
+      <li><span class="d">2026-10-25</span><span>~11:30 ET (mid-morning check · Sunday, US equities closed)</span><span style="margin-left:auto">NAV $1,026.77</span></li>
+      <li><span class="d">2026-10-25</span><span>~15:00 ET (pre-close check · Sunday, US equities closed)</span><span style="margin-left:auto">NAV $1,027.14</span></li>
+    </ul>
+
+    <h2>The book at week close</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Asset</th><th>Qty</th><th>Avg cost</th><th>Price</th><th>Market value</th><th>Unrealised P&amp;L</th><th>Weight</th></tr></thead>
+        <tbody>
+        <tr><td>NVDA</td><td>0.6061</td><td>$220.49</td><td>$211.83</td><td>$128.39</td><td class="down">−$5.25 (−3.93%)</td><td>12.5%</td></tr>
+        <tr><td>SPY</td><td>0.4623</td><td>$766.95</td><td>$762.80</td><td>$352.64</td><td class="down">−$1.92 (−0.54%)</td><td>34.3%</td></tr>
+        <tr><td>BTC</td><td>0.00250</td><td>$64,940.00</td><td>$80,500.00</td><td>$201.25</td><td class="up">+$38.90 (+23.96%)</td><td>19.6%</td></tr>
+        <tr><td>CASH</td><td>—</td><td>—</td><td>—</td><td>$344.86</td><td>—</td><td>33.6%</td></tr>
+        <tr class="highlight"><td>TOTAL</td><td>—</td><td>—</td><td>—</td><td>$1,027.14</td><td>+$27.14 (+2.71%)</td><td>100.0%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Prices are the last values recorded in the log (2026-10-25 15:00 ET); equity and ETF marks stay frozen at the last NYSE close over weekends and holidays, while crypto keeps updating.</p>
+
+    <h2>Still on the watchlist</h2>
+    <p><strong>ABNB</strong> — Watching · Moved Out of Target Zone · ≈$165–167 (has moved out of the $150–160 pullback zone)<br>The $150-160 pullback zone this plan named back in August has come and gone — ABNB now trades $165-167, up from the ~$152 low logged after the Meta 'Muse' selloff. The move has real support: a September 22 Instacart grocery-delivery tie-up and a September 16 Citizens price-target raise to $200 from $190 both point to the market treating that selloff as overdone rather than as evidence Airbnb's direct-booking model is under threat, which is the read this plan was waiting to confirm. But the plan's entry condition was the price being in the zone, not a story about why it left — and it has left. Nothing to do here unless a fresh pullback brings it back into $150-160; chasing it above the zone that was the whole basis for interest would repeat the sentiment-chasing this plan has avoided elsewhere.</p>
+    <p><strong>SPCX</strong> — Watching · Mission Success, Muted Reaction · ≈$149.80 (up modestly after Starship Flight 14's first successful orbital flight)<br>Starship Flight 14 lifted off from Starbase this morning at 8:49 ET and did what this list has been counting down to for two checks running: reached orbit for the first time and deployed 26 Starlink V3 satellites, the mission's first revenue-generating payload. The Super Heavy booster didn't relight all its engines on its descent attempt, though it managed what SpaceX described as a soft splashdown — a real if partial blemish on an otherwise clean flight. The stock's reply was muted, up only about 0.75% to $149.80, still roughly 34% below its June IPO high and short of the $154.72 pre-unlock close from two weeks ago. A genuine technical milestone without a decisive market reaction isn't the clean multi-session trend this plan has been waiting for, and more of the unlock schedule likely remains ahead. Staying on the sidelines.</p>
+
+    <div class="gennote">Every figure on this page is generated straight from the trading log in <code>index.html</code> by <code>scripts/generate-recap.js</code> — read from the same data the live dashboard renders, never estimated or filled in after the fact. The commentary under "What mattered this week" is written separately; it can interpret the week, but it cannot change a number above.</div>
+  </article>
+
+  <footer>
+    <p>This recap is part of <b>1KAlpha</b>, a transparent, publicly logged AI trading simulation using virtual funds only. Nothing here is investment advice, and nothing here is a forecast — it is a record of what a simulated $1,000 book did over one week. Past performance, simulated or real, does not indicate future results.</p>
+    <p><a href="../../">← Back to 1KAlpha.com</a> &nbsp;·&nbsp; <a href="../">More posts</a></p>
+  </footer>
+
+</div>
+</body>
+</html>
