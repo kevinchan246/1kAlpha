@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Do Dividends Really Explain ~40% of the S&P 500's Return? A 152-Year Test</title>
+<meta name="description" content="Asset managers widely cite a figure near 40% for how much of the S&P 500's total return since 1930 has come from dividends, and buybacks are often blamed for shrinking that share. 152 years of Shiller data mostly confirm both claims &mdash; but the '40%' figure turns out to depend entirely on which of two reasonable methods you use.">
+<link rel="canonical" href="https://1kalpha.com/blog/dividends-buybacks-sp500-backtest.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Do Dividends Really Explain ~40% of the S&P 500's Return? A 152-Year Test">
+<meta property="og:description" content="Asset managers cite ~40% since 1930. 152 years of Shiller data say that number is real &mdash; but only under one of two equally reasonable ways to measure it, and the gap between methods grows the longer your window gets.">
+<meta property="og:url" content="https://1kalpha.com/blog/dividends-buybacks-sp500-backtest.html">
+<meta property="og:image" content="https://1kalpha.com/blog/images/dividends-chart-2.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="675">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@OnekAlpha">
+<meta name="twitter:title" content="Do Dividends Really Explain ~40% of the S&P 500's Return? A 152-Year Test">
+<meta name="twitter:description" content="Asset managers cite ~40% since 1930. 152 years of Shiller data say that number is real &mdash; but only under one of two equally reasonable ways to measure it, and the gap between methods grows the longer your window gets.">
+<meta name="twitter:image" content="https://1kalpha.com/blog/images/dividends-chart-2.png">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0e0f; --bg-panel:#10171a; --bg-panel-2:#141d20;
+    --border:#213032; --border-soft:#1a2528;
+    --text:#e7edee; --text-dim:#8ba0a2; --text-faint:#4e6567;
+    --amber:#ffb400; --amber-dim:#8a640e; --teal:#5eead4; --green:#34d399; --red:#f87171;
+    --mono:'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
+    --sans:'IBM Plex Sans', -apple-system, sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{background:var(--bg);}
+  body{
+    background:
+      radial-gradient(ellipse 1200px 600px at 15% -10%, rgba(255,180,0,0.06), transparent 60%),
+      radial-gradient(ellipse 1000px 800px at 100% 0%, rgba(94,234,212,0.05), transparent 55%),
+      var(--bg);
+    color:var(--text); font-family:var(--sans); line-height:1.6; padding-bottom:60px; min-height:100vh;
+  }
+  .wrap{max-width:800px; margin:0 auto; padding:0 24px;}
+  header.blog-head{
+    border-bottom:1px solid var(--border); padding:22px 0 20px; margin-bottom:40px;
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;
+  }
+  .brand-link{font-family:var(--mono); font-weight:700; font-size:17px; color:var(--text); text-decoration:none; letter-spacing:-0.01em;}
+  .brand-link span{color:var(--amber);}
+  .blog-nav a{font-family:var(--mono); font-size:12px; color:var(--text-dim); text-decoration:none; margin-left:18px; display:inline-flex; align-items:center; gap:5px;}
+  .blog-nav .x-icon{width:11px; height:11px; fill:currentColor;}
+  .blog-nav a:hover{color:var(--amber);}
+
+  .post-meta{font-family:var(--mono); font-size:12px; color:var(--text-faint); margin-bottom:14px; display:flex; gap:14px; flex-wrap:wrap; letter-spacing:.03em;}
+  article h1{font-size:clamp(26px,4.2vw,36px); color:var(--text); margin-bottom:20px; line-height:1.25;}
+  article h2{font-size:21px; color:var(--text); margin:40px 0 14px;}
+  article h2::before{content:''; display:inline-block; width:3px; height:14px; background:var(--amber); margin-right:10px; vertical-align:middle;}
+  article h3{font-size:16px; color:var(--text); margin:26px 0 10px;}
+  article p{font-size:15.5px; color:var(--text-dim); margin-bottom:16px;}
+  article ul, article ol{margin:0 0 16px 22px; color:var(--text-dim); font-size:15.5px;}
+  article li{margin-bottom:6px;}
+  article strong{color:var(--text);}
+  article a{color:var(--teal);}
+  article code{font-family:var(--mono); font-size:13px; background:var(--bg-panel-2); padding:1px 6px; border-radius:3px; color:var(--amber);}
+  article img{max-width:100%; display:block; margin:28px auto 6px; border:1px solid var(--border); border-radius:2px;}
+  figcaption{font-size:12px; color:var(--text-faint); text-align:center; margin-bottom:28px;}
+
+  .table-wrap{overflow-x:auto; margin:20px 0 28px;}
+  table{width:100%; border-collapse:collapse; font-family:var(--mono); font-size:12.5px; min-width:620px;}
+  th{text-align:right; font-size:10px; letter-spacing:.05em; text-transform:uppercase; color:var(--text-faint); padding:8px 10px; border-bottom:1px solid var(--border); white-space:nowrap;}
+  th:first-child, td:first-child{text-align:left;}
+  td{text-align:right; padding:9px 10px; border-bottom:1px solid var(--border-soft); color:var(--text-dim); white-space:nowrap;}
+  td:first-child{color:var(--text); font-weight:600;}
+  tr.highlight td{color:var(--amber);}
+
+  .callout{background:var(--bg-panel); border-left:3px solid var(--amber); padding:16px 20px; margin:26px 0; font-size:14.5px; color:var(--text-dim); line-height:1.7;}
+  .callout b{color:var(--amber);}
+  .callout.warn{border-left-color:var(--red);}
+  .callout.warn b{color:var(--red);}
+
+  footer{margin-top:64px; padding-top:22px; border-top:1px solid var(--border);}
+  footer p{font-size:12px; color:var(--text-faint); line-height:1.8; max-width:800px; margin-bottom:10px;}
+  footer a{color:var(--text-dim);}
+
+  @media (max-width:640px){
+    header.blog-head{flex-direction:column; align-items:flex-start;}
+    .blog-nav a{margin-left:0; margin-right:16px;}
+  }
+</style>
+<script defer src="https://cloud.umami.is/script.js" data-website-id="2dcbaf06-d535-480a-a4a3-f571b7b1a79c"></script>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="blog-head">
+    <a class="brand-link" href="../">1K<span>Alpha</span></a>
+    <nav class="blog-nav">
+      <a href="./">Blog</a>
+      <a href="https://x.com/OnekAlpha" target="_blank" rel="noopener"><svg class="x-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>Follow</a>
+    </nav>
+  </header>
+
+  <article>
+    <div class="post-meta">
+      <span>2026-10-26</span>
+      <span>&middot;</span>
+      <span>11 min read</span>
+      <span>&middot;</span>
+      <span>backtest</span>
+    </div>
+    <h1>Do Dividends Really Explain ~40% of the S&amp;P 500's Return? A 152-Year Test</h1>
+
+    <p>A specific number circulates constantly in dividend-investing content: <strong>dividends have accounted for roughly 40% of the S&amp;P 500's total return since 1930</strong>. It traces back to an often-cited analysis from asset manager Hartford Funds &mdash; reproduced, with figures in the low-to-mid 40s depending on the exact end date, by outlets ranging from Janus Henderson's research desk to Motley Fool decade breakdowns. A second, newer claim usually rides alongside it: that share has been shrinking for decades because companies now prefer buybacks to dividends, a shift that accelerated once the SEC's Rule 10b-18 gave buybacks a clear legal safe harbor in November 1982.</p>
+
+    <p>Both claims are specific enough to check against real data, so I rebuilt the decomposition from scratch using Robert Shiller's 152-year monthly dataset rather than taking anyone's number on faith. Short version: <strong>the ~40% figure replicates almost exactly</strong> &mdash; but only if you measure it one particular way. Measure it the other, equally defensible way, and the number is nowhere close to 40% for almost any window you pick. The buyback-era claim holds up better: the dividend share of return really did shrink by roughly two-thirds after 1982, though the data here can't cleanly separate "companies chose buybacks" from "stocks simply got more expensive," which lowers yield mechanically regardless of payout policy.</p>
+
+    <h2>Methodology</h2>
+    <p>I used the same source as the leverage-DCA post on this blog: Robert Shiller's monthly S&amp;P 500 dataset (price, trailing dividends, CPI), mirrored as CSV by <a href="https://github.com/datasets/s-and-p-500" target="_blank" rel="noopener">datasets/s-and-p-500</a> on GitHub, covering <strong>January 1871 through June 2023</strong> &mdash; the same cutoff used there, since that mirror's dividend and CPI columns stop being reliably populated after that month. That's 1,829 monthly return observations.</p>
+    <p>From the raw series I built two cumulative indices, both starting at 100 in January 1871:</p>
+    <ul>
+      <li><strong>Price-only index</strong> &mdash; tracks the nominal S&amp;P 500 price level alone, no dividends.</li>
+      <li><strong>Total-return index</strong> &mdash; each month adds the approximate monthly dividend (Shiller's trailing-12-month dividend figure, divided by 12) on top of the price return, and reinvests it immediately. This is the standard way total-return indices are built from trailing annualized dividend series; it will slightly misstate the exact timing of real quarterly dividend payments, but it's a reasonable approximation over multi-year windows.</li>
+    </ul>
+    <p>For any window, I then computed the dividend's "share" of the return two different, both-reasonable ways:</p>
+    <ul>
+      <li><b style="color:var(--teal)">Method A &mdash; cumulative-return share:</b> <code>(total cumulative return &minus; price-only cumulative return) &divide; total cumulative return</code>. This compares the two dollar-growth multiples directly.</li>
+      <li><b style="color:var(--amber)">Method B &mdash; CAGR-ratio share:</b> <code>1 &minus; (price-only annualized return &divide; total annualized return)</code>. This compares the two annualized growth rates instead of the cumulative dollar multiples.</li>
+    </ul>
+    <p>These sound like they should give similar answers. Over short-to-medium windows they roughly do. Over long windows they diverge enormously &mdash; which turns out to be the most important finding in this whole exercise.</p>
+
+    <div class="callout warn">
+      <b>Important limitation:</b> Shiller's dividend column is a trailing-12-month annualized figure, not a record of individual payment dates, and this model doesn't account for dividend taxes, transaction costs, or imperfect reinvestment. It also can't separate how much of the post-1982 yield decline is companies choosing buybacks over dividends versus stocks simply becoming more expensive (higher valuations mechanically lower the dividend yield at any given payout ratio) &mdash; both forces were operating over the same decades, and this dataset alone can't cleanly apportion credit between them.
+    </div>
+
+    <h2>Does the "~40%" number hold up?</h2>
+    <p>Replicating the Hartford-style window &mdash; December 1929 through June 2023, 93.5 years &mdash; the price-only index compounded at <strong>5.8%/year</strong> nominal, the total-return index at <strong>9.8%/year</strong>. Run that through <b style="color:var(--amber)">Method B</b> and dividends account for <strong>40.1%</strong> of the annualized return &mdash; landing almost exactly on the commonly cited figure, which is a genuinely good sign that both calculations are measuring the same thing.</p>
+    <p>Run the identical window through <b style="color:var(--teal)">Method A</b> instead, and dividends account for <strong>96.7%</strong> of the cumulative dollar growth. That is not a typo, and it is not a different claim about a different period &mdash; it's the same 93.5 years, the same two indices, a different (and equally standard) way of asking "how much of this came from dividends."</p>
+
+    <img src="images/dividends-chart-2.png" alt="Line chart showing the share of S&amp;P 500 return attributed to dividends by two methods, across trailing windows from 5 to 152 years ending June 2023. The cumulative-return-share method climbs from about 20% to 100% as the window lengthens; the CAGR-ratio-share method stays in a 16-50% band and crosses 40% only around the 93-year mark.">
+    <figcaption>Same data, same end date (June 2023), two reasonable decomposition methods. Method A is driven almost entirely by window length; Method B is the one that actually reproduces the cited ~40% figure, and only at multi-decade horizons.</figcaption>
+
+    <p>The reason is mechanical, not a data error. Method A compares two compounded multiples, and compounding is multiplicative: a total-return index that's merely a little ahead of the price-only index every year will, given enough decades, pull dramatically further ahead in dollar terms, because the gap itself keeps compounding. Over 152 years the price-only index grew about 10x while the total-return index grew roughly 6,400x &mdash; so by Method A's bookkeeping, dividends get credit for essentially <em>all</em> of that growth (99.8%), which isn't a meaningful statement about where annual returns come from so much as a statement about what compounding does to small persistent gaps over very long periods. Method B, by instead comparing the two <em>annualized</em> growth rates, isn't distorted by how many years you let the gap compound, which is why it's the metric that stays interpretable &mdash; and the one that happens to match what asset managers have actually been citing.</p>
+
+    <h2>Has the buyback era really changed the split?</h2>
+    <p>Splitting the record at Rule 10b-18's November 1982 adoption:</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Period</th><th>Years</th><th>Price CAGR</th><th>Total CAGR</th><th>Avg. yield</th><th>Method A share</th><th>Method B share</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1871&ndash;1981 (pre-buyback)</td><td>110.9</td><td>3.0%</td><td>8.3%</td><td>5.0%</td><td>99.6%</td><td>63.2%</td></tr>
+          <tr class="highlight"><td>1982&ndash;2023 (buyback era)</td><td>41.5</td><td>9.0%</td><td>11.6%</td><td>2.4%</td><td>63.8%</td><td>22.8%</td></tr>
+          <tr><td>Last 20yr (2003&ndash;2023)</td><td>20.0</td><td>7.7%</td><td>9.8%</td><td>1.9%</td><td>37.7%</td><td>21.4%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>By either method, the direction is the same and the drop is large: Method B's dividend share falls from 63% pre-1982 to 23% after, and the average dividend yield earned over those months falls from 5.0% to 2.4%, roughly in half. The last 20 years alone average a 1.9% yield &mdash; the lowest sustained reading in the whole 152-year record &mdash; with Method B's share essentially flat at ~21%, suggesting the post-1982 shift mostly already happened rather than still being in progress.</p>
+
+    <img src="images/dividends-chart-1.png" alt="Bar chart of average S&amp;P 500 trailing dividend yield by decade from the 1870s to the 2020s, declining from around 6% in the earliest decades to under 2% in the last two decades, with a marker at 1982 when stock buybacks were legalized.">
+    <figcaption>Average trailing dividend yield by decade. The decline is a century-long trend, not something that starts at 1982 &mdash; but it visibly steepens once buybacks became a routine, legally safe-harbored payout method.</figcaption>
+
+    <p>That chart is also the honest caveat to the buyback narrative: yield was already drifting down from roughly 5&ndash;6% in the first half of the record to 3&ndash;4% by the 1960s&ndash;70s, <em>before</em> buybacks were a meaningful payout channel. What changes after 1982 is the <em>rate</em> of decline, not the direction. Attributing the whole post-1982 drop to buybacks specifically, rather than to rising valuations compressing yield on their own, would be overclaiming what this dataset can show.</p>
+
+    <h3>Why there's no single "dividend share by decade" number in this post</h3>
+    <p>I deliberately left decade-by-decade dividend shares out of the table above, after computing them and finding they're close to uninterpretable. In the 1930s, the total-return index was essentially flat for the decade (total CAGR &asymp; 0.0%, after a nearly 90% price crash into 1932 followed by a partial recovery), which sends both share methods to absurd values &mdash; Method B calculates to over 20,000% for that one decade. In the 2000s, the total return was <em>negative</em> (&minus;0.7%/year, the market's "lost decade"), which makes "dividends caused X% of the return" a nonsensical question when there's no positive return to apportion credit for. Both decompositions are well-behaved only when the total return for the window is comfortably positive, which is exactly why the multi-decade and multi-era windows above are the trustworthy numbers here, not any single ten-year slice.</p>
+
+    <h2>Bottom line</h2>
+    <ul>
+      <li><strong>The ~40% figure is real, not an urban legend</strong> &mdash; it replicates independently from raw Shiller data to within a point of the commonly cited range, using the CAGR-ratio method.</li>
+      <li><strong>But the figure is far more fragile than its confident, specific-sounding citation suggests.</strong> It depends on using one of two equally standard decomposition methods; the other method says dividends explain nearly all (97%) of the same period's growth. Neither method is "wrong" &mdash; they answer subtly different questions &mdash; but only one of them produces numbers that stay comparable across different window lengths, and it's worth knowing which one you're looking at before repeating a stat like this.</li>
+      <li><strong>The buyback-era decline in dividend share is real and large</strong> (roughly 63% &rarr; 23% by the more stable method) but overlaps with a century-long valuation-driven yield decline that predates buybacks entirely, so crediting the drop solely to corporate payout preferences overstates what this data can isolate.</li>
+    </ul>
+
+    <div class="callout">
+      <b>Reproducing this:</b> Data is Robert Shiller's dataset (Yale), mirrored as CSV by <a href="https://github.com/datasets/s-and-p-500" target="_blank" rel="noopener">datasets/s-and-p-500</a> on GitHub. The analysis is a ~120-line Node.js script that builds price-only and total-return cumulative indices from the trailing-dividend series and compares them under both decomposition methods described above. Happy to share it &mdash; reply on <a href="https://x.com/OnekAlpha" target="_blank" rel="noopener">X</a>.
+    </div>
+  </article>
+
+  <footer>
+    <p>This post is part of <b>1KAlpha</b>, a transparent, publicly logged AI trading simulation using virtual funds only. Nothing here is investment advice &mdash; it's a check of publicly circulating claims against real historical data, not a recommendation about dividend or buyback strategies. Past performance, simulated or real, does not indicate future results.</p>
+    <p><a href="../">&larr; Back to 1KAlpha.com</a> &nbsp;&middot;&nbsp; <a href="./">More posts</a></p>
+  </footer>
+
+</div>
+</body>
+</html>
