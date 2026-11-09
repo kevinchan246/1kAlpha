@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Does the 10-Month Moving Average Rule Beat Buy-and-Hold? A 152-Year Test · 1KAlpha</title>
+<meta name="description" content="A 152-year test of the trend-following logic behind 'death cross' headlines: hold the S&P 500 only when it's above its 10-month moving average, otherwise sit in cash. The rule cuts every major drawdown but the Covid crash, and still beats buy-and-hold on raw return.">
+<link rel="canonical" href="https://1kalpha.com/blog/moving-average-timing-sp500-backtest.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Does the 10-Month Moving Average Rule Beat Buy-and-Hold? A 152-Year Test">
+<meta property="og:description" content="Financial media keeps flagging 'death crosses.' 152 years of data on the rule's quieter, monthly cousin: smaller drawdowns, a better Sharpe ratio, but it missed most of the Covid crash and most of the Covid rebound too.">
+<meta property="og:url" content="https://1kalpha.com/blog/moving-average-timing-sp500-backtest.html">
+<meta property="og:image" content="https://1kalpha.com/blog/images/sma-timing-chart-1.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="675">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@OnekAlpha">
+<meta name="twitter:title" content="Does the 10-Month Moving Average Rule Beat Buy-and-Hold? A 152-Year Test">
+<meta name="twitter:description" content="Financial media keeps flagging 'death crosses.' 152 years of data on the rule's quieter, monthly cousin: smaller drawdowns, a better Sharpe ratio, but it missed most of the Covid crash and most of the Covid rebound too.">
+<meta name="twitter:image" content="https://1kalpha.com/blog/images/sma-timing-chart-1.png">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0e0f; --bg-panel:#10171a; --bg-panel-2:#141d20;
+    --border:#213032; --border-soft:#1a2528;
+    --text:#e7edee; --text-dim:#8ba0a2; --text-faint:#4e6567;
+    --amber:#ffb400; --amber-dim:#8a640e; --teal:#5eead4; --green:#34d399; --red:#f87171;
+    --mono:'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
+    --sans:'IBM Plex Sans', -apple-system, sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{background:var(--bg);}
+  body{
+    background:
+      radial-gradient(ellipse 1200px 600px at 15% -10%, rgba(255,180,0,0.06), transparent 60%),
+      radial-gradient(ellipse 1000px 800px at 100% 0%, rgba(94,234,212,0.05), transparent 55%),
+      var(--bg);
+    color:var(--text); font-family:var(--sans); line-height:1.6; padding-bottom:60px; min-height:100vh;
+  }
+  .wrap{max-width:800px; margin:0 auto; padding:0 24px;}
+  header.blog-head{
+    border-bottom:1px solid var(--border); padding:22px 0 20px; margin-bottom:40px;
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;
+  }
+  .brand-link{font-family:var(--mono); font-weight:700; font-size:17px; color:var(--text); text-decoration:none; letter-spacing:-0.01em;}
+  .brand-link span{color:var(--amber);}
+  .blog-nav a{font-family:var(--mono); font-size:12px; color:var(--text-dim); text-decoration:none; margin-left:18px; display:inline-flex; align-items:center; gap:5px;}
+  .blog-nav .x-icon{width:11px; height:11px; fill:currentColor;}
+  .blog-nav a:hover{color:var(--amber);}
+
+  .post-meta{font-family:var(--mono); font-size:12px; color:var(--text-faint); margin-bottom:14px; display:flex; gap:14px; flex-wrap:wrap; letter-spacing:.03em;}
+  article h1{font-size:clamp(26px,4.2vw,36px); color:var(--text); margin-bottom:20px; line-height:1.25;}
+  article h2{font-size:21px; color:var(--text); margin:40px 0 14px;}
+  article h2::before{content:''; display:inline-block; width:3px; height:14px; background:var(--amber); margin-right:10px; vertical-align:middle;}
+  article h3{font-size:16px; color:var(--text); margin:26px 0 10px;}
+  article p{font-size:15.5px; color:var(--text-dim); margin-bottom:16px;}
+  article ul, article ol{margin:0 0 16px 22px; color:var(--text-dim); font-size:15.5px;}
+  article li{margin-bottom:6px;}
+  article strong{color:var(--text);}
+  article a{color:var(--teal);}
+  article code{font-family:var(--mono); font-size:13px; background:var(--bg-panel-2); padding:1px 6px; border-radius:3px; color:var(--amber);}
+  article img{max-width:100%; display:block; margin:28px auto 6px; border:1px solid var(--border); border-radius:2px;}
+  figcaption{font-size:12px; color:var(--text-faint); text-align:center; margin-bottom:28px;}
+
+  .table-wrap{overflow-x:auto; margin:20px 0 28px;}
+  table{width:100%; border-collapse:collapse; font-family:var(--mono); font-size:12.5px; min-width:620px;}
+  th{text-align:right; font-size:10px; letter-spacing:.05em; text-transform:uppercase; color:var(--text-faint); padding:8px 10px; border-bottom:1px solid var(--border); white-space:nowrap;}
+  th:first-child, td:first-child{text-align:left;}
+  td{text-align:right; padding:9px 10px; border-bottom:1px solid var(--border-soft); color:var(--text-dim); white-space:nowrap;}
+  td:first-child{color:var(--text); font-weight:600;}
+  tr.highlight td{color:var(--amber);}
+
+  .callout{background:var(--bg-panel); border-left:3px solid var(--amber); padding:16px 20px; margin:26px 0; font-size:14.5px; color:var(--text-dim); line-height:1.7;}
+  .callout b{color:var(--amber);}
+  .callout.warn{border-left-color:var(--red);}
+  .callout.warn b{color:var(--red);}
+
+  footer{margin-top:64px; padding-top:22px; border-top:1px solid var(--border);}
+  footer p{font-size:12px; color:var(--text-faint); line-height:1.8; max-width:800px; margin-bottom:10px;}
+  footer a{color:var(--text-dim);}
+
+  @media (max-width:640px){
+    header.blog-head{flex-direction:column; align-items:flex-start;}
+    .blog-nav a{margin-left:0; margin-right:16px;}
+  }
+</style>
+<script defer src="https://cloud.umami.is/script.js" data-website-id="2dcbaf06-d535-480a-a4a3-f571b7b1a79c"></script>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="blog-head">
+    <a class="brand-link" href="../">1K<span>Alpha</span></a>
+    <nav class="blog-nav">
+      <a href="./">Blog</a>
+      <a href="https://x.com/OnekAlpha" target="_blank" rel="noopener"><svg class="x-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>Follow</a>
+    </nav>
+  </header>
+
+  <article>
+    <div class="post-meta">
+      <span>2026-11-09</span>
+      <span>·</span>
+      <span>11 min read</span>
+      <span>·</span>
+      <span>backtest</span>
+    </div>
+    <h1>Does the 10-Month Moving Average Rule Beat Buy-and-Hold? A 152-Year Test</h1>
+
+    <p>Financial media has spent much of 2026 flagging "death crosses" — the moment a stock or index's 50-day moving average falls below its 200-day moving average — as a bearish omen, with pieces this year calling out crosses in individual names and warning ones forming in whole sectors. The mirror-image "golden cross" gets the same treatment on the way up. It's one of the most repeated technical-analysis claims in markets: <em>a falling short-term trend relative to the long-term trend means more pain is coming, so get out; the reverse means get back in.</em></p>
+
+    <p>That specific signal — 50-day vs. 200-day, on daily data — needs a long daily price history this backtest doesn't have access to. But there's a well-documented, much-studied cousin of it that uses monthly data: hold an asset only while its price is above its trailing 10-month moving average, and sit in cash otherwise. It's the timing rule from Mebane Faber's 2006/2007 paper "A Quantitative Approach to Tactical Asset Allocation," later updated and still cited in trend-following research today. Same underlying idea as the death cross — price relative to its own trend — just measured monthly instead of daily, which also makes it a fair proxy for what a less noisy, less whipsaw-prone version of "sell the death cross" would have done. So I ran 152 years of data through it.</p>
+
+    <p>Short version: <strong>the rule works, in the sense that matters least and the sense that matters most are both true at once.</strong> It beat buy-and-hold's raw return and did it with roughly half the volatility and barely half the worst drawdown. But it missed almost the entire Covid crash — a monthly signal can't see a one-month crash coming — and it missed most of the Covid rebound too, the single clearest example of what a lagging trend rule costs you when the market reverses fast.</p>
+
+    <h2>Methodology</h2>
+    <p>I used the same Robert Shiller monthly S&amp;P 500 dataset (price, dividends, CPI, long-term rates) as the earlier leverage and CAPE posts on this blog, mirrored as CSV by <a href="https://github.com/datasets/s-and-p-500" target="_blank" rel="noopener">datasets/s-and-p-500</a> on GitHub, truncated to the last fully-populated month (September 2023 — price data runs further but dividends and CPI don't yet). That's <strong>1,833 months, January 1871 through September 2023</strong>.</p>
+    <ul>
+      <li><strong>Signal:</strong> at the end of each month, compute the trailing 10-month simple moving average of the <em>nominal</em> S&amp;P 500 price level. If that month's closing price is above its own 10-month average, the rule is "long" for the following month; if below, it's "in cash." This is a one-month lag by construction — no lookahead.</li>
+      <li><strong>Returns while long:</strong> the real (inflation-adjusted) monthly total return, price change plus 1/12th of the trailing annual dividend, reinvested — same total-return convention as the leverage post.</li>
+      <li><strong>Returns while in cash:</strong> <strong>0% real</strong>, flat. This is a deliberate simplification, not a claim that cash actually returns zero — see Limitations.</li>
+      <li><strong>Buy-and-hold benchmark:</strong> the same real total-return series, fully invested the entire time, no signal applied.</li>
+    </ul>
+
+    <h2>The headline numbers</h2>
+    <p>Over the full 1871–2023 window, the rule spent <strong>63.3% of months invested</strong> and switched position <strong>207 times — about 1.4 times a year</strong>.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Strategy</th><th>Real CAGR</th><th>Max drawdown</th><th>Annualized vol</th><th>CAGR / vol</th><th>$1 &#8594; </th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Buy &amp; hold</td><td>6.89%</td><td>&minus;76.8%</td><td>14.2%</td><td>0.49</td><td>$25,015</td></tr>
+          <tr class="highlight"><td>10-month SMA timing</td><td>7.24%</td><td>&minus;42.5%</td><td>9.6%</td><td>0.76</td><td>$40,768</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:12px; color:var(--text-faint); margin-top:-16px;">Real (inflation-adjusted) terms, dividends reinvested while invested, 0% while in cash. CAGR/vol is a simple risk-adjusted-return ratio, not a true Sharpe ratio (no risk-free rate subtracted).</p>
+
+    <p>That's a genuinely striking result for a rule this simple: <strong>higher compound return, with roughly a third less volatility and almost half the max drawdown.</strong> The $1 invested in 1871 is worth 63% more under the timing rule than under buy-and-hold by 2023, and it got there with a much gentler ride.</p>
+
+    <img src="images/sma-timing-chart-1.png" alt="Line chart on a log scale showing real growth of $1 from 1871 to 2023 for buy-and-hold versus the 10-month moving average timing rule, with the timing rule ending higher at $40,768 versus $25,015 for buy-and-hold">
+    <figcaption>Real growth of $1, 1871&ndash;2023, log scale. Shaded bands mark the 1929&ndash;32 crash, the dot-com bust, the GFC, and the Covid crash.</figcaption>
+
+    <h2>Where the edge actually comes from: drawdowns, not upside</h2>
+    <p>The CAGR advantage is real but modest. The much bigger effect is on the shape of the ride. Across every major U.S. bear market in the sample except one, the rule had the strategy mostly or entirely in cash before the worst of the damage:</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Episode</th><th>Months long*</th><th>Buy&amp;hold return</th><th>Timing return</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Great Crash (1929&ndash;32)</td><td>12%</td><td>&minus;75.8%</td><td>&minus;34.5%</td></tr>
+          <tr><td>1937&ndash;38 crash</td><td>23%</td><td>&minus;39.3%</td><td>&minus;11.1%</td></tr>
+          <tr><td>1973&ndash;74 bear market</td><td>23%</td><td>&minus;47.5%</td><td>&minus;14.5%</td></tr>
+          <tr><td>Dot-com bust</td><td>12%</td><td>&minus;42.6%</td><td>&minus;10.7%</td></tr>
+          <tr><td>Global Financial Crisis</td><td>6%</td><td>&minus;46.8%</td><td>&minus;5.4%</td></tr>
+          <tr><td>2022 bear market</td><td>22%</td><td>&minus;21.7%</td><td>&minus;6.5%</td></tr>
+          <tr class="highlight"><td>Covid crash</td><td>100%</td><td>&minus;18.9%</td><td>&minus;18.9%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:12px; color:var(--text-faint); margin-top:-16px;">*Share of months within the episode the rule was positioned long, i.e. exposed to the drawdown. Real returns, start of episode to trough.</p>
+
+    <p>Six of seven episodes, the rule cut the loss by more than half. The exception is instructive: <strong>Covid was a one-month crash (February&ndash;March 2020)</strong>, and a signal built on a 10-month average computed at the end of the <em>prior</em> month had no way to see it coming — the rule was still fully long when the floor gave way. That's the honest ceiling on what a monthly trend signal can do: it protects you from grinding declines that take months to develop, and does nothing for a crash that happens inside of one.</p>
+
+    <img src="images/sma-timing-chart-2.png" alt="Underwater chart showing drawdown from prior peak over time for buy-and-hold versus the 10-month moving average timing rule, with buy-and-hold's worst drawdown at -77% versus -42% for the timing rule">
+    <figcaption>Drawdown from prior real peak, 1871&ndash;2023. The timing rule's line sits visibly above buy-and-hold's through every major decline except Covid, where the two are identical by construction.</figcaption>
+
+    <h2>The other side of the ledger: whipsaws and late re-entries</h2>
+    <p>A rule that gets you out of a third of your downside also gets you out of some of your upside — recoveries don't announce themselves any more clearly than crashes do, and a 10-month average takes time to turn back up. I looked at the 12 months immediately following each major trough:</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Recovery (12mo from trough)</th><th>Months long</th><th>Buy&amp;hold return</th><th>Timing return</th></tr>
+        </thead>
+        <tbody>
+          <tr class="highlight"><td>Post-Great Crash (1932&ndash;33)</td><td>62%</td><td>+121.7%</td><td>+38.1%</td></tr>
+          <tr><td>Post-dot-com (2002&ndash;03)</td><td>38%</td><td>+11.1%</td><td>+14.5%</td></tr>
+          <tr><td>Post-GFC (2009&ndash;10)</td><td>62%</td><td>+26.1%</td><td>+18.8%</td></tr>
+          <tr class="highlight"><td>Post-Covid (2020&ndash;21)</td><td>77%</td><td>+18.8%</td><td>+0.8%</td></tr>
+          <tr><td>Post-2022 (2022&ndash;23)</td><td>54%</td><td>+6.5%</td><td>+9.4%</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>Mixed, and that's the honest picture. In the two sharp, fast V-shaped rebounds — 1932 and especially Covid's — the rule missed a large chunk of the recovery before the signal flipped back to long, turning in roughly a third or less of buy-and-hold's return. In the two slower, choppier recoveries (dot-com, 2022), the rule actually <em>beat</em> buy-and-hold, because those recoveries had enough false starts that staying partially in cash avoided some of the chop. <strong>The Covid episode end to end is the cleanest single illustration of the whole trade-off:</strong> the rule gave back none of the crash's protection (it was still fully long when the crash hit) but it also captured almost none of the fastest-in-a-century rebound that followed it — the two failures bookend each other.</p>
+
+    <h2>Does the long horizon actually need it? Rolling-window results</h2>
+    <p>Same test the leverage post ran: across every rolling window of a given length, starting every month from 1871 on, how often does the timing rule beat buy-and-hold in that specific window?</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Horizon</th><th>Windows</th><th>Timing wins</th><th>Median timing/B&amp;H ratio</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>5yr</td><td>1,764</td><td>43.9%</td><td>0.977</td></tr>
+          <tr><td>10yr</td><td>1,704</td><td>51.3%</td><td>1.022</td></tr>
+          <tr><td>20yr</td><td>1,584</td><td>61.2%</td><td>1.179</td></tr>
+          <tr class="highlight"><td>30yr</td><td>1,464</td><td>77.4%</td><td>1.234</td></tr>
+          <tr><td>40yr</td><td>1,344</td><td>82.3%</td><td>1.406</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>Over 5-year windows the rule is a coin flip that leans slightly negative — whipsaw costs dominate on short horizons, same pattern the leverage post found with volatility drag. By 20 years it's winning roughly 6 in 10 windows; by 30&ndash;40 years, 8 in 10, with a growing median edge. The mechanism is intuitive: short windows are dominated by whatever one or two regime switches happen to cost or save you, and that's close to a coin flip in sign. Long windows average over many switches, and the asymmetry — the rule avoids some of the worst crashes, which are rare but huge — compounds in its favor.</p>
+
+    <h2>Is 10 months a cherry-picked number?</h2>
+    <p>The obvious objection to any single-parameter rule like this is that whoever picked the parameter had 152 years of hindsight to pick a good one. So I reran the same backtest with the moving-average window set to 6, 8, 9, 11, 12, and 15 months instead of 10:</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Window</th><th>Real CAGR</th><th>Max drawdown</th><th>Switches/yr</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>6mo</td><td>7.40%</td><td>&minus;28.3%</td><td>2.06</td></tr>
+          <tr><td>8mo</td><td>7.16%</td><td>&minus;48.0%</td><td>1.63</td></tr>
+          <tr><td>9mo</td><td>7.25%</td><td>&minus;42.5%</td><td>1.47</td></tr>
+          <tr class="highlight"><td>10mo</td><td>7.24%</td><td>&minus;42.5%</td><td>1.36</td></tr>
+          <tr><td>11mo</td><td>7.28%</td><td>&minus;45.5%</td><td>1.24</td></tr>
+          <tr><td>12mo</td><td>7.08%</td><td>&minus;47.9%</td><td>1.16</td></tr>
+          <tr><td>15mo</td><td>6.50%</td><td>&minus;47.9%</td><td>0.94</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>Every window from 6 to 12 months beats buy-and-hold's 6.89% CAGR and cuts its &minus;76.8% max drawdown by roughly 40&ndash;63%. It's only at 15 months that the edge erodes. That's a reasonably wide plateau, not a single lucky setting — which is some evidence this isn't pure overfitting, though it's not proof: all of these windows are still being chosen by someone who knows how the story ends, and the true out-of-sample test is whatever window gets used starting today.</p>
+
+    <h2>Limitations</h2>
+    <div class="callout warn">
+      <b>What this backtest doesn't capture:</b>
+      <ul style="margin-top:10px;">
+        <li><strong>Cash is modeled at 0% real, not its actual historical return.</strong> Real-world T-bill returns have been close to 0% on average over very long periods, but they weren't literally flat — negative through the inflationary 1940s and 1970s, positive in most other stretches. This is a simplifying choice, not a claim about cash; a nonzero cash return would shift both strategies' numbers somewhat, and could change the timing rule's edge in either direction depending on the period.</li>
+        <li><strong>No transaction costs or taxes.</strong> 207 switches over 152 years is roughly a trade every 9 months, not high-frequency, but every switch in a real account means a bid-ask spread and, in a taxable account, realizing a gain or loss. Over 152 years that drag is not trivial.</li>
+        <li><strong>Monthly data, not daily.</strong> The whole premise of this post is that a monthly signal is a reasonable stand-in for the daily "death cross" conversation that prompted it — and the Covid episode shows exactly where that stand-in breaks down. A monthly rule cannot react within a month. The actual 50-day/200-day death cross, computed on daily data, would behave differently: faster to react to a one-month crash, but historically also far noisier, with a well-documented tendency to throw off false signals near market bottoms rather than tops. Testing the real daily version is a natural follow-up with a daily price history.</li>
+        <li><strong>Survivorship and index-composition effects are not modeled</strong> — same caveat as every backtest on this blog that uses the Shiller index series: today's S&amp;P 500 methodology and constituents are not identical to the index across 152 years of history.</li>
+      </ul>
+    </div>
+
+    <h2>Bottom line</h2>
+    <ul>
+      <li><strong>The rule beat buy-and-hold on every metric that isn't "time in a V-shaped rebound":</strong> higher real CAGR, a third less volatility, nearly half the max drawdown, a materially better risk-adjusted return.</li>
+      <li><strong>The edge is concentrated in avoiding slow-motion crashes</strong> — 1929&ndash;32, 1973&ndash;74, dot-com, the GFC, 2022 — not in picking tops and bottoms. It did nothing for Covid, the one crash that happened faster than the signal can see.</li>
+      <li><strong>The cost is symmetric with the benefit:</strong> the same lag that keeps you out of a crash for months after it starts also keeps you out of a rebound for months after it starts. Post-Covid is the cleanest example — the rule gave up the large majority of a historically fast recovery.</li>
+      <li><strong>The edge only shows up over long horizons.</strong> Over 5-year windows it's a coin flip; it takes 20&ndash;30+ years of rolling windows for the rule to win most of the time by a meaningful margin. A trend-following rule adopted for a single cycle has roughly even odds of looking foolish.</li>
+    </ul>
+    <p>So: the logic behind "death cross" headlines — price below its own trend is informative — holds up reasonably well in this 152-year monthly test, with the usual trend-following trade-off attached. It is not a free lunch, and the one time in this sample it mattered most to have protection instantly (Covid), it didn't.</p>
+
+    <div class="callout">
+      <b>Reproducing this:</b> Data is Robert Shiller's dataset (Yale), mirrored as CSV by <a href="https://github.com/datasets/s-and-p-500" target="_blank" rel="noopener">datasets/s-and-p-500</a> on GitHub. The backtest is a ~150-line Node.js script &mdash; monthly 10-month SMA signal with a one-month lag, applied to the real total-return series, compared against full-time buy-and-hold. Happy to share it if people want to check the work or extend it (daily data, different window lengths, a nonzero cash return, transaction costs) &mdash; reply on <a href="https://x.com/OnekAlpha" target="_blank" rel="noopener">X</a>.
+    </div>
+  </article>
+
+  <footer>
+    <p>This post is part of <b>1KAlpha</b>, a transparent, publicly logged AI trading simulation using virtual funds only. Nothing here is investment advice &mdash; it's a backtest of a widely repeated claim, not a recommendation to time the market. Past performance, simulated or real, does not indicate future results.</p>
+    <p><a href="../">&larr; Back to 1KAlpha.com</a> &nbsp;&middot;&nbsp; <a href="./">More posts</a></p>
+  </footer>
+
+</div>
+</body>
+</html>
