@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Does a Low VIX Really Predict a Correction? A 36-Year Test · 1KAlpha</title>
+<meta name="description" content="Financial media keeps calling a low VIX a warning sign of investor complacency. 36 years of CBOE VIX and S&P 500 data say the calmest months were the safest, not the riskiest — and the real danger zone was somewhere else entirely.">
+<link rel="canonical" href="https://1kalpha.com/blog/vix-complacency-backtest.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Does a Low VIX Really Predict a Correction? A 36-Year Test">
+<meta property="og:description" content="A low VIX keeps getting called a warning sign in 2026 market commentary. 36 years of data say the calmest months were the safest ones, and the real danger zone was somewhere else entirely.">
+<meta property="og:url" content="https://1kalpha.com/blog/vix-complacency-backtest.html">
+<meta property="og:image" content="https://1kalpha.com/blog/images/vix-chart-1.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="675">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@OnekAlpha">
+<meta name="twitter:title" content="Does a Low VIX Really Predict a Correction? A 36-Year Test">
+<meta name="twitter:description" content="A low VIX keeps getting called a warning sign in 2026 market commentary. 36 years of data say the calmest months were the safest ones, and the real danger zone was somewhere else entirely.">
+<meta name="twitter:image" content="https://1kalpha.com/blog/images/vix-chart-1.png">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0e0f; --bg-panel:#10171a; --bg-panel-2:#141d20;
+    --border:#213032; --border-soft:#1a2528;
+    --text:#e7edee; --text-dim:#8ba0a2; --text-faint:#4e6567;
+    --amber:#ffb400; --amber-dim:#8a640e; --teal:#5eead4; --green:#34d399; --red:#f87171;
+    --mono:'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
+    --sans:'IBM Plex Sans', -apple-system, sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{background:var(--bg);}
+  body{
+    background:
+      radial-gradient(ellipse 1200px 600px at 15% -10%, rgba(255,180,0,0.06), transparent 60%),
+      radial-gradient(ellipse 1000px 800px at 100% 0%, rgba(94,234,212,0.05), transparent 55%),
+      var(--bg);
+    color:var(--text); font-family:var(--sans); line-height:1.6; padding-bottom:60px; min-height:100vh;
+  }
+  .wrap{max-width:800px; margin:0 auto; padding:0 24px;}
+  header.blog-head{
+    border-bottom:1px solid var(--border); padding:22px 0 20px; margin-bottom:40px;
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;
+  }
+  .brand-link{font-family:var(--mono); font-weight:700; font-size:17px; color:var(--text); text-decoration:none; letter-spacing:-0.01em;}
+  .brand-link span{color:var(--amber);}
+  .blog-nav a{font-family:var(--mono); font-size:12px; color:var(--text-dim); text-decoration:none; margin-left:18px; display:inline-flex; align-items:center; gap:5px;}
+  .blog-nav .x-icon{width:11px; height:11px; fill:currentColor;}
+  .blog-nav a:hover{color:var(--amber);}
+
+  .post-meta{font-family:var(--mono); font-size:12px; color:var(--text-faint); margin-bottom:14px; display:flex; gap:14px; flex-wrap:wrap; letter-spacing:.03em;}
+  article h1{font-size:clamp(26px,4.2vw,36px); color:var(--text); margin-bottom:20px; line-height:1.25;}
+  article h2{font-size:21px; color:var(--text); margin:40px 0 14px;}
+  article h2::before{content:''; display:inline-block; width:3px; height:14px; background:var(--amber); margin-right:10px; vertical-align:middle;}
+  article h3{font-size:16px; color:var(--text); margin:26px 0 10px;}
+  article p{font-size:15.5px; color:var(--text-dim); margin-bottom:16px;}
+  article ul, article ol{margin:0 0 16px 22px; color:var(--text-dim); font-size:15.5px;}
+  article li{margin-bottom:6px;}
+  article strong{color:var(--text);}
+  article a{color:var(--teal);}
+  article code{font-family:var(--mono); font-size:13px; background:var(--bg-panel-2); padding:1px 6px; border-radius:3px; color:var(--amber);}
+  article img{max-width:100%; display:block; margin:28px auto 6px; border:1px solid var(--border); border-radius:2px;}
+  figcaption{font-size:12px; color:var(--text-faint); text-align:center; margin-bottom:28px;}
+
+  .table-wrap{overflow-x:auto; margin:20px 0 28px;}
+  table{width:100%; border-collapse:collapse; font-family:var(--mono); font-size:12.5px; min-width:620px;}
+  th{text-align:right; font-size:10px; letter-spacing:.05em; text-transform:uppercase; color:var(--text-faint); padding:8px 10px; border-bottom:1px solid var(--border); white-space:nowrap;}
+  th:first-child, td:first-child{text-align:left;}
+  td{text-align:right; padding:9px 10px; border-bottom:1px solid var(--border-soft); color:var(--text-dim); white-space:nowrap;}
+  td:first-child{color:var(--text); font-weight:600;}
+  tr.highlight td{color:var(--amber);}
+  tr.warn td{color:var(--red);}
+
+  .callout{background:var(--bg-panel); border-left:3px solid var(--amber); padding:16px 20px; margin:26px 0; font-size:14.5px; color:var(--text-dim); line-height:1.7;}
+  .callout b{color:var(--amber);}
+  .callout.warn{border-left-color:var(--red);}
+  .callout.warn b{color:var(--red);}
+
+  footer{margin-top:64px; padding-top:22px; border-top:1px solid var(--border);}
+  footer p{font-size:12px; color:var(--text-faint); line-height:1.8; max-width:800px; margin-bottom:10px;}
+  footer a{color:var(--text-dim);}
+
+  @media (max-width:640px){
+    header.blog-head{flex-direction:column; align-items:flex-start;}
+    .blog-nav a{margin-left:0; margin-right:16px;}
+  }
+</style>
+<script defer src="https://cloud.umami.is/script.js" data-website-id="2dcbaf06-d535-480a-a4a3-f571b7b1a79c"></script>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="blog-head">
+    <a class="brand-link" href="../">1K<span>Alpha</span></a>
+    <nav class="blog-nav">
+      <a href="./">Blog</a>
+      <a href="https://x.com/OnekAlpha" target="_blank" rel="noopener"><svg class="x-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>Follow</a>
+    </nav>
+  </header>
+
+  <article>
+    <div class="post-meta">
+      <span>2026-11-23</span>
+      <span>·</span>
+      <span>10 min read</span>
+      <span>·</span>
+      <span>backtest</span>
+    </div>
+    <h1>Does a Low VIX Really Predict a Correction? A 36-Year Test</h1>
+
+    <p>Through the back half of 2026, a theme kept recurring in financial commentary every time the VIX ground down to a fresh low for the year: the market has gotten complacent, protection is cheap because nobody's buying it, and that combination has historically preceded a reckoning. It's a comfortable, intuitive story — "fear gauge" is right there in the VIX's nickname, so a <em>low</em> reading should mean investors aren't afraid of anything, which sounds like exactly the moment something should go wrong. It's also a claim with 36 years of daily data behind it, which means it's checkable rather than just plausible. So I checked it.</p>
+
+    <p>Short version: <strong>it's backwards.</strong> The calmest VIX months in this dataset were followed by the best forward returns and the smallest drawdowns of any bucket, not the worst. The actual danger zone was a level nobody writes headlines about — VIX in the high teens to mid-20s, a grinding, half-worried state rather than either calm or panic. And despite the "2026 low" framing, today's reading isn't even close to historically extreme.</p>
+
+    <h2>Methodology</h2>
+    <p>I used the CBOE's own daily VIX close, mirrored as CSV by <a href="https://github.com/datasets/finance-vix" target="_blank" rel="noopener">datasets/finance-vix</a> on GitHub, which runs from January 2, 1990 through September 22, 2026. I averaged daily closes into a monthly figure for each of <strong>441 calendar months</strong>, then paired each month with Robert Shiller's monthly S&amp;P 500 price level — the same <a href="https://github.com/datasets/s-and-p-500" target="_blank" rel="noopener">datasets/s-and-p-500</a> mirror used in the leverage and CAPE posts on this blog, current through September 2026.</p>
+    <p>For every starting month, I sorted all 441 months into <strong>quintiles by that month's average VIX</strong> and measured, for each starting month, the forward <strong>price</strong> return of the S&amp;P 500 (not total return — this mirror's dividend and CPI columns stop being reliably populated after mid-2023, the same gap flagged on the CAPE post; at 1&ndash;12 month horizons that gap barely moves the answer the way it would over 10 years, so I used price return uniformly rather than mixing methodologies across the sample) at 1, 3, 6, and 12 months out, plus the <strong>maximum drawdown from the starting price</strong> at any point within that forward window — i.e. how far below today's level things got before the window closed. 429 starting months (January 1990 through September 2025) have a complete 12-month-forward observation.</p>
+
+    <h2>The calmest months weren't a warning sign</h2>
+    <p>Bucketed into quintiles by starting-month VIX, the 12-month-forward results:</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Quintile</th><th>VIX range</th><th>n</th><th>Mean fwd ret (12mo)</th><th>Median fwd ret</th><th>Win rate</th><th>Mean maxDD</th><th>Worst maxDD</th></tr>
+        </thead>
+        <tbody>
+          <tr class="highlight"><td>Q1 (calmest)</td><td>10.1&ndash;13.5</td><td>85</td><td>+10.7%</td><td>+11.4%</td><td>85.9%</td><td>&minus;2.2%</td><td>&minus;14.6%</td></tr>
+          <tr class="highlight"><td>Q2</td><td>13.5&ndash;16.2</td><td>85</td><td>+12.5%</td><td>+12.9%</td><td>90.6%</td><td>&minus;3.0%</td><td>&minus;19.1%</td></tr>
+          <tr><td>Q3</td><td>16.2&ndash;19.5</td><td>85</td><td>+9.4%</td><td>+9.4%</td><td>85.9%</td><td>&minus;5.5%</td><td>&minus;46.0%</td></tr>
+          <tr class="warn"><td>Q4</td><td>19.5&ndash;24.0</td><td>85</td><td>+6.1%</td><td>+10.5%</td><td>67.1%</td><td>&minus;8.8%</td><td>&minus;44.8%</td></tr>
+          <tr><td>Q5 (fear)</td><td>24.0&ndash;62.7</td><td>89</td><td>+11.8%</td><td>+15.4%</td><td>75.3%</td><td>&minus;7.7%</td><td>&minus;42.5%</td></tr>
+          <tr><td>All months</td><td>10.1&ndash;62.7</td><td>429</td><td>+10.2%</td><td>+11.8%</td><td>80.9%</td><td>&minus;5.5%</td><td>&minus;46.0%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:12px; color:var(--text-faint); margin-top:-16px;">Win rate = % of starting months with a positive 12-month-forward return. Mean/worst maxDD = how far below the starting price the index fell at its worst point within the following 12 months, averaged across the bucket (mean) or the single worst case (worst). Nominal price return, S&amp;P 500, 1990&ndash;2026.</p>
+
+    <p>Q1 — the quietest 85 months in 36 years, VIX averaging under 13.5 — delivered the <strong>highest win rate of any bucket (85.9%) and the smallest typical drawdown by a wide margin (&minus;2.2%)</strong>. That's close to the exact opposite of what the complacency story predicts. If low VIX really meant investors had stopped pricing in risk and were about to get blindsided, Q1 should be the most dangerous bucket to buy into, not the safest.</p>
+
+    <img src="images/vix-chart-1.png" alt="Bar chart comparing mean 12-month forward S&P 500 return and mean maximum drawdown by starting-month VIX quintile, 1990-2026, showing Q4 (VIX in the high teens to mid-20s) as the worst-performing bucket rather than the calmest or most fearful quintiles">
+    <figcaption>Mean forward 12-month return and mean drawdown by VIX quintile, 1990&ndash;2026 (n=429). The worst bucket is neither the calmest nor the most fearful.</figcaption>
+
+    <h2>The real danger zone was the high teens to mid-20s, not the extremes</h2>
+    <p>The pattern isn't "low VIX good, high VIX bad" either — it's <strong>not linear at all</strong>. The Pearson correlation between starting VIX and forward 12-month return across all 429 months is a weak <strong>r = +0.10</strong> (and r = +0.11 at 6 months, +0.07 at 3 months, &minus;0.02 at 1 month) — essentially no linear relationship. That's not a contradiction of the quintile table above; it's a sign the real relationship is shaped like a valley, not a slope, and a single correlation coefficient can't see a valley.</p>
+    <p>Q4 — VIX averaging roughly 19.5 to 24, the highest level before you'd call it a genuine fear spike — is the worst bucket on every measure: the lowest mean and median forward return, the lowest win rate (67.1%, a full 19 points below Q1's), and a worse mean drawdown than even Q5, the actual panic bucket. That ordering holds up at longer horizons too — I reran the same quintile split at 24 and 36 months forward, and Q4 stays in last place on mean return and win rate at both.</p>
+    <p>A reading of why: Q1 and Q2 are mostly months where nothing in particular is happening — genuine calm. Q5 is mostly acute crisis — the 2008&ndash;09 financial crisis, March 2020, October 2008, bottoms where, by definition, the index had already fallen a long way and didn't have as far left to fall before recovering. Q4 is the zone in between: markets sliding or churning, something clearly wrong, but not yet bad enough to call it panic — a grinding deterioration rather than either state. Historically, that's been the more dangerous place to be long from, not the quiet months or the full-blown selloffs.</p>
+
+    <h2>The one honest exception, and it matters</h2>
+    <p>There's a real crack in the "calm is safe" reading, and it's worth naming precisely rather than glossing over: I also checked what happens 24 and 36 months out, not just 12, and the single worst outcome in <strong>each</strong> of the three calmest quintiles traces back to the same few months — Q1's worst 24-month case started <strong>May 2007</strong> (&minus;49.9%), Q2's worst started <strong>June 2007</strong> (&minus;50.0%), and Q3's worst started <strong>October 2007</strong> (&minus;50.8%). All three are the same event: the run-up to the 2008&ndash;09 financial crisis, when the VIX sat near multi-year lows for the better part of two years before the bottom fell out.</p>
+
+    <div class="callout warn">
+      <b>This is the real limitation, not a footnote:</b> a low VIX reading cannot distinguish "calm because there's genuinely nothing to worry about" from "calm because the thing that's about to go wrong hasn't been priced in yet." Those look identical in the data in real time — that's the entire nature of a shock. The quintile averages above are dominated by the much larger number of calm periods that stayed calm, but the tail risk is real, concentrated, and by definition invisible from the VIX level alone. 2005&ndash;2007 is the clearest historical example of exactly the setup financial commentary worries about in 2026 — and it's also the reason this backtest can describe the base rate honestly but can't rule out that this time is the exception.
+    </div>
+
+    <h2>Where September 2026 actually sits</h2>
+    <p>The VIX's monthly average in September 2026 — the most recent complete month in this dataset — was <strong>15.8</strong>, which sits at roughly the <strong>36th percentile</strong> of all 441 months since 1990. That places it inside Q2, the single best-performing quintile in the entire table above, not some unprecedented extreme. The dataset's actual lowest close in 2026 was <strong>14.21 on September 22</strong> — its final trading day — which is nowhere near the all-time closing low of 9.14 (November 3, 2017) or even the bottom of Q1's 10.1&ndash;13.5 range.</p>
+
+    <img src="images/vix-chart-2.png" alt="Line chart of monthly-average VIX from 1990 to 2026 with quintile boundary lines and a marker showing September 2026's reading of 15.8, which sits in the second-lowest quintile but is not close to the historical extreme lows">
+    <figcaption>Monthly-average VIX, 1990&ndash;2026. September 2026's 15.8 is below-average but not close to a genuine historical extreme in either direction.</figcaption>
+
+    <p>None of this means a correction can't happen from here — nothing in this dataset rules that out, and Q4's own track record is a reminder that things can deteriorate from any starting point. But "VIX hit a 2026 low" and "VIX is at a historically dangerous extreme" are two different claims, and only the first one is actually true of where things stood as of this dataset's last trading day.</p>
+
+    <h2>Bottom line</h2>
+    <ul>
+      <li><strong>The calmest VIX quintile had the best win rate and the smallest typical drawdown</strong> of any bucket in 36 years of data — the opposite of what the "complacency precedes a correction" story predicts.</li>
+      <li><strong>The real danger zone has historically been VIX in the high teens to mid-20s</strong> — grinding unease, not full calm or full panic — not the extremes on either end.</li>
+      <li><strong>The exception that matters:</strong> the single worst outcome in each of the three calmest quintiles traces to the same event, the 2007 run-up to the financial crisis — a reminder that a low VIX can't distinguish real calm from calm-before-a-shock in real time.</li>
+      <li><strong>September 2026's reading (15.8 average, 36th percentile) sits in the best-performing quintile</strong>, not a historical extreme, despite headlines framing it as a "2026 low."</li>
+    </ul>
+
+    <h2>Limitations</h2>
+    <ul>
+      <li><strong>Overlapping windows, not independent samples.</strong> Adjacent starting months share 11 of their 12 forward months, so n=429 overstates how much independent information is actually here — these are differences in a historical average, not a result that should be read as formally statistically significant the way an iid sample of that size would be.</li>
+      <li><strong>Only a handful of true regime changes in the sample.</strong> 36 years contains exactly two systemic financial crises (dot-com, 2008&ndash;09) plus the COVID crash and the 2022 selloff. Every quintile's worst-case numbers are driven by a small number of these episodes, not a large independent set of crashes — the dataset simply hasn't lived through very many of them.</li>
+      <li><strong>Nominal price return, not total return.</strong> Dividends are omitted (for the reason described in Methodology), which understates the absolute return in every bucket by roughly the dividend yield, but shouldn't bias the comparison <em>between</em> quintiles.</li>
+      <li><strong>VIX measures options-implied volatility, not fear directly.</strong> It reflects options market positioning and hedging demand as much as sentiment — a few of the commentary pieces I read while researching this flagged that popular options-selling and volatility-targeting strategies have structurally suppressed realized VIX readings over the past decade, independent of how complacent investors actually are. That's a real, unresolved debate this backtest can't settle.</li>
+    </ul>
+
+    <div class="callout">
+      <b>Reproducing this:</b> Data is the CBOE's daily VIX close, mirrored as CSV by <a href="https://github.com/datasets/finance-vix" target="_blank" rel="noopener">datasets/finance-vix</a> on GitHub, and Robert Shiller's S&amp;P 500 dataset, mirrored by <a href="https://github.com/datasets/s-and-p-500" target="_blank" rel="noopener">datasets/s-and-p-500</a>. The backtest is a ~150-line Node.js script — monthly VIX averaging, quintile bucketing, and forward-return/drawdown calculation. Happy to share it if people want to check the work or extend it (different horizons, decile instead of quintile cuts, a VIX-futures-term-structure angle, etc.) — reply on <a href="https://x.com/OnekAlpha" target="_blank" rel="noopener">X</a>.
+    </div>
+  </article>
+
+  <footer>
+    <p>This post is part of <b>1KAlpha</b>, a transparent, publicly logged AI trading simulation using virtual funds only. Nothing here is investment advice — it's a backtest of a claim circulating in financial commentary, not a recommendation to buy or sell based on the VIX level. Past performance, simulated or real, does not indicate future results, and a historical base rate is not a guarantee about what happens next.</p>
+    <p><a href="../">&larr; Back to 1KAlpha.com</a> &nbsp;&middot;&nbsp; <a href="./">More posts</a></p>
+  </footer>
+
+</div>
+</body>
+</html>
